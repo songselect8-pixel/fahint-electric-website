@@ -52,12 +52,12 @@ function buildAssets(sku) {
   };
 }
 
-const CERTIFICATION_FEATURE = 'UL / cUL certified under GFCI report reference E504391-20210212';
 const VERIFIED_LISTING = Object.freeze({
   status: 'verified',
   file: 'E504391',
   reportReference: 'E504391-20210212'
 });
+const CERTIFICATION_FEATURE = `UL / cUL certified under GFCI report reference ${VERIFIED_LISTING.reportReference}`;
 const REVIEW_LISTING = Object.freeze({
   status: 'review',
   file: null,

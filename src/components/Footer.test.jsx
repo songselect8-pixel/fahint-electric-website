@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import Footer from './Footer.jsx';
+import { findProduct } from '../data/products.js';
 
 function renderFooter(pathname) {
   return render(
@@ -29,9 +30,16 @@ describe('Footer product certification context', () => {
     expect(screen.getByText(/model-specific certification review required/i)).toBeInTheDocument();
   });
 
-  it('keeps the company file reference on verified product routes', () => {
-    renderFooter('/products/gfci/gf15');
+  it('uses the verified detail product file instead of the company-level file', () => {
+    const product = findProduct('GF15');
+    const originalListing = product.listing;
+    product.listing = { ...originalListing, file: 'MODEL-SCOPED-FILE' };
 
-    expect(screen.getByText(/E504391/)).toBeInTheDocument();
+    try {
+      renderFooter('/products/gfci/gf15');
+      expect(screen.getByText(/MODEL-SCOPED-FILE/)).toBeInTheDocument();
+    } finally {
+      product.listing = originalListing;
+    }
   });
 });

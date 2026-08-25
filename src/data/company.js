@@ -81,7 +81,7 @@ export const faqs = [
   {
     q: 'Are your GFCI outlets UL listed?',
     a:
-      'Yes. All Fahint GFCI receptacles are UL/cUL listed under file number E504391 and meet or exceed the Class A trip threshold and tripping-time requirements of UL 943 5th Edition (2018).'
+      'Fahint maintains UL / cUL listing documentation under file E504391 for applicable GFCI models. Confirm model-specific coverage in the product documentation or with our team before ordering.'
   },
   {
     q: 'What is your MOQ for a customized order?',

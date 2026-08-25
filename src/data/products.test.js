@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import {
   products,
   productReviewQueue,
@@ -90,5 +91,10 @@ describe('verified GFCI product data', () => {
     const gl20 = products.find((product) => product.sku === 'GL20');
     expect(gl20.listing).toEqual({ status: 'review', file: null, reportReference: null });
     expect(isVerifiedListing(gl20)).toBe(false);
+  });
+
+  it('defines the report reference literal only once in product data', () => {
+    const source = readFileSync('src/data/products.js', 'utf8');
+    expect(source.match(/E504391-20210212/g)).toHaveLength(1);
   });
 });

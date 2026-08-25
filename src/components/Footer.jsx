@@ -29,7 +29,7 @@ export default function Footer() {
             <p style={{ marginTop: 14, fontSize: 13.5, color: 'rgba(255,255,255,0.5)' }}>
               {requiresModelReview
                 ? 'Model-specific certification review required | ISO 9001 Certified | US & CN Patented'
-                : <>UL File {company.ulFile} | ISO 9001 Certified | US &amp; CN Patented</>}
+                : <>UL File {detailProduct?.listing.file || company.ulFile} | ISO 9001 Certified | US &amp; CN Patented</>}
             </p>
           </div>
 

@@ -22,6 +22,15 @@ describe('Contact model query', () => {
     expect(screen.queryByText(/within 6 hours/i)).not.toBeInTheDocument();
   });
 
+  it('keeps the expanded FAQ model-scoped for GL20 documentation review', () => {
+    renderContact('/contact?model=GL20');
+
+    expect(screen.queryByText(/all Fahint GFCI receptacles are .*listed/i)).not.toBeInTheDocument();
+    expect(screen.getByText(
+      'Fahint maintains UL / cUL listing documentation under file E504391 for applicable GFCI models. Confirm model-specific coverage in the product documentation or with our team before ordering.'
+    )).toBeInTheDocument();
+  });
+
   it('ignores an unknown model query', () => {
     renderContact('/contact?model=unknown');
 
