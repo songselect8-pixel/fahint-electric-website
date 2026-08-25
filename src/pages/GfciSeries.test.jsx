@@ -105,8 +105,10 @@ describe('GfciSeries', () => {
     expect(screen.getByText('GFCI product family')).toBeInTheDocument();
     expect(screen.getByRole('heading', {
       level: 1,
-      name: 'GFCI protection for residential and commercial programs.'
+      name: 'GFCI Product Range'
     })).toBeInTheDocument();
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+    expect(styles).not.toMatch(/\.gfci-series-hero h1\s*\{[^}]*max-width:\s*15ch/);
     expect(screen.getByText(
       'Compare seven published models, then confirm the finish and program requirements for your market.'
     )).toBeInTheDocument();

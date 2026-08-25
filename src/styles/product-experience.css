@@ -794,8 +794,8 @@
   }
 
   .gfci-series-hero h1 {
-    max-width: 15ch;
-    font-size: clamp(38px, 12vw, 52px);
+    max-width: 100%;
+    font-size: clamp(36px, 10vw, 46px);
   }
 
   .gfci-product-grid,
