@@ -1,10 +1,10 @@
 export const colors = [
-  { slug: 'white', name: 'White', hex: '#F5F5F2', note: 'Core volume colour — always in stock' },
-  { slug: 'ivory', name: 'Ivory', hex: '#EDE4CE', note: 'Standard for modern minimalist apartments' },
-  { slug: 'almond', name: 'Light Almond', hex: '#E4D8C3', note: 'The renovation-market favourite' },
-  { slug: 'black', name: 'Black', hex: '#232323', note: 'High-end commercial and smart residential' },
-  { slug: 'grey', name: 'Grey', hex: '#8C9095', note: 'Commercial and industrial specification' },
-  { slug: 'brown', name: 'Brown', hex: '#5A4433', note: 'Classic elegance upgrade option' }
+  { slug: 'white', name: 'White', hex: '#F5F5F2' },
+  { slug: 'ivory', name: 'Ivory', hex: '#EDE4CE' },
+  { slug: 'almond', name: 'Light Almond', hex: '#E4D8C3' },
+  { slug: 'black', name: 'Black', hex: '#232323' },
+  { slug: 'grey', name: 'Grey', hex: '#8C9095' },
+  { slug: 'brown', name: 'Brown', hex: '#5A4433' }
 ];
 
 export const categories = [
@@ -16,30 +16,40 @@ export const categories = [
   { slug: 'industrial', name: 'Industrial Grade' }
 ];
 
+const GALLERY_ROLES = ['plate', 'main', 'sides', 'back', 'lifestyle'];
+
+function assetPath(sku, role) {
+  return `assets/images/products/${String(sku).toLowerCase()}-${role}.webp`;
+}
+
+function buildAssets(sku) {
+  return {
+    hero: assetPath(sku, 'main'),
+    card: assetPath(sku, 'plate'),
+    gallery: GALLERY_ROLES.map((role) => assetPath(sku, role)),
+    feature: assetPath(sku, 'features'),
+    installation: assetPath(sku, 'install'),
+    dimensions: assetPath(sku, 'dimensions'),
+    finishes: Object.fromEntries(colors.map((finish) => [finish.slug, assetPath(sku, finish.slug)]))
+  };
+}
+
+const CERTIFIED_MODELS = new Set(['GF15', 'GF20', 'GT15', 'GT20', 'GW15', 'GW20']);
+const CERTIFICATION_FEATURE = 'UL / cUL certified under GFCI report reference E504391-20210212';
+
 const SHARED_FEATURES = [
-  'UL/cUL listed E504391, patent protected in the US and China',
-  'Class A trip threshold meets or exceeds UL 943 5th Edition 2018',
-  'Mechanical structure allows the GFCI to be tripped and powered off in any state',
-  'No power to the receptacle face if line-load is reversed; resettable once corrected',
-  'Dual-colour status indicator for power and protection state',
-  'Impact-resistant thermoplastic cover and body',
-  'Thickened silver contacts to reduce temperature rise',
   'Self-test every 15 minutes; initial self-test within 3 seconds of power up',
-  'Self-grounding clip and 1.2 mm zinc-plated steel yoke',
-  'Fed Spec rated in both 15A and 20A'
+  'No power to the receptacle face or downstream receptacle if line-load is reversed',
+  'Dual-colour status indicator for power and protection state',
+  'Thermoplastic face and body with a UL 94 V-1 flammability rating',
+  '0.8 mm high-precision phosphor bronze and 1.2 mm galvanized steel yoke',
+  '4–6 mA trip level with tripping time under 25 ms'
 ];
 
-const INDUSTRIAL_FEATURES = [
-  'UL/cUL listed E504391, patent protected in the US and China',
-  'Anti-vibration PCB layout designed for generators and outdoor lighting',
-  'Nylon front cover, base and buttons for gasoline and solvent resistance',
-  'Special PCB shielding against high-frequency electromagnetic interference',
-  'No feed-through terminals — dedicated point-of-use protection',
-  'Class A trip threshold meets or exceeds UL 943 5th Edition 2018',
-  'Reverse-wiring lockout with resettable recovery',
-  'Dual-colour status indicator for power and protection state',
-  'Thickened silver contacts to reduce temperature rise'
-];
+function verifiedFeatures(sku, variantFeatures = []) {
+  const certification = CERTIFIED_MODELS.has(sku) ? [CERTIFICATION_FEATURE] : [];
+  return [...certification, ...variantFeatures, ...SHARED_FEATURES];
+}
 
 export const products = [
   {
@@ -49,13 +59,13 @@ export const products = [
     rating: '15A, 125V',
     nema: '5-15R',
     feature: 'Standard',
-    grade: 'Residential / Commercial',
-    hasImages: true,
+    grade: 'Residential & Commercial Grade',
     summary:
-      'The volume workhorse. Class A self-test protection for kitchens, bathrooms and general residential circuits, with 20A feed-through capacity.',
+      '15A, 125V self-test GFCI receptacle with 20A feed-through, back and side wiring, and a self-grounding clip.',
     highlights: ['Self-test every 15 min', '20A feed-through', 'Reverse-wiring lockout'],
-    features: SHARED_FEATURES,
-    dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' }
+    features: verifiedFeatures('GF15'),
+    dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
+    assets: buildAssets('GF15')
   },
   {
     sku: 'GF20',
@@ -64,13 +74,13 @@ export const products = [
     rating: '20A, 125V',
     nema: '5-20R',
     feature: 'Standard',
-    grade: 'Residential / Commercial',
-    hasImages: true,
+    grade: 'Residential & Commercial Grade',
     summary:
-      'T-slot 20A version for kitchen small-appliance branch circuits, laundry and commercial counters requiring higher continuous load.',
-    highlights: ['20A T-slot face', 'Self-test every 15 min', 'Fed Spec rated'],
-    features: SHARED_FEATURES,
-    dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' }
+      '20A, 125V self-test GFCI receptacle with 20A feed-through, back and side wiring, and a self-grounding clip.',
+    highlights: ['20A T-slot face', 'Self-test every 15 min', 'Reverse-wiring lockout'],
+    features: verifiedFeatures('GF20'),
+    dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
+    assets: buildAssets('GF20')
   },
   {
     sku: 'GT15',
@@ -79,17 +89,13 @@ export const products = [
     rating: '15A, 125V',
     nema: '5-15R',
     feature: 'TR',
-    grade: 'Residential',
-    hasImages: true,
+    grade: 'Residential & Commercial Grade',
     summary:
-      'Adds an NEC-compliant shutter system that blocks single-prong access while keeping normal plug insertion easy. Required in dwelling units.',
-    highlights: ['NEC tamper-resistant', 'Child safety shutter', 'Self-test every 15 min'],
-    features: [
-      'TR shutter mechanism blocks contact access unless a two- or three-prong plug is inserted',
-      'Complies with the NEC requirement that 15A and 20A receptacles in dwelling units be tamper-resistant',
-      ...SHARED_FEATURES
-    ],
-    dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' }
+      '15A, 125V tamper-resistant self-test GFCI receptacle with 20A feed-through, back and side wiring, and a self-grounding clip.',
+    highlights: ['Tamper-resistant', 'Self-test every 15 min', '20A feed-through'],
+    features: verifiedFeatures('GT15', ['Tamper-resistant receptacle face']),
+    dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
+    assets: buildAssets('GT15')
   },
   {
     sku: 'GT20',
@@ -98,17 +104,13 @@ export const products = [
     rating: '20A, 125V',
     nema: '5-20R',
     feature: 'TR',
-    grade: 'Residential',
-    hasImages: true,
+    grade: 'Residential & Commercial Grade',
     summary:
-      '20A tamper-resistant variant for dwelling-unit small-appliance and laundry circuits where higher amperage is specified.',
-    highlights: ['NEC tamper-resistant', '20A T-slot face', 'Self-test every 15 min'],
-    features: [
-      'TR shutter mechanism blocks contact access unless a two- or three-prong plug is inserted',
-      'Complies with the NEC requirement that 15A and 20A receptacles in dwelling units be tamper-resistant',
-      ...SHARED_FEATURES
-    ],
-    dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' }
+      '20A, 125V tamper-resistant self-test GFCI receptacle with 20A feed-through, back and side wiring, and a self-grounding clip.',
+    highlights: ['Tamper-resistant', '20A T-slot face', 'Self-test every 15 min'],
+    features: verifiedFeatures('GT20', ['Tamper-resistant receptacle face']),
+    dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
+    assets: buildAssets('GT20')
   },
   {
     sku: 'GW15',
@@ -118,18 +120,15 @@ export const products = [
     nema: '5-15R',
     feature: 'TR & WR',
     grade: 'Outdoor / Damp locations',
-    hasImages: true,
     summary:
-      'Built for wet and damp locations per NEC 406.8. UV- and cold-impact-resistant materials with conformal-coated boards protecting critical components from moisture.',
-    highlights: ['NEC 406.8 wet location', 'UV + cold impact resistant', 'Moisture-shielded PCB'],
-    features: [
-      'Designed for wet and damp locations to meet NEC Section 406.8',
-      'UV-resistant and cold-impact-resistant plastics on face and buttons',
-      'Special circuit board coating protects critical components from moisture',
-      'TR shutter system included',
-      ...SHARED_FEATURES
-    ],
-    dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' }
+      '15A, 125V tamper-resistant and weather-resistant self-test GFCI receptacle with 20A feed-through and a self-grounding clip.',
+    highlights: ['Tamper-resistant', 'Weather-resistant', 'Self-test every 15 min'],
+    features: verifiedFeatures('GW15', [
+      'Tamper-resistant and weather-resistant receptacle face',
+      'Coated circuit board protects critical components from moisture'
+    ]),
+    dimensions: { face: '4.53 in (115 mm)' },
+    assets: buildAssets('GW15')
   },
   {
     sku: 'GW20',
@@ -139,18 +138,15 @@ export const products = [
     nema: '5-20R',
     feature: 'TR & WR',
     grade: 'Outdoor / Damp locations',
-    hasImages: true,
     summary:
-      '20A outdoor-rated GFCI for patios, pool equipment, RV hookups and exterior commercial circuits exposed to weather.',
-    highlights: ['NEC 406.8 wet location', '20A T-slot face', 'Moisture-shielded PCB'],
-    features: [
-      'Designed for wet and damp locations to meet NEC Section 406.8',
-      'UV-resistant and cold-impact-resistant plastics on face and buttons',
-      'Special circuit board coating protects critical components from moisture',
-      'TR shutter system included',
-      ...SHARED_FEATURES
-    ],
-    dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' }
+      '20A, 125V tamper-resistant and weather-resistant self-test GFCI receptacle with 20A feed-through and a self-grounding clip.',
+    highlights: ['Tamper-resistant', 'Weather-resistant', '20A T-slot face'],
+    features: verifiedFeatures('GW20', [
+      'Tamper-resistant and weather-resistant receptacle face',
+      'Coated circuit board protects critical components from moisture'
+    ]),
+    dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
+    assets: buildAssets('GW20')
   },
   {
     sku: 'GL20',
@@ -159,62 +155,68 @@ export const products = [
     rating: '20A, 125V',
     nema: 'Blank face',
     feature: 'Blank face',
-    grade: 'Commercial',
-    hasImages: true,
+    grade: 'Residential & Commercial Grade',
     summary:
-      'Dead-front GFCI module that protects downstream receptacles and hardwired equipment without exposing a plug face — ideal for spas, HVAC and dedicated circuits.',
-    highlights: ['Dead-front protection', 'Protects downstream loads', 'Self-test every 15 min'],
-    features: SHARED_FEATURES,
-    dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' }
-  },
-  {
-    sku: 'GTN15',
-    name: '15A Industrial Grade GFCI (Anti-Gasoline & Anti-Vibrate)',
-    category: 'industrial',
-    rating: '15A, 125V',
-    nema: '5-15R',
-    feature: 'Anti-Gasoline & Anti-Vibrate',
-    grade: 'Industrial',
-    hasImages: false,
-    summary:
-      'Nylon-bodied industrial GFCI engineered for generators, outdoor lighting and vibration-heavy equipment, with EMI-hardened PCB and no feed-through terminals.',
-    highlights: ['Nylon body', 'Anti-vibration PCB', 'EMI hardened'],
-    features: INDUSTRIAL_FEATURES,
-    dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' }
-  },
-  {
-    sku: 'GTN20',
-    name: '20A Industrial Grade GFCI (Anti-Gasoline & Anti-Vibrate)',
-    category: 'industrial',
-    rating: '20A, 125V',
-    nema: '5-20R',
-    feature: 'Anti-Gasoline & Anti-Vibrate',
-    grade: 'Industrial',
-    hasImages: false,
-    summary:
-      '20A industrial variant for portable generators, jobsite power and equipment exposed to fuel, solvents and continuous vibration.',
-    highlights: ['Nylon body', 'Anti-vibration PCB', 'No feed-through terminals'],
-    features: INDUSTRIAL_FEATURES,
-    dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' }
+      '20A, 125V blank-face self-test GFCI with back and side wiring and a self-grounding clip.',
+    highlights: ['Blank face', 'Self-test every 15 min', 'Reverse-wiring lockout'],
+    features: verifiedFeatures('GL20', ['Blank-face GFCI configuration']),
+    dimensions: { face: '4.53 in (115 mm)' },
+    assets: buildAssets('GL20')
   }
 ];
 
-const FALLBACK = 'gf15';
-
-export function productImage(sku, shot) {
-  const key = String(sku).toLowerCase();
-  const base = products.find((p) => p.sku === sku)?.hasImages ? key : FALLBACK;
-  return `assets/images/products/${base}-${shot}.webp`;
-}
+export const productReviewQueue = [
+  {
+    sku: 'FLB20',
+    publish: false,
+    reason: 'Archived website model has no verified matching local image folder or complete specification set.'
+  }
+];
 
 export function productGallery(sku) {
-  return ['plate', 'main', 'sides', 'back', 'lifestyle'].map((shot) => productImage(sku, shot));
+  return findProduct(sku)?.assets.gallery || [];
 }
 
-export function colorImage(sku, colorSlug) {
-  const key = String(sku).toLowerCase();
-  const base = products.find((p) => p.sku === sku)?.hasImages ? key : FALLBACK;
-  return `assets/images/products/${base}-${colorSlug}.webp`;
+export function productImage(sku, role = 'card') {
+  const product = findProduct(sku);
+  if (!product) return 'assets/images/products/product-placeholder.svg';
+
+  const legacyRole = {
+    card: 'plate',
+    hero: 'main',
+    feature: 'features',
+    installation: 'install'
+  }[role] || role;
+
+  return assetPath(product.sku, legacyRole);
+}
+
+export function productFinishImage(sku, finishSlug) {
+  return findProduct(sku)?.assets.finishes?.[finishSlug]
+    || 'assets/images/products/product-placeholder.svg';
+}
+
+export function colorImage(sku, finishSlug) {
+  return productFinishImage(sku, finishSlug);
+}
+
+export function filterGfciProducts(list, filters = {}) {
+  const query = String(filters.query ?? '').trim().toLowerCase();
+  const application = String(filters.application ?? '').toLowerCase();
+  const source = Array.isArray(list) ? list : [];
+
+  return source.filter((product) => {
+    const matchesQuery = !query || [product.sku, product.name, product.feature, product.grade]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase()
+      .includes(query);
+    const matchesAmperage = !filters.amperage || product.rating?.startsWith(filters.amperage);
+    const matchesVariant = !filters.variant || product.category === filters.variant;
+    const matchesApplication = !application || product.grade?.toLowerCase().includes(application);
+
+    return matchesQuery && matchesAmperage && matchesVariant && matchesApplication;
+  });
 }
 
 export function findProduct(sku) {
