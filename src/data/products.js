@@ -17,6 +17,24 @@ export const categories = [
 ];
 
 const GALLERY_ROLES = ['plate', 'main', 'sides', 'back', 'lifestyle'];
+const PRODUCT_PLACEHOLDER = 'assets/images/products/product-placeholder.svg';
+const PRODUCT_IMAGE_ROLE_MAP = new Map([
+  ['card', 'plate'],
+  ['hero', 'main'],
+  ['feature', 'features'],
+  ['installation', 'install'],
+  ['plate', 'plate'],
+  ['main', 'main'],
+  ['sides', 'sides'],
+  ['back', 'back'],
+  ['lifestyle', 'lifestyle'],
+  ['features', 'features'],
+  ['install', 'install'],
+  ['dimensions', 'dimensions'],
+  ['mcu', 'mcu'],
+  ['back-angle', 'back-angle'],
+  ['detail', 'detail']
+]);
 
 function assetPath(sku, role) {
   return `assets/images/products/${String(sku).toLowerCase()}-${role}.webp`;
@@ -119,7 +137,7 @@ export const products = [
     rating: '15A, 125V',
     nema: '5-15R',
     feature: 'TR & WR',
-    grade: 'Outdoor / Damp locations',
+    grade: 'Residential & Commercial Grade',
     summary:
       '15A, 125V tamper-resistant and weather-resistant self-test GFCI receptacle with 20A feed-through and a self-grounding clip.',
     highlights: ['Tamper-resistant', 'Weather-resistant', 'Self-test every 15 min'],
@@ -127,7 +145,7 @@ export const products = [
       'Tamper-resistant and weather-resistant receptacle face',
       'Coated circuit board protects critical components from moisture'
     ]),
-    dimensions: { face: '4.53 in (115 mm)' },
+    dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
     assets: buildAssets('GW15')
   },
   {
@@ -137,7 +155,7 @@ export const products = [
     rating: '20A, 125V',
     nema: '5-20R',
     feature: 'TR & WR',
-    grade: 'Outdoor / Damp locations',
+    grade: 'Residential & Commercial Grade',
     summary:
       '20A, 125V tamper-resistant and weather-resistant self-test GFCI receptacle with 20A feed-through and a self-grounding clip.',
     highlights: ['Tamper-resistant', 'Weather-resistant', '20A T-slot face'],
@@ -160,7 +178,7 @@ export const products = [
       '20A, 125V blank-face self-test GFCI with back and side wiring and a self-grounding clip.',
     highlights: ['Blank face', 'Self-test every 15 min', 'Reverse-wiring lockout'],
     features: verifiedFeatures('GL20', ['Blank-face GFCI configuration']),
-    dimensions: { face: '4.53 in (115 mm)' },
+    dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
     assets: buildAssets('GL20')
   }
 ];
@@ -179,21 +197,15 @@ export function productGallery(sku) {
 
 export function productImage(sku, role = 'card') {
   const product = findProduct(sku);
-  if (!product) return 'assets/images/products/product-placeholder.svg';
+  const assetRole = PRODUCT_IMAGE_ROLE_MAP.get(role);
+  if (!product || !assetRole) return PRODUCT_PLACEHOLDER;
 
-  const legacyRole = {
-    card: 'plate',
-    hero: 'main',
-    feature: 'features',
-    installation: 'install'
-  }[role] || role;
-
-  return assetPath(product.sku, legacyRole);
+  return assetPath(product.sku, assetRole);
 }
 
 export function productFinishImage(sku, finishSlug) {
   return findProduct(sku)?.assets.finishes?.[finishSlug]
-    || 'assets/images/products/product-placeholder.svg';
+    || PRODUCT_PLACEHOLDER;
 }
 
 export function colorImage(sku, finishSlug) {
@@ -203,6 +215,7 @@ export function colorImage(sku, finishSlug) {
 export function filterGfciProducts(list, filters = {}) {
   const query = String(filters.query ?? '').trim().toLowerCase();
   const application = String(filters.application ?? '').toLowerCase();
+  const classification = String(filters.classification ?? '').toLowerCase();
   const source = Array.isArray(list) ? list : [];
 
   return source.filter((product) => {
@@ -214,8 +227,9 @@ export function filterGfciProducts(list, filters = {}) {
     const matchesAmperage = !filters.amperage || product.rating?.startsWith(filters.amperage);
     const matchesVariant = !filters.variant || product.category === filters.variant;
     const matchesApplication = !application || product.grade?.toLowerCase().includes(application);
+    const matchesClassification = !classification || product.category === classification;
 
-    return matchesQuery && matchesAmperage && matchesVariant && matchesApplication;
+    return matchesQuery && matchesAmperage && matchesVariant && matchesApplication && matchesClassification;
   });
 }
 

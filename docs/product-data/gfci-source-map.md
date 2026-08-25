@@ -26,8 +26,9 @@ The audit used, in priority order:
 |---|---|---|
 | Rating and NEMA | Each model's archived page | GF15/GT15/GW15: `15A, 125V`, `5-15R`; GF20/GT20/GW20: `20A, 125V`, `5-20R`; GL20: `20A, 125V`, blank face |
 | Variant | Archived page product description and specification; E504391 addendum for TR/WR designations | GF15/GF20 standard; GT15/GT20 TR; GW15/GW20 TR & WR; GL20 blank face |
-| Grade/application | Archived `Grade` field; verified WR designation for GW models | GF15/GF20/GT15/GT20/GL20 use the archived Residential & Commercial grade. GW15/GW20 use the approved Outdoor / Damp application taxonomy and remain subject to the usage note below. |
-| Dimensions | Each model's own `14.png` | GF15/GF20/GT15/GT20/GW20 visibly show `4.53 in (115 mm)` face height, `2.75 in (70 mm)` plate width and `1.56 in (39.7 mm)` depth. GW15 and GL20 visibly verify only the `4.53 in (115 mm)` face height, so width and depth are omitted for those models. |
+| Grade/application | Each model's archived `Grade` field | All seven published models use the archived `Residential & Commercial Grade` value. No outdoor or damp-location installation claim is published. |
+| WR classification | E504391 addendum and the GW archived model pages | `wr` is an internal product-classification filter for GW15/GW20. It indicates the verified Weather Resistant variant only and is not installation approval. |
+| Dimensions | Each model's own `14.png` | All seven published models visibly show `4.53 in (115 mm)` face height, `2.75 in (70 mm)` plate width and `1.56 in (39.7 mm)` depth in their own model artwork. |
 | Certification | E504391 rendered certificate pages and model addenda | GF15, GF20, GT15, GT20, GW15 and GW20 are named in the US and Canada addenda under report reference `E504391-20210212`. GL20 is not named in those addenda, so no E504391 claim is included in its public feature data. |
 
 ## Asset-role map
@@ -53,8 +54,8 @@ Every published asset is sourced from the same model folder; no cross-model fall
 
 ## Unresolved fields and publication limits
 
-- The archived GW15 and GW20 pages say `Usage: Indoor Only`, despite their certificate designations being Weather Resistant. The public `Outdoor / Damp locations` value is an application/filter taxonomy, not installation approval. Final installation copy needs written technical confirmation and applicable-code review.
+- The archived GW15 and GW20 pages say `Usage: Indoor Only`, while the certificate designates them Weather Resistant. Public records therefore retain the archived Residential & Commercial grade and use only `wr` as a non-installation product-classification filter. Any outdoor or damp-location installation guidance requires written technical confirmation and applicable-code review.
 - The GL20 archived page claims UL/cUL certification, but GL20 is absent from both E504391 addenda supplied in the certificate source. Treat certification as unresolved until a current formal document names GL20.
 - The archived FLB20 page is not sufficient for publication: it has no matching local model folder and reports `Certification: Non` with internally inconsistent electrical fields.
-- Public dimensions are limited to values visibly present in each model's own dimension artwork. Missing values must not be copied from another product.
+- Public dimensions are limited to values visibly present in each model's own dimension artwork; values must never be copied from another product.
 - Commercial terms such as MOQ, lead time, warranty, warehouse availability, response time and stock status require written confirmation before appearing on a product page.
