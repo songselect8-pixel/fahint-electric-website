@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { describe, expect, it } from 'vitest';
 import { products } from './data/products.js';
 
@@ -12,6 +13,24 @@ const requiredProductAssetFields = [
   'dimensions'
 ];
 const publicRoot = path.resolve('public');
+
+function normalizeRepoPath(filePath) {
+  return path.posix.normalize(String(filePath).replace(/\\/g, '/')).replace(/^\.\//, '');
+}
+
+function readTrackedPublicAssets() {
+  const output = execFileSync('git', ['ls-files', '-z', '--', 'public'], {
+    cwd: process.cwd(),
+    encoding: 'utf8'
+  });
+
+  return new Set(output
+    .split('\0')
+    .filter(Boolean)
+    .map(normalizeRepoPath));
+}
+
+const trackedPublicAssets = readTrackedPublicAssets();
 
 function collectSourceFiles(directory) {
   return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -52,7 +71,7 @@ function flattenProductAssets(product) {
   return entries;
 }
 
-function validateAssetReference(sku, field, asset, root = publicRoot) {
+function validateAssetReference(sku, field, asset, root = publicRoot, options = {}) {
   if (typeof asset !== 'string' || asset.trim() === '') {
     return `${sku}: ${field} must be a non-empty string.`;
   }
@@ -77,6 +96,26 @@ function validateAssetReference(sku, field, asset, root = publicRoot) {
 
   if (!fs.existsSync(candidate)) {
     return `${sku}: ${field} does not exist inside public (${normalizedAsset}).`;
+  }
+
+  if (!fs.statSync(candidate).isFile()) {
+    return `${sku}: ${field} must reference a file inside public (${normalizedAsset}).`;
+  }
+
+  const realpathSync = options.realpathSync ?? fs.realpathSync;
+  const realPublicRoot = path.resolve(realpathSync(normalizedRoot));
+  const realCandidate = path.resolve(realpathSync(candidate));
+  const realTargetIsInsidePublic = realCandidate === realPublicRoot
+    || realCandidate.startsWith(`${realPublicRoot}${path.sep}`);
+
+  if (!realTargetIsInsidePublic) {
+    return `${sku}: ${field} resolves outside the real public root (${normalizedAsset}).`;
+  }
+
+  const trackedAssets = options.trackedAssets ?? trackedPublicAssets;
+  const trackedPath = normalizeRepoPath(`public/${normalizedAsset}`);
+  if (!trackedAssets.has(trackedPath)) {
+    return `${sku}: ${field} is untracked (${trackedPath}).`;
   }
 
   return null;
@@ -174,5 +213,30 @@ describe('public asset paths', () => {
   ])('rejects invalid public asset reference %j', (asset, expectedError) => {
     expect(validateAssetReference('TEST', 'hero', asset, path.resolve('public')))
       .toBe(expectedError);
+  });
+
+  it('rejects a directory even when the public path exists', () => {
+    expect(validateAssetReference('TEST', 'hero', 'assets/images/products', publicRoot))
+      .toBe('TEST: hero must reference a file inside public (assets/images/products).');
+  });
+
+  it('rejects an existing product asset that is absent from the tracked set', () => {
+    const asset = products[0].assets.hero;
+
+    expect(validateAssetReference('TEST', 'hero', asset, publicRoot, {
+      trackedAssets: new Set()
+    })).toBe(`TEST: hero is untracked (public/${asset}).`);
+  });
+
+  it('rejects an asset whose real path escapes the real public root', () => {
+    const asset = products[0].assets.hero;
+    const candidate = path.resolve(publicRoot, asset);
+
+    expect(validateAssetReference('TEST', 'hero', asset, publicRoot, {
+      trackedAssets: new Set([`public/${asset}`]),
+      realpathSync: (target) => (
+        path.resolve(target) === candidate ? path.resolve('package.json') : fs.realpathSync(target)
+      )
+    })).toBe(`TEST: hero resolves outside the real public root (${asset}).`);
   });
 });
