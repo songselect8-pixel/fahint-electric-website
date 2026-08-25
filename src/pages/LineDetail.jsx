@@ -1,75 +1,8 @@
-import { useState } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { ArrowRight, Check, ShieldCheck } from 'lucide-react';
 import { findLine, productLines } from '../data/lines.js';
-import { products, categories } from '../data/products.js';
 import { findCatalogRow } from '../data/overviewCatalog.js';
-import ProductCard from '../components/ProductCard.jsx';
 import Reveal from '../components/Reveal.jsx';
-
-// GFCI has full per-model data; the other families render from their group lists.
-function GfciBody() {
-  const [active, setActive] = useState('all');
-  const list = active === 'all' ? products : products.filter((p) => p.category === active);
-
-  return (
-    <>
-      <section className="section">
-        <div className="container">
-          <div className="filter-row">
-            {categories.map((c) => (
-              <button key={c.slug} className={`chip ${active === c.slug ? 'is-active' : ''}`} onClick={() => setActive(c.slug)}>
-                {c.name}
-              </button>
-            ))}
-          </div>
-          <div className="prod-grid">
-            {list.map((p) => (
-              <ProductCard key={p.sku} product={p} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section section--gray">
-        <div className="container">
-          <div className="section-head">
-            <div className="eyebrow">/ Specification Table /</div>
-            <h2>Compare the Full GFCI Range</h2>
-          </div>
-          <div style={{ overflowX: 'auto' }}>
-            <table className="spec-table" style={{ minWidth: 720 }}>
-              <thead>
-                <tr>
-                  {['Model', 'Rating', 'NEMA', 'Feature', 'Grade'].map((h) => (
-                    <td key={h} style={{ width: 'auto', color: 'var(--charcoal)', fontWeight: 800 }}>
-                      {h}
-                    </td>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((p) => (
-                  <tr key={p.sku}>
-                    <td style={{ width: 'auto' }}>
-                      <Link to={`/products/gfci/${p.sku.toLowerCase()}`} style={{ color: 'var(--blue)', fontWeight: 700 }}>
-                        {p.sku}
-                      </Link>
-                    </td>
-                    <td>{p.rating}</td>
-                    <td>{p.nema}</td>
-                    <td>{p.feature}</td>
-                    <td>{p.grade}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-    </>
-  );
-}
 
 function GenericBody({ line }) {
   const catalogModels = findCatalogRow(line.slug)?.models || [];
@@ -172,7 +105,7 @@ export default function LineDetail() {
         </div>
       </section>
 
-      {line.detailed ? <GfciBody /> : <GenericBody line={line} />}
+      <GenericBody line={line} />
 
       <section className="section">
         <div className="container">

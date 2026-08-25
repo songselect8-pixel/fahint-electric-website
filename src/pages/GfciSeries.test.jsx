@@ -1,0 +1,148 @@
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
+import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import GfciSeries from './GfciSeries.jsx';
+
+function renderSeries() {
+  return render(
+    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <GfciSeries />
+    </MemoryRouter>
+  );
+}
+
+describe('GfciSeries', () => {
+  it('shows full-card links for exactly the seven verified public models', () => {
+    const { container } = renderSeries();
+    const grid = container.querySelector('.gfci-series__product-grid');
+
+    expect(grid).not.toBeNull();
+    ['GF15', 'GF20', 'GT15', 'GT20', 'GW15', 'GW20', 'GL20'].forEach((sku) => {
+      expect(within(grid).getByRole('link', { name: new RegExp(`^${sku} `) })).toHaveAttribute(
+        'href',
+        `/products/gfci/${sku.toLowerCase()}`
+      );
+    });
+    expect(within(grid).getAllByRole('link')).toHaveLength(7);
+    expect(screen.queryByText('FLB20')).not.toBeInTheDocument();
+  });
+
+  it('combines 20A and WR filters without returning the 15A WR model', async () => {
+    const user = userEvent.setup();
+    const { container } = renderSeries();
+
+    await user.selectOptions(screen.getByLabelText('Amperage'), '20A');
+    await user.selectOptions(screen.getByLabelText('Variant'), 'wr');
+
+    const grid = container.querySelector('.gfci-series__product-grid');
+    expect(within(grid).getByRole('link', { name: /^GW20 / })).toBeInTheDocument();
+    expect(within(grid).queryByRole('link', { name: /^GW15 / })).not.toBeInTheDocument();
+    expect(within(grid).getAllByRole('link')).toHaveLength(1);
+    expect(screen.getByText('1 verified model')).toHaveAttribute('aria-live', 'polite');
+  });
+
+  it('offers recovery actions when no model matches and clears every filter', async () => {
+    const user = userEvent.setup();
+    renderSeries();
+
+    await user.selectOptions(screen.getByLabelText('Amperage'), '20A');
+    await user.type(screen.getByRole('searchbox', { name: 'Search GFCI models' }), 'not-a-model');
+
+    const emptyState = screen.getByRole('status', { name: 'No verified models match these filters.' });
+    expect(within(emptyState).getByRole('heading', { name: 'No verified models match these filters.' })).toBeInTheDocument();
+    expect(within(emptyState).getByText(/clear the current filters/i)).toBeInTheDocument();
+    expect(within(emptyState).getByRole('link', { name: 'Contact sales' })).toHaveAttribute('href', '/contact');
+
+    await user.click(within(emptyState).getByRole('button', { name: 'Clear filters' }));
+
+    expect(screen.getByRole('searchbox', { name: 'Search GFCI models' })).toHaveValue('');
+    expect(screen.getByLabelText('Amperage')).toHaveValue('');
+    expect(screen.getByText('7 verified models')).toHaveAttribute('aria-live', 'polite');
+  });
+
+  it('toggles the mobile filter drawer while preserving the desktop filter bar structure', async () => {
+    const user = userEvent.setup();
+    const { container } = renderSeries();
+    const toggle = screen.getByRole('button', { name: 'Filter GFCI models' });
+    const filters = container.querySelector('#gfci-filters');
+
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(toggle).toHaveAttribute('aria-controls', 'gfci-filters');
+    expect(filters).toHaveClass('gfci-series__filters');
+    expect(filters).not.toHaveClass('is-open');
+
+    await user.click(toggle);
+
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(filters).toHaveClass('is-open');
+  });
+
+  it('uses the approved controls and omits an outdoor application option', () => {
+    renderSeries();
+
+    expect(screen.getByText('Search models')).toBeInTheDocument();
+    expect(screen.getByRole('searchbox', { name: 'Search GFCI models' })).toBeInTheDocument();
+    expect(screen.getByLabelText('Amperage')).toHaveDisplayValue('All');
+    expect(screen.getByLabelText('Variant')).toHaveDisplayValue('All');
+    expect(screen.getByLabelText('Application')).toHaveDisplayValue('All');
+    expect(screen.queryByRole('option', { name: /outdoor|damp/i })).not.toBeInTheDocument();
+  });
+
+  it('keeps the approved series evidence and program language intact', () => {
+    renderSeries();
+
+    expect(screen.getByText('GFCI product family')).toBeInTheDocument();
+    expect(screen.getByRole('heading', {
+      name: 'Verified protection for residential and commercial programs.'
+    })).toBeInTheDocument();
+    expect(screen.getByText(
+      'Compare seven published models, then confirm the finish and program requirements for your market.'
+    )).toBeInTheDocument();
+    expect(screen.getByRole('search', { name: 'GFCI model filters' })).toBeInTheDocument();
+
+    const comparison = screen.getByRole('region', { name: 'GFCI model comparison' });
+    ['Model', 'Rating', 'NEMA', 'Variant', 'Application'].forEach((heading) => {
+      expect(within(comparison).getByRole('columnheader', { name: heading })).toBeInTheDocument();
+    });
+    expect(within(comparison).getAllByRole('link')).toHaveLength(7);
+
+    [
+      ['Self-test protection', 'Automatic protection monitoring on the verified GFCI platform.'],
+      ['Reverse-wiring lockout', 'Line/load reversal prevents power at the receptacle face.'],
+      ['Verified GFCI platform', 'UL / cUL listed GFCI range under file E504391.']
+    ].forEach(([heading, body]) => {
+      expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument();
+      expect(screen.getByText(body)).toBeInTheDocument();
+    });
+
+    expect(screen.getByRole('img', { name: 'Coordinated kitchen wiring-device application' }).getAttribute('src'))
+      .toContain('application-kitchen-v2.png');
+    expect(screen.getByText(/Match the verified model, rating and variant to documented project requirements/)).toBeInTheDocument();
+    ['Finish coordination', 'Brand marking', 'Packaging coordination', 'Documentation support'].forEach((option) => {
+      expect(screen.getByText(option)).toBeInTheDocument();
+    });
+  });
+
+  it('keeps the series route ahead of product and generic family routes', () => {
+    const main = readFileSync('src/main.jsx', 'utf8');
+    const lineDetail = readFileSync('src/pages/LineDetail.jsx', 'utf8');
+    const seriesRoute = main.indexOf('path="/products/gfci"');
+    const productRoute = main.indexOf('path="/products/gfci/:sku"');
+    const familyRoute = main.indexOf('path="/products/:line"');
+
+    expect(seriesRoute).toBeGreaterThan(-1);
+    expect(seriesRoute).toBeLessThan(productRoute);
+    expect(productRoute).toBeLessThan(familyRoute);
+    expect(lineDetail).not.toContain('GfciBody');
+    expect(lineDetail).toContain('<GenericBody line={line} />');
+  });
+
+  it('defines visible keyboard focus for the search field and comparison region', () => {
+    const styles = readFileSync('src/styles.css', 'utf8');
+
+    expect(styles).toMatch(/\.gfci-series__search-field:focus-within\s*\{[\s\S]*?outline:/);
+    expect(styles).toMatch(/\.gfci-series__table-wrap:focus-visible\s*\{[\s\S]*?outline:/);
+  });
+});
