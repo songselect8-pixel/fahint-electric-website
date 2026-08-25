@@ -2,14 +2,16 @@ import { Link, useLocation } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { company } from '../data/company.js';
 import { productLines } from '../data/lines.js';
+import { findProduct, isVerifiedListing } from '../data/products.js';
 
 export default function Footer() {
   const { pathname } = useLocation();
-  const isGfciProductDetail = /^\/products\/gfci\/[^/]+\/?$/i.test(pathname);
-  const requiresModelReview = /^\/products\/gfci\/gl20\/?$/i.test(pathname);
+  const productDetailMatch = pathname.match(/^\/products\/gfci\/([^/]+)\/?$/i);
+  const detailProduct = productDetailMatch ? findProduct(productDetailMatch[1]) : null;
+  const requiresModelReview = detailProduct && !isVerifiedListing(detailProduct);
 
   return (
-    <footer className={`footer${isGfciProductDetail ? ' footer--product-detail' : ''}`}>
+    <footer className={`footer${detailProduct ? ' footer--product-detail' : ''}`}>
       <div className="container">
         <div className="footer__grid">
           <div className="footer__about">

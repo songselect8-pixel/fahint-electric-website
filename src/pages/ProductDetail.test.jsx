@@ -2,6 +2,7 @@ import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
+import userEvent from '@testing-library/user-event';
 import ProductDetail from './ProductDetail.jsx';
 
 function LocationProbe() {
@@ -122,6 +123,32 @@ describe('ProductDetail', () => {
     expect(styles).toMatch(
       /@media \(max-width:\s*700px\)[\s\S]*?\.footer--product-detail\s*\{[\s\S]*?padding-bottom:\s*calc\([^}]*env\(safe-area-inset-bottom/
     );
+    expect(styles).toMatch(/\.footer--product-detail\s*\{[\s\S]*?padding-bottom:\s*calc\(176px\s*\+/);
+  });
+
+  it('keeps inquiry fields and synchronizes the model after related-product navigation', async () => {
+    const user = userEvent.setup();
+    renderDetail('gf15');
+
+    await user.type(screen.getByLabelText('Your name *'), 'Avery Chen');
+    await user.click(screen.getByRole('link', { name: 'GF20 20A Self-Test GFCI Receptacle' }));
+
+    expect(await screen.findByRole('heading', { level: 1, name: '20A Self-Test GFCI Receptacle' })).toBeInTheDocument();
+    expect(screen.getByLabelText('Model of interest')).toHaveValue('GF20');
+    expect(screen.getByLabelText('Your name *')).toHaveValue('Avery Chen');
+  });
+
+  it('provides the wiring mappings, device markings, and dimensions as DOM text', () => {
+    renderDetail('gf15');
+
+    expect(screen.getByText(/Neutral wire.*white conductor.*silver screw/i)).toBeInTheDocument();
+    expect(screen.getByText(/Hot wire.*black conductor.*brass screw/i)).toBeInTheDocument();
+    expect(screen.getByText(/Ground wire.*copper or green conductor.*green screw/i)).toBeInTheDocument();
+    expect(screen.getByText(/LINE and LOAD markings/i)).toBeInTheDocument();
+    expect(screen.getByText(/terminal holes.*tighten.*clockwise.*RESET.*green LED/i)).toBeInTheDocument();
+    expect(screen.getByText(/Face.*4\.53 in \(115 mm\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Width.*2\.75 in \(70 mm\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Depth.*1\.56 in \(39\.7 mm\)/i)).toBeInTheDocument();
   });
 
   it('redirects an unknown sku to the GFCI series route', () => {

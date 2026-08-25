@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Filter, Search } from 'lucide-react';
 import ProductCard from '../components/ProductCard.jsx';
 import SafeImage from '../components/SafeImage.jsx';
-import { filterGfciProducts, products } from '../data/products.js';
+import { filterGfciProducts, isVerifiedListing, products } from '../data/products.js';
 
 const AMPERAGES = [
   { value: '', label: 'All' },
@@ -25,10 +25,14 @@ const APPLICATIONS = [
   { value: 'commercial', label: 'Commercial' }
 ];
 
+const verifiedListings = products.filter(isVerifiedListing);
+const reviewListings = products.filter((product) => !isVerifiedListing(product));
+const verifiedListingFile = verifiedListings[0]?.listing.file;
+
 const ENGINEERING_PROOF = [
   {
     title: 'Self-test protection',
-    body: 'Automatic protection monitoring on the verified GFCI platform.'
+    body: 'Automatic protection monitoring across the published GFCI platform.'
   },
   {
     title: 'Reverse-wiring lockout',
@@ -36,7 +40,7 @@ const ENGINEERING_PROOF = [
   },
   {
     title: 'Verified GFCI platform',
-    body: 'Six published models are named under UL / cUL file E504391; GL20 documentation remains under review.'
+    body: `${verifiedListings.length === 6 ? 'Six' : verifiedListings.length} published models are named under UL / cUL file ${verifiedListingFile}; ${reviewListings.map((product) => product.sku).join(', ')} documentation remains under review.`
   }
 ];
 
@@ -99,7 +103,7 @@ export default function GfciSeries() {
           <div className="gfci-series__catalog-head">
             <div>
               <p className="eyebrow">Published range</p>
-              <h2 id="gfci-models-heading">Find a verified GFCI model</h2>
+              <h2 id="gfci-models-heading">Find a published GFCI model</h2>
             </div>
             <button
               type="button"
@@ -140,7 +144,7 @@ export default function GfciSeries() {
 
           <div className="gfci-series__results-head">
             <span aria-live="polite">
-              {filteredProducts.length} verified {filteredProducts.length === 1 ? 'model' : 'models'}
+              {filteredProducts.length} published {filteredProducts.length === 1 ? 'model' : 'models'}
             </span>
           </div>
 
@@ -154,10 +158,10 @@ export default function GfciSeries() {
             <div
               className="gfci-series__empty"
               role="status"
-              aria-label="No verified models match these filters."
+              aria-label="No published models match these filters."
             >
-              <h2>No verified models match these filters.</h2>
-              <p>Try a different model number or clear the current filters to restore the verified range.</p>
+              <h2>No published models match these filters.</h2>
+              <p>Try a different model number or clear the current filters to restore the published range.</p>
               <div className="gfci-series__empty-actions">
                 <button type="button" className="btn btn--primary" onClick={clearFilters}>Clear filters</button>
                 <Link to="/contact" className="btn btn--outline">Contact sales</Link>
@@ -234,7 +238,7 @@ export default function GfciSeries() {
             <p className="eyebrow">Application support</p>
             <h2 id="gfci-application-heading">Specify from documented requirements.</h2>
             <p>
-              Match the verified model, rating and variant to documented project requirements, then confirm the selected configuration before ordering.
+              Match the published model, rating and variant to documented project requirements, then confirm the selected configuration before ordering.
             </p>
             <Link to="/contact" className="textlink">Discuss a project <ArrowRight size={15} aria-hidden="true" /></Link>
           </div>
@@ -245,7 +249,7 @@ export default function GfciSeries() {
         <div className="container gfci-series__oem-grid">
           <div>
             <p className="eyebrow">OEM configuration</p>
-            <h2 id="gfci-oem-heading">Coordinate the program around the verified platform.</h2>
+            <h2 id="gfci-oem-heading">Coordinate the program around the documented platform.</h2>
           </div>
           <div>
             <ul className="gfci-series__oem-list">

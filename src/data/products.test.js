@@ -5,7 +5,8 @@ import {
   productGallery,
   productImage,
   productFinishImage,
-  filterGfciProducts
+  filterGfciProducts,
+  isVerifiedListing
 } from './products.js';
 
 describe('verified GFCI product data', () => {
@@ -72,5 +73,22 @@ describe('verified GFCI product data', () => {
         depth: '1.56 in (39.7 mm)'
       });
     }
+  });
+
+  it('stores model-scoped listing truth for the six verified models and GL20 review', () => {
+    const verified = products.filter(isVerifiedListing);
+
+    expect(verified.map((product) => product.sku)).toEqual(['GF15', 'GF20', 'GT15', 'GT20', 'GW15', 'GW20']);
+    verified.forEach((product) => {
+      expect(product.listing).toEqual({
+        status: 'verified',
+        file: 'E504391',
+        reportReference: 'E504391-20210212'
+      });
+    });
+
+    const gl20 = products.find((product) => product.sku === 'GL20');
+    expect(gl20.listing).toEqual({ status: 'review', file: null, reportReference: null });
+    expect(isVerifiedListing(gl20)).toBe(false);
   });
 });

@@ -5238,7 +5238,6 @@ ul {
 }
 
 .product-finish-strip figcaption,
-.product-installation__grid figcaption,
 .product-manufacturing__grid figcaption {
   margin-top: 12px;
   color: #4f6072;
@@ -5246,6 +5245,29 @@ ul {
   font-weight: 800;
   letter-spacing: .08em;
   text-transform: uppercase;
+}
+
+.product-installation__caption {
+  margin-top: 16px;
+  color: #4f6072;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.product-installation__caption strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #13263b;
+  font-size: 15px;
+}
+
+.product-installation__caption ul {
+  margin: 0 0 10px;
+  padding-left: 20px;
+}
+
+.product-installation__caption p {
+  margin: 8px 0 0;
 }
 
 .product-oem__footer {
@@ -5604,7 +5626,7 @@ ul {
   }
 
   .footer--product-detail {
-    padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(176px + env(safe-area-inset-bottom, 0px));
   }
 }
 

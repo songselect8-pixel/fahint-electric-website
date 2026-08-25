@@ -14,7 +14,7 @@ function renderSeries() {
 }
 
 describe('GfciSeries', () => {
-  it('shows full-card links for exactly the seven verified public models', () => {
+  it('shows full-card links for exactly the seven published public models', () => {
     const { container } = renderSeries();
     const grid = container.querySelector('.gfci-series__product-grid');
 
@@ -41,7 +41,7 @@ describe('GfciSeries', () => {
     expect(within(grid).getByRole('link', { name: /^GW20 / })).toBeInTheDocument();
     expect(within(grid).queryByRole('link', { name: /^GW15 / })).not.toBeInTheDocument();
     expect(within(grid).getAllByRole('link')).toHaveLength(1);
-    expect(screen.getByText('1 verified model')).toHaveAttribute('aria-live', 'polite');
+    expect(screen.getByText('1 published model')).toHaveAttribute('aria-live', 'polite');
   });
 
   it('offers recovery actions when no model matches and clears every filter', async () => {
@@ -51,8 +51,8 @@ describe('GfciSeries', () => {
     await user.selectOptions(screen.getByLabelText('Amperage'), '20A');
     await user.type(screen.getByRole('searchbox', { name: 'Search GFCI models' }), 'not-a-model');
 
-    const emptyState = screen.getByRole('status', { name: 'No verified models match these filters.' });
-    expect(within(emptyState).getByRole('heading', { name: 'No verified models match these filters.' })).toBeInTheDocument();
+    const emptyState = screen.getByRole('status', { name: 'No published models match these filters.' });
+    expect(within(emptyState).getByRole('heading', { name: 'No published models match these filters.' })).toBeInTheDocument();
     expect(within(emptyState).getByText(/clear the current filters/i)).toBeInTheDocument();
     expect(within(emptyState).getByRole('link', { name: 'Contact sales' })).toHaveAttribute('href', '/contact');
 
@@ -60,7 +60,7 @@ describe('GfciSeries', () => {
 
     expect(screen.getByRole('searchbox', { name: 'Search GFCI models' })).toHaveValue('');
     expect(screen.getByLabelText('Amperage')).toHaveValue('');
-    expect(screen.getByText('7 verified models')).toHaveAttribute('aria-live', 'polite');
+    expect(screen.getByText('7 published models')).toHaveAttribute('aria-live', 'polite');
   });
 
   it('toggles the mobile filter drawer while preserving the desktop filter bar structure', async () => {
@@ -101,6 +101,7 @@ describe('GfciSeries', () => {
     expect(screen.getByText(
       'Compare seven published models, then confirm the finish and program requirements for your market.'
     )).toBeInTheDocument();
+    expect(screen.queryByText(/seven verified models/i)).not.toBeInTheDocument();
     expect(screen.getByRole('search', { name: 'GFCI model filters' })).toBeInTheDocument();
 
     const comparison = screen.getByRole('region', { name: 'GFCI model comparison' });
@@ -113,7 +114,7 @@ describe('GfciSeries', () => {
     expect(within(comparison).getAllByRole('link')).toHaveLength(7);
 
     [
-      ['Self-test protection', 'Automatic protection monitoring on the verified GFCI platform.'],
+      ['Self-test protection', 'Automatic protection monitoring across the published GFCI platform.'],
       ['Reverse-wiring lockout', 'Line/load reversal prevents power at the receptacle face.'],
       [
         'Verified GFCI platform',
@@ -126,7 +127,7 @@ describe('GfciSeries', () => {
 
     expect(screen.getByRole('img', { name: 'Coordinated kitchen wiring-device application' }).getAttribute('src'))
       .toContain('application-kitchen-v2.png');
-    expect(screen.getByText(/Match the verified model, rating and variant to documented project requirements/)).toBeInTheDocument();
+    expect(screen.getByText(/Match the published model, rating and variant to documented project requirements/)).toBeInTheDocument();
     ['Finish coordination', 'Brand marking', 'Packaging coordination', 'Documentation support'].forEach((option) => {
       expect(screen.getByText(option)).toBeInTheDocument();
     });

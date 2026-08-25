@@ -1,15 +1,10 @@
 import { ArrowRight, FileCheck2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { isVerifiedListing } from '../../data/products.js';
 import SafeImage from '../SafeImage.jsx';
 
-const VERIFIED_GFCI_MODELS = new Set(['GF15', 'GF20', 'GT15', 'GT20', 'GW15', 'GW20']);
-
-export function isVerifiedGfciModel(product) {
-  return VERIFIED_GFCI_MODELS.has(product?.sku);
-}
-
 export function productSpecificationRows(product) {
-  const verified = isVerifiedGfciModel(product);
+  const verified = isVerifiedListing(product);
   const configuration = product.nema === 'Blank face' ? product.nema : `NEMA ${product.nema}`;
   const faceDimensions = [product.dimensions?.face, product.dimensions?.width].filter(Boolean).join(' × ');
   return [
@@ -19,7 +14,7 @@ export function productSpecificationRows(product) {
     ['Variant', product.feature],
     ['Application grade', product.grade],
     ['Standard', verified ? 'UL 943' : null],
-    ['Certification', verified ? 'UL/cUL listed · file E504391' : 'Documentation review required'],
+    ['Certification', verified ? `UL/cUL listed · file ${product.listing.file}` : 'Documentation review required'],
     ['Face dimensions', faceDimensions],
     ['Body depth', product.dimensions?.depth]
   ].filter(([, value]) => value);
@@ -62,11 +57,30 @@ export function ProductInstallation({ product }) {
         <div className="product-installation__grid">
           <figure>
             <SafeImage src={product.assets.installation} alt={`${product.sku} wiring reference`} loading="lazy" />
-            <figcaption>Wiring reference</figcaption>
+            <figcaption className="product-installation__caption">
+              <strong>Wiring reference</strong>
+              <ul>
+                <li>Neutral wire — white conductor to the silver screw.</li>
+                <li>Hot wire — black conductor to the brass screw.</li>
+                <li>Ground wire — copper or green conductor to the green screw.</li>
+              </ul>
+              <p>Use the device’s LINE and LOAD markings to identify the corresponding terminals.</p>
+              <p>
+                Insert wires through the terminal holes beneath the screws, tighten the terminal screws clockwise,
+                then press RESET; the green LED indicator turns on.
+              </p>
+            </figcaption>
           </figure>
           <figure>
             <SafeImage src={product.assets.dimensions} alt={`${product.sku} dimension drawing`} loading="lazy" />
-            <figcaption>Dimension drawing</figcaption>
+            <figcaption className="product-installation__caption">
+              <strong>Dimension drawing</strong>
+              <ul>
+                {product.dimensions?.face && <li>Face: {product.dimensions.face}</li>}
+                {product.dimensions?.width && <li>Width: {product.dimensions.width}</li>}
+                {product.dimensions?.depth && <li>Depth: {product.dimensions.depth}</li>}
+              </ul>
+            </figcaption>
           </figure>
         </div>
       </div>
@@ -88,7 +102,7 @@ function ProductDownloads({ documents }) {
 }
 
 export function ProductCertification({ product }) {
-  const verified = isVerifiedGfciModel(product);
+  const verified = isVerifiedListing(product);
   if (!verified) {
     return (
       <section className="product-technical product-certification product-certification--review">
@@ -116,7 +130,9 @@ export function ProductCertification({ product }) {
         <div>
           <p className="product-section-label">Model verification</p>
           <h2>Certification your team can verify.</h2>
-          <p className="product-certification__reference">UL/cUL — GFCI Receptacles · file E504391</p>
+          <p className="product-certification__reference">
+            UL/cUL — GFCI Receptacles · file {product.listing.file}
+          </p>
           <p>Confirm the listing and model scope as part of your normal technical review.</p>
           <Link className="textlink" to="/capabilities">
             Review quality capabilities <ArrowRight size={15} aria-hidden="true" />

@@ -1,16 +1,9 @@
 import { ArrowRight, FileCheck2, ShieldCheck } from 'lucide-react';
+import { isVerifiedListing } from '../../data/products.js';
 import ProductGallery from './ProductGallery.jsx';
 
-const VERIFIED_LISTING_REFERENCE = 'E504391';
-const VERIFIED_GFCI_MODELS = new Set(['GF15', 'GF20', 'GT15', 'GT20', 'GW15', 'GW20']);
-
-export function hasVerifiedListing(product) {
-  return VERIFIED_GFCI_MODELS.has(product?.sku)
-    && (product.features?.some((feature) => feature.includes(VERIFIED_LISTING_REFERENCE)) ?? false);
-}
-
 export default function ProductDetailHero({ product }) {
-  const listed = hasVerifiedListing(product);
+  const listed = isVerifiedListing(product);
   const configuration = product.nema === 'Blank face' ? product.nema : `NEMA ${product.nema}`;
   const facts = [
     ['Rating', product.rating],
@@ -41,7 +34,7 @@ export default function ProductDetailHero({ product }) {
           <p className={`product-detail-hero__certification${listed ? ' is-verified' : ''}`}>
             {listed ? <ShieldCheck size={19} aria-hidden="true" /> : <FileCheck2 size={19} aria-hidden="true" />}
             {listed
-              ? 'UL / cUL listed · file E504391'
+              ? `UL / cUL listed · file ${product.listing.file}`
               : 'Model-specific certification documentation review required'}
           </p>
 

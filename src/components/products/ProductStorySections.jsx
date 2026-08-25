@@ -6,7 +6,9 @@ import SafeImage from '../SafeImage.jsx';
 function productEngineeringPoints(product) {
   const candidates = [
     ...(product.highlights || []),
-    ...(product.features || []).filter((feature) => !/E504391|UL\s*\/\s*cUL/i.test(feature))
+    ...(product.features || []).filter((feature) => (
+      !product.listing?.reportReference || !feature.includes(product.listing.reportReference)
+    ))
   ];
   const themes = [
     ['self-test', /self[- ]test/i],

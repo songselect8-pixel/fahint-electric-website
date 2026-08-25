@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Send } from 'lucide-react';
 import { company } from '../data/company.js';
 import { products } from '../data/products.js';
@@ -16,6 +16,10 @@ const EMPTY = {
 export default function InquiryForm({ defaultModel = '', title = 'Send a message' }) {
   const [form, setForm] = useState({ ...EMPTY, model: defaultModel });
   const [sent, setSent] = useState(false);
+
+  useEffect(() => {
+    setForm((current) => ({ ...current, model: defaultModel }));
+  }, [defaultModel]);
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 

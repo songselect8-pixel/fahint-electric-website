@@ -52,8 +52,17 @@ function buildAssets(sku) {
   };
 }
 
-const CERTIFIED_MODELS = new Set(['GF15', 'GF20', 'GT15', 'GT20', 'GW15', 'GW20']);
 const CERTIFICATION_FEATURE = 'UL / cUL certified under GFCI report reference E504391-20210212';
+const VERIFIED_LISTING = Object.freeze({
+  status: 'verified',
+  file: 'E504391',
+  reportReference: 'E504391-20210212'
+});
+const REVIEW_LISTING = Object.freeze({
+  status: 'review',
+  file: null,
+  reportReference: null
+});
 
 const SHARED_FEATURES = [
   'Self-test every 15 minutes; initial self-test within 3 seconds of power up',
@@ -64,9 +73,8 @@ const SHARED_FEATURES = [
   '4–6 mA trip level with tripping time under 25 ms'
 ];
 
-function verifiedFeatures(sku, variantFeatures = []) {
-  const certification = CERTIFIED_MODELS.has(sku) ? [CERTIFICATION_FEATURE] : [];
-  return [...certification, ...variantFeatures, ...SHARED_FEATURES];
+function verifiedFeatures(variantFeatures = []) {
+  return [CERTIFICATION_FEATURE, ...variantFeatures, ...SHARED_FEATURES];
 }
 
 export const products = [
@@ -78,10 +86,11 @@ export const products = [
     nema: '5-15R',
     feature: 'Standard',
     grade: 'Residential & Commercial Grade',
+    listing: VERIFIED_LISTING,
     summary:
       '15A, 125V self-test GFCI receptacle with 20A feed-through, back and side wiring, and a self-grounding clip.',
     highlights: ['Self-test every 15 min', '20A feed-through', 'Reverse-wiring lockout'],
-    features: verifiedFeatures('GF15'),
+    features: verifiedFeatures(),
     dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
     assets: buildAssets('GF15')
   },
@@ -93,10 +102,11 @@ export const products = [
     nema: '5-20R',
     feature: 'Standard',
     grade: 'Residential & Commercial Grade',
+    listing: VERIFIED_LISTING,
     summary:
       '20A, 125V self-test GFCI receptacle with 20A feed-through, back and side wiring, and a self-grounding clip.',
     highlights: ['20A T-slot face', 'Self-test every 15 min', 'Reverse-wiring lockout'],
-    features: verifiedFeatures('GF20'),
+    features: verifiedFeatures(),
     dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
     assets: buildAssets('GF20')
   },
@@ -108,10 +118,11 @@ export const products = [
     nema: '5-15R',
     feature: 'TR',
     grade: 'Residential & Commercial Grade',
+    listing: VERIFIED_LISTING,
     summary:
       '15A, 125V tamper-resistant self-test GFCI receptacle with 20A feed-through, back and side wiring, and a self-grounding clip.',
     highlights: ['Tamper-resistant', 'Self-test every 15 min', '20A feed-through'],
-    features: verifiedFeatures('GT15', ['Tamper-resistant receptacle face']),
+    features: verifiedFeatures(['Tamper-resistant receptacle face']),
     dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
     assets: buildAssets('GT15')
   },
@@ -123,10 +134,11 @@ export const products = [
     nema: '5-20R',
     feature: 'TR',
     grade: 'Residential & Commercial Grade',
+    listing: VERIFIED_LISTING,
     summary:
       '20A, 125V tamper-resistant self-test GFCI receptacle with 20A feed-through, back and side wiring, and a self-grounding clip.',
     highlights: ['Tamper-resistant', '20A T-slot face', 'Self-test every 15 min'],
-    features: verifiedFeatures('GT20', ['Tamper-resistant receptacle face']),
+    features: verifiedFeatures(['Tamper-resistant receptacle face']),
     dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
     assets: buildAssets('GT20')
   },
@@ -138,10 +150,11 @@ export const products = [
     nema: '5-15R',
     feature: 'TR & WR',
     grade: 'Residential & Commercial Grade',
+    listing: VERIFIED_LISTING,
     summary:
       '15A, 125V tamper-resistant and weather-resistant self-test GFCI receptacle with 20A feed-through and a self-grounding clip.',
     highlights: ['Tamper-resistant', 'Weather-resistant', 'Self-test every 15 min'],
-    features: verifiedFeatures('GW15', [
+    features: verifiedFeatures([
       'Tamper-resistant and weather-resistant receptacle face',
       'Coated circuit board protects critical components from moisture'
     ]),
@@ -156,10 +169,11 @@ export const products = [
     nema: '5-20R',
     feature: 'TR & WR',
     grade: 'Residential & Commercial Grade',
+    listing: VERIFIED_LISTING,
     summary:
       '20A, 125V tamper-resistant and weather-resistant self-test GFCI receptacle with 20A feed-through and a self-grounding clip.',
     highlights: ['Tamper-resistant', 'Weather-resistant', '20A T-slot face'],
-    features: verifiedFeatures('GW20', [
+    features: verifiedFeatures([
       'Tamper-resistant and weather-resistant receptacle face',
       'Coated circuit board protects critical components from moisture'
     ]),
@@ -174,10 +188,11 @@ export const products = [
     nema: 'Blank face',
     feature: 'Blank face',
     grade: 'Residential & Commercial Grade',
+    listing: REVIEW_LISTING,
     summary:
       '20A, 125V blank-face self-test GFCI with back and side wiring and a self-grounding clip.',
     highlights: ['Blank face', 'Self-test every 15 min', 'Reverse-wiring lockout'],
-    features: verifiedFeatures('GL20', ['Blank-face GFCI configuration']),
+    features: ['Blank-face GFCI configuration', ...SHARED_FEATURES],
     dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
     assets: buildAssets('GL20')
   }
@@ -235,6 +250,10 @@ export function filterGfciProducts(list, filters = {}) {
 
 export function findProduct(sku) {
   return products.find((p) => p.sku.toLowerCase() === String(sku).toLowerCase());
+}
+
+export function isVerifiedListing(product) {
+  return product?.listing?.status === 'verified' && Boolean(product.listing.file);
 }
 
 export const otherLines = [

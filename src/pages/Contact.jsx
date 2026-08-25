@@ -1,10 +1,15 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Mail, Phone, MapPin, Clock, MessageCircle, Globe } from 'lucide-react';
 import { company, faqs } from '../data/company.js';
 import InquiryForm from '../components/InquiryForm.jsx';
 import Faq from '../components/Faq.jsx';
+import { findProduct } from '../data/products.js';
 
 export default function Contact() {
+  const [searchParams] = useSearchParams();
+  const requestedProduct = findProduct(searchParams.get('model'));
+  const defaultModel = requestedProduct?.sku || '';
+
   return (
     <>
       <section className="page-banner">
@@ -14,8 +19,8 @@ export default function Contact() {
           </div>
           <h1>Talk to Our GFCI Team</h1>
           <p>
-            Send your model mix, target finishes, packaging requirement and annual volume. Our engineering team responds with a
-            customised solution within 6 hours during business days.
+            Send your model mix, target finishes, packaging requirements and project context. Our team will review the brief and
+            follow up through the contact method you provide.
           </p>
         </div>
       </section>
@@ -87,7 +92,7 @@ export default function Contact() {
             </ul>
           </div>
 
-          <InquiryForm />
+          <InquiryForm defaultModel={defaultModel} />
         </div>
       </section>
 
