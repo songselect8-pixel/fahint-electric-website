@@ -1,4 +1,4 @@
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
 import { findProduct, products } from '../data/products.js';
 import ProductCard from '../components/ProductCard.jsx';
 import InquiryForm from '../components/InquiryForm.jsx';
@@ -53,12 +53,12 @@ function ProductInquiry({ product }) {
 
 export default function ProductDetail() {
   const { sku } = useParams();
+  const { pathname } = useLocation();
   const product = findProduct(sku);
 
   if (!product) return <Navigate to="/products/gfci" replace />;
 
   const related = products.filter((candidate) => candidate.sku !== product.sku).slice(0, 4);
-  const detailPath = `/products/gfci/${product.sku.toLowerCase()}`;
 
   return (
     <>
@@ -70,7 +70,7 @@ export default function ProductDetail() {
         </div>
       </nav>
 
-      <ProductDetailHero product={product} />
+      <ProductDetailHero product={product} anchorPath={pathname} />
       <ProductFeatureStory product={product} />
       <ProductApplicationStory product={product} />
       <ProductOemStory product={product} />
@@ -81,7 +81,11 @@ export default function ProductDetail() {
       <RelatedProducts products={related} />
       <ProductInquiry product={product} />
 
-      <Link className="product-mobile-quote" to={`${detailPath}#inquiry`}>
+      <Link
+        className="product-mobile-quote"
+        to={`${pathname}#inquiry`}
+        onClick={() => document.getElementById('inquiry')?.scrollIntoView({ block: 'start' })}
+      >
         Request quote for {product.sku}
       </Link>
     </>

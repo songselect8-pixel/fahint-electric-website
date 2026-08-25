@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import userEvent from '@testing-library/user-event';
 import ProductDetail from './ProductDetail.jsx';
@@ -9,13 +9,13 @@ import { findProduct } from '../data/products.js';
 
 function LocationProbe() {
   const location = useLocation();
-  return <span data-testid="location">{location.pathname}</span>;
+  return <span data-testid="location">{location.pathname}{location.hash}</span>;
 }
 
-function renderDetail(sku) {
+function renderDetail(sku, initialPath = `/products/gfci/${sku}`) {
   return render(
     <MemoryRouter
-      initialEntries={[`/products/gfci/${sku}`]}
+      initialEntries={[initialPath]}
       future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
     >
       <Routes>
@@ -163,6 +163,24 @@ describe('ProductDetail', () => {
       /@media \(max-width:\s*700px\)[\s\S]*?\.footer--product-detail\s*\{[\s\S]*?padding-bottom:\s*calc\([^}]*env\(safe-area-inset-bottom/
     );
     expect(styles).toMatch(/\.footer--product-detail\s*\{[\s\S]*?padding-bottom:\s*calc\(176px\s*\+/);
+  });
+
+  it('preserves the exact current pathname when navigating to same-page anchors', async () => {
+    const user = userEvent.setup();
+    const { container } = renderDetail('GF15', '/Products/GFCI/GF15/?source=review');
+    const technicalTarget = container.querySelector('#technical-details');
+    technicalTarget.scrollIntoView = vi.fn();
+
+    expect(screen.getByRole('link', { name: /Request a quote/ })).toHaveAttribute(
+      'href',
+      '/Products/GFCI/GF15/#inquiry'
+    );
+    const technicalLink = screen.getByRole('link', { name: 'Technical details' });
+    expect(technicalLink).toHaveAttribute('href', '/Products/GFCI/GF15/#technical-details');
+
+    await user.click(technicalLink);
+    expect(screen.getByTestId('location')).toHaveTextContent('/Products/GFCI/GF15/#technical-details');
+    expect(technicalTarget.scrollIntoView).toHaveBeenCalledWith({ block: 'start' });
   });
 
   it('keeps inquiry fields and synchronizes the model after related-product navigation', async () => {
