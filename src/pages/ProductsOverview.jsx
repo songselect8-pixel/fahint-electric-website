@@ -1,266 +1,218 @@
+import { ArrowRight, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Search, Check } from 'lucide-react';
-import { useState } from 'react';
-import { productLines } from '../data/lines.js';
-import { products } from '../data/products.js';
-import { catalogRows, findCatalogRow } from '../data/overviewCatalog.js';
-import Reveal from '../components/Reveal.jsx';
+import SafeImage from '../components/SafeImage.jsx';
+import { productFamilies } from '../data/productFamilies.js';
 
-const OVERVIEW_PRODUCT_LINE_SLUGS = [
-  'gfci',
-  'usb-outlets',
-  'receptacles',
-  'dimmers',
-  'smart-switches',
-  'lighting-switches'
+const editorialAsset = (name) => `assets/images/editorial-home/${name}`;
+
+const markets = [
+  {
+    title: 'Residential & renovation',
+    label: 'Everyday protection',
+    summary: 'Coordinated protection and wiring devices for kitchens, bathrooms and renovation programs.',
+    image: editorialAsset('application-kitchen-v2.png'),
+    href: '/products/gfci'
+  },
+  {
+    title: 'Hospitality & multifamily',
+    label: 'In-room convenience',
+    summary: 'Integrated charging platforms for guest rooms, shared spaces and multifamily developments.',
+    image: editorialAsset('application-hotel-v2.png'),
+    href: '/products/usb-outlets'
+  },
+  {
+    title: 'Commercial fit-out',
+    label: 'Project coordination',
+    summary: 'Specification and manufacturing support for coordinated commercial wiring-device programs.',
+    image: editorialAsset('application-commercial-v2.png'),
+    href: '/capabilities'
+  }
 ];
 
-function buildSearchEntries(overviewProductLines, visibleCatalogRows) {
-  const detailedProducts = products.map((product) => ({
-    key: `gfci-${product.sku}`,
-    label: product.sku,
-    title: product.name,
-    detail: `${product.rating} · ${product.feature}`,
-    to: `/products/gfci/${product.sku.toLowerCase()}`,
-    haystack: `${product.sku} ${product.name} ${product.feature} ${product.rating} ${product.grade}`
-  }));
-
-  const lineEntries = overviewProductLines.flatMap((line) => {
-    const models = (line.groups || []).flatMap((group) => group.items.map((item) => `${group.name} ${item}`));
-    return [
-      {
-        key: `line-${line.slug}`,
-        label: line.short || line.name,
-        title: line.name,
-        detail: line.tagline,
-        to: `/products/${line.slug}`,
-        haystack: `${line.name} ${line.tagline} ${line.summary} ${models.join(' ')}`
-      }
-    ];
-  });
-
-  const catalogModelEntries = visibleCatalogRows.flatMap(({ line, catalog }) =>
-    catalog.models.map((model) => ({
-      key: `model-${model.key}`,
-      label: model.key,
-      title: model.title,
-      detail: line.name,
-      to: model.to,
-      haystack: `${model.key} ${model.title} ${model.meta} ${line.name} ${line.tagline}`
-    }))
-  );
-
-  return [...detailedProducts, ...lineEntries, ...catalogModelEntries];
-}
+const proofItems = [
+  'Verified product platforms',
+  'Coordinated finishes',
+  'Compliance documentation',
+  'Private-label support'
+];
 
 export default function ProductsOverview() {
-  const [q, setQ] = useState('');
-  const overviewProductLines = productLines.filter((line) => OVERVIEW_PRODUCT_LINE_SLUGS.includes(line.slug));
-  const catalogSections = overviewProductLines
-    .map((line) => ({
-      line,
-      catalog: catalogRows.find((row) => row.slug === line.slug)
-    }))
-    .filter((section) => section.catalog);
-  const searchEntries = buildSearchEntries(overviewProductLines, catalogSections);
-  const query = q.trim().toLowerCase();
-
-  const hits = query ? searchEntries.filter((entry) => entry.haystack.toLowerCase().includes(query)) : [];
-
   return (
-    <>
-      <section className="products-hero">
-        <div className="container products-hero__wrap">
-          <div className="products-hero__panel">
-            <div className="crumbs crumbs--center">
-            <Link to="/">Home</Link> <span>/</span> <span>Products</span>
-          </div>
-            <h1>Direct From the Manufacturer: American Standard Wiring Devices</h1>
-          <p>
-              Search Fahint GFCI outlets, USB receptacles, switches and dimmers for North American residential,
-              commercial and OEM projects.
+    <div className="editorial-home-front">
+      <section className="product-overview-hero editorial-hero" aria-labelledby="product-overview-title">
+        <SafeImage
+          className="editorial-hero__image"
+          src={editorialAsset('brand-system-family-final.png')}
+          alt="Fahint coordinated wiring-device family"
+          loading="eager"
+          fetchpriority="high"
+        />
+        <div className="editorial-hero__shade" />
+        <div className="editorial-hero__grid" />
+        <div className="container editorial-hero__content">
+          <p className="editorial-eyebrow">Coordinated wiring-device platform</p>
+          <h1 id="product-overview-title">Build a complete product line from one system.</h1>
+          <p className="editorial-hero__copy">
+            Bring protection, charging, receptacles and control together in a range designed for consistent
+            specification, branding and project delivery.
           </p>
-
-          <div className="banner-search">
-            <Search size={19} />
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-                placeholder="Search GF15, USB outlet, switch, dimmer..."
-              aria-label="Search products"
-            />
-              <button type="button" className="banner-search__button">
-                Search Products
-              </button>
-          </div>
-
-          {q.trim() && (
-            <div className="banner-search__results">
-                {hits.length === 0 && (
-                  <span className="banner-search__empty">No product matches that. Try GFCI, USB, switch, dimmer or GF15.</span>
-                )}
-                {hits.slice(0, 7).map((h) => (
-                  <Link key={h.key} to={h.to}>
-                    <strong>{h.label}</strong>
-                    <span>{h.title}</span>
-                    <small>{h.detail}</small>
-                </Link>
-              ))}
-            </div>
-          )}
+          <div className="editorial-hero__actions">
+            <Link className="editorial-button" to="/products/gfci">
+              Explore GFCI outlets <ArrowRight size={17} aria-hidden="true" />
+            </Link>
           </div>
         </div>
       </section>
 
-      <section className="section">
-        <div className="container">
-          <div className="section-head section-head--center">
-            <div className="eyebrow">/ Explore Our Product Series /</div>
-            <h2>Explore Product Series</h2>
-            <p>Start with the product family, then drill into the models, ratings and custom options your project needs.</p>
-          </div>
-
-          <div className="series-mosaic">
-            {overviewProductLines.map((l, i) => {
-              const catalog = findCatalogRow(l.slug);
-              const image = catalog?.models?.[0]?.image || l.gallery?.[0] || l.cover;
-
-              return (
-                <Reveal key={l.slug} delay={i * 55}>
-                  <Link to={`/products/${l.slug}`} className="series-tile">
-                    <img src={image} alt={l.name} loading="lazy" />
-                    <span>
-                      <strong>{l.name}</strong>
-                      <small>{l.tagline}</small>
-                    </span>
-                  </Link>
-                </Reveal>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section className="section section--gray catalog-showcase">
-        <div className="container">
-          <div className="section-head">
-            <div className="eyebrow">/ Product Catalogue /</div>
-            <h2>Browse by Series and Model</h2>
-            <p>
-              Key models are matched to product photos from the source material folder, so buyers can browse by family without
-              seeing repeated placeholder images.
-            </p>
-          </div>
-
-          <div className="catalog-rows">
-            {catalogSections.map(({ line, catalog }, i) => {
-              return (
-                <Reveal key={line.slug} delay={i * 45}>
-                  <div className="catalog-row">
-                    <Link to={`/products/${line.slug}`} className={`catalog-intro ${i % 2 ? 'catalog-intro--blue' : ''}`}>
-                      <span className="catalog-intro__kicker">{line.standard || line.ulFile || 'Fahint series'}</span>
-                      <h3>{line.name}</h3>
-                      <p>{line.summary}</p>
-                      <span className="catalog-intro__link">
-                        View all {line.short || line.name} products <ArrowRight size={15} />
-                      </span>
-                    </Link>
-
-                    <div className="catalog-models">
-                      {catalog.models.map((model) => (
-                        <Link key={model.key} to={model.to} className="model-mini-card">
-                          <div className="model-mini-card__media">
-                            <img src={model.image} alt={model.title} loading="lazy" />
-                          </div>
-                          <div className="model-mini-card__body">
-                            <strong>{model.title}</strong>
-                            <span>{model.meta}</span>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                </Reveal>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="container">
-          <div className="sourcing-panel">
-            <img src="assets/images/company/facility-workshop.webp" alt="Fahint workshop" loading="lazy" />
-            <div className="sourcing-panel__overlay" />
-            <div className="sourcing-panel__content">
-              <span>OEM / ODM Custom Solutions</span>
-              <h2>One Factory for GFCI, USB Outlets, Receptacles and Switches</h2>
-              <p>
-                Fahint supports distributors, contractors and private-label buyers with model selection, packaging, color
-                matching, compliance documents and export-ready production.
-              </p>
-              <div className="sourcing-panel__actions">
-                <Link to="/contact" className="btn btn--primary">
-                  Request OEM/ODM quote <ArrowRight size={16} />
-                </Link>
-                <Link to="/capabilities" className="btn btn--outline-light">
-                  View manufacturing
-                </Link>
-              </div>
-              <ul>
-                <li>GFCI and wiring devices</li>
-                <li>Private-label packaging</li>
-                <li>UL/cUL compliance files</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section section--gray">
-        <div className="container split">
+      <section className="product-family-section editorial-products" aria-labelledby="product-family-title">
+        <div className="container editorial-heading">
           <div>
-            <div className="eyebrow">/ Why Source From Fahint /</div>
-            <h2>One Supplier for North American Wiring Device Projects</h2>
-            <p style={{ color: 'var(--gray-600)', fontSize: 17 }}>
-              Product families are made under one quality system, so buyers can consolidate GFCI outlets, USB receptacles,
-              switches and dimmers with one technical and compliance contact.
-            </p>
+            <p className="editorial-eyebrow">Five product families</p>
+            <h2 id="product-family-title">One coordinated product platform.</h2>
           </div>
-          <div className="reason-grid">
-            {[
-              'UL/cUL listed GFCI and wiring-device coverage',
-              'OEM packaging, logo and color customization',
-              'US warehouse support for stocked items',
-              'Engineering response within 6 business hours'
-            ].map((item) => (
-              <div className="reason-card" key={item}>
-                <Check size={18} />
-                <span>{item}</span>
+          <p>
+            Select a family to explore the product platforms available for coordinated branded and OEM/ODM programs.
+          </p>
+        </div>
+
+        <div className="editorial-product-mosaic">
+          {productFamilies.map((family) => (
+            <Link className="editorial-product-panel" key={family.name} to={family.href}>
+              <SafeImage src={family.image} alt={family.name} loading="lazy" />
+              <div className="editorial-panel__shade" />
+              <div className="editorial-panel__content">
+                <p className="editorial-panel__label">{family.label}</p>
+                <h3>{family.name}</h3>
+                <p>{family.summary}</p>
+                <div className="editorial-panel__meta">
+                  <span>Explore the family</span>
+                  <span className="editorial-panel__arrow" aria-hidden="true">
+                    <ArrowRight size={18} />
+                  </span>
+                </div>
               </div>
-            ))}
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="product-brand-system editorial-customization" aria-labelledby="product-brand-title">
+        <div className="container editorial-customization__grid">
+          <div className="editorial-customization__media">
+            <SafeImage
+              src="assets/images/company/facility-sampleroom.webp"
+              alt="Fahint sample room for product and finish review"
+              loading="lazy"
+            />
+            <div className="editorial-customization__caption">
+              <span>Brand system review</span>
+              <strong>Product, finish and packaging reviewed as one program.</strong>
+            </div>
+          </div>
+          <div className="editorial-customization__content">
+            <p className="editorial-eyebrow">OEM/ODM program support</p>
+            <h2 id="product-brand-title">Built for brands and OEM programs.</h2>
+            <p className="editorial-customization__lede">
+              Coordinate product selection, finishes, markings, documentation and packaging around one market-ready
+              wiring-device program.
+            </p>
+            <Link className="editorial-button editorial-button--dark" to="/capabilities">
+              Explore OEM/ODM capability <ArrowRight size={17} aria-hidden="true" />
+            </Link>
           </div>
         </div>
       </section>
 
-      <section className="section section--tight">
-        <div className="container">
-          <div className="cta-banner">
+      <section className="product-market-section editorial-applications" aria-labelledby="product-market-title">
+        <div className="container editorial-heading">
+          <div>
+            <p className="editorial-eyebrow">Market applications</p>
+            <h2 id="product-market-title">Specified for real projects.</h2>
+          </div>
+          <p>Start with the installation environment, then coordinate the product mix around the project brief.</p>
+        </div>
+
+        <div className="editorial-product-mosaic">
+          {markets.map((market) => (
+            <Link className="editorial-application" key={market.title} to={market.href}>
+              <SafeImage src={market.image} alt={market.title} loading="lazy" />
+              <div className="editorial-application__shade" />
+              <div className="editorial-application__copy">
+                <p>{market.label}</p>
+                <h3>{market.title}</h3>
+                <span>{market.summary}</span>
+              </div>
+              <span className="editorial-application__arrow" aria-hidden="true">
+                <ArrowRight size={19} />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="product-evidence-section editorial-factory" aria-labelledby="product-evidence-title">
+        <SafeImage
+          className="editorial-factory__bg"
+          src="assets/images/company/facility-workshop.webp"
+          alt="Fahint wiring-device manufacturing workshop"
+          loading="lazy"
+        />
+        <div className="editorial-factory__shade" />
+        <div className="container editorial-factory__content">
+          <div className="editorial-factory__copy">
+            <p className="editorial-eyebrow">Factory evidence</p>
+            <h2 id="product-evidence-title">Verified manufacturing and compliance.</h2>
+            <p>
+              Integrated production, functional inspection and standards-focused documentation support consistent
+              product programs from approval sample through shipment.
+            </p>
+          </div>
+          <div className="editorial-factory__points">
             <div>
-              <h2>Ready to Source Electrical Wiring Devices?</h2>
-              <p>
-                Send your model mix, target finishes and annual volume. Our engineering team responds with a costed proposal
-                within 6 hours on business days.
-              </p>
+              <span>01</span>
+              <strong>Manufacturing capability</strong>
+              <small>See the production, quality and program support behind the range.</small>
+              <Link className="editorial-text-link" to="/capabilities">
+                View manufacturing <ArrowRight size={15} aria-hidden="true" />
+              </Link>
             </div>
-            <div className="cta-banner__actions">
-              <Link to="/contact" className="btn btn--light">
-                Send inquiry <ArrowRight size={16} />
+            <div>
+              <span>02</span>
+              <strong>Certification details</strong>
+              <small>Review the compliance information available for product planning.</small>
+              <Link className="editorial-text-link" to="/capabilities">
+                View certification details <ArrowRight size={15} aria-hidden="true" />
               </Link>
             </div>
           </div>
         </div>
       </section>
-    </>
+
+      <section className="product-proof-strip editorial-proof" aria-label="Product program proof points">
+        <div className="container editorial-proof__grid">
+          {proofItems.map((item) => (
+            <div key={item}>
+              <Check size={19} aria-hidden="true" />
+              <strong>{item}</strong>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="product-overview-cta home-cta" aria-labelledby="product-cta-title">
+        <div className="container home-cta__inner">
+          <div className="home-cta__copy">
+            <p className="home-section-label">Start a program</p>
+            <h2 id="product-cta-title">Tell us what your market needs.</h2>
+            <p>Share your target product mix, finishes, compliance needs and forecast volume.</p>
+          </div>
+          <div className="home-cta__action">
+            <Link className="btn btn--primary" to="/contact">
+              Start a product program <ArrowRight size={17} aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
