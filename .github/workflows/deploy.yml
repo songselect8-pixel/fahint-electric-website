@@ -27,6 +27,9 @@ jobs:
 
       - run: npm ci
 
+      # Keep missing or unsafe published assets from reaching GitHub Pages.
+      - run: npm test
+
       # SITE_BASE controls the asset path.
       # - Custom domain (e.g. www.fahint.com via Cloudflare)  -> leave as "/"
       # - GitHub project page (user.github.io/<repo>/)        -> use "/<repo>/"
