@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import userEvent from '@testing-library/user-event';
 import ProductDetail from './ProductDetail.jsx';
@@ -9,7 +9,7 @@ import { findProduct } from '../data/products.js';
 
 function LocationProbe() {
   const location = useLocation();
-  return <span data-testid="location">{location.pathname}{location.hash}</span>;
+  return <span data-testid="location">{location.pathname}{location.search}{location.hash}</span>;
 }
 
 function renderDetail(sku, initialPath = `/products/gfci/${sku}`) {
@@ -167,20 +167,19 @@ describe('ProductDetail', () => {
 
   it('preserves the exact current pathname when navigating to same-page anchors', async () => {
     const user = userEvent.setup();
-    const { container } = renderDetail('GF15', '/Products/GFCI/GF15/?source=review');
-    const technicalTarget = container.querySelector('#technical-details');
-    technicalTarget.scrollIntoView = vi.fn();
+    renderDetail('GF15', '/Products/GFCI/GF15/?source=review');
 
     expect(screen.getByRole('link', { name: /Request a quote/ })).toHaveAttribute(
       'href',
-      '/Products/GFCI/GF15/#inquiry'
+      '/Products/GFCI/GF15/?source=review#inquiry'
     );
     const technicalLink = screen.getByRole('link', { name: 'Technical details' });
-    expect(technicalLink).toHaveAttribute('href', '/Products/GFCI/GF15/#technical-details');
+    expect(technicalLink).toHaveAttribute('href', '/Products/GFCI/GF15/?source=review#technical-details');
 
     await user.click(technicalLink);
-    expect(screen.getByTestId('location')).toHaveTextContent('/Products/GFCI/GF15/#technical-details');
-    expect(technicalTarget.scrollIntoView).toHaveBeenCalledWith({ block: 'start' });
+    expect(screen.getByTestId('location')).toHaveTextContent(
+      '/Products/GFCI/GF15/?source=review#technical-details'
+    );
   });
 
   it('keeps inquiry fields and synchronizes the model after related-product navigation', async () => {

@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { isVerifiedListing } from '../../data/products.js';
 import ProductGallery from './ProductGallery.jsx';
 
-export default function ProductDetailHero({ product, anchorPath }) {
+export default function ProductDetailHero({ product, anchorPath, anchorSearch }) {
   const listed = isVerifiedListing(product);
-  const scrollTo = (id) => () => document.getElementById(id)?.scrollIntoView({ block: 'start' });
+  const anchorTarget = (hash) => ({ pathname: anchorPath, search: anchorSearch, hash });
   const configuration = product.nema === 'Blank face' ? product.nema : `NEMA ${product.nema}`;
   const facts = [
     ['Rating', product.rating],
@@ -41,13 +41,12 @@ export default function ProductDetailHero({ product, anchorPath }) {
           </p>
 
           <div className="product-detail-hero__actions">
-            <Link to={`${anchorPath}#inquiry`} className="btn btn--primary" onClick={scrollTo('inquiry')}>
+            <Link to={anchorTarget('#inquiry')} className="btn btn--primary">
               Request a quote <ArrowRight size={16} aria-hidden="true" />
             </Link>
             <Link
-              to={`${anchorPath}#technical-details`}
+              to={anchorTarget('#technical-details')}
               className="btn btn--ghost"
-              onClick={scrollTo('technical-details')}
             >
               Technical details
             </Link>

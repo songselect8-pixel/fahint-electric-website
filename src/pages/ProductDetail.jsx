@@ -53,7 +53,7 @@ function ProductInquiry({ product }) {
 
 export default function ProductDetail() {
   const { sku } = useParams();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const product = findProduct(sku);
 
   if (!product) return <Navigate to="/products/gfci" replace />;
@@ -70,7 +70,7 @@ export default function ProductDetail() {
         </div>
       </nav>
 
-      <ProductDetailHero product={product} anchorPath={pathname} />
+      <ProductDetailHero product={product} anchorPath={pathname} anchorSearch={search} />
       <ProductFeatureStory product={product} />
       <ProductApplicationStory product={product} />
       <ProductOemStory product={product} />
@@ -83,8 +83,7 @@ export default function ProductDetail() {
 
       <Link
         className="product-mobile-quote"
-        to={`${pathname}#inquiry`}
-        onClick={() => document.getElementById('inquiry')?.scrollIntoView({ block: 'start' })}
+        to={{ pathname, search, hash: '#inquiry' }}
       >
         Request quote for {product.sku}
       </Link>

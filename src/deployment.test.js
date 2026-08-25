@@ -35,6 +35,8 @@ describe('GitHub Pages deployment', () => {
     expect(testStep).toBeGreaterThan(-1);
     expect(buildStep).toBeGreaterThan(testStep);
     expect(prepareStep).toBeGreaterThan(buildStep);
+    expect(workflow).toContain('CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN }}');
+    expect(workflow).not.toMatch(/run:\s*(?:echo|printf)[^\n]*CUSTOM_DOMAIN/i);
   });
 
   it('copies index byte-for-byte to 404 and creates .nojekyll', async () => {
@@ -62,5 +64,66 @@ describe('GitHub Pages deployment', () => {
 
     await expect(preparePages({ distDir, expectedBase: '/fahint-electric-website/' }))
       .rejects.toThrow(/expected base.*fahint-electric-website/i);
+  });
+
+  it('writes a validated custom domain with Node rather than shell interpolation', async () => {
+    const { preparePages } = await loadPreparePages();
+    const distDir = await createDist('<!doctype html><base href="/fahint-electric-website/">');
+
+    await preparePages({
+      distDir,
+      expectedBase: '/fahint-electric-website/',
+      customDomain: 'www.fahint.com'
+    });
+
+    expect(await readFile(join(distDir, 'CNAME'), 'utf8')).toBe('www.fahint.com\n');
+  });
+
+  it('removes a stale CNAME when no custom domain is configured', async () => {
+    const { preparePages } = await loadPreparePages();
+    const distDir = await createDist('<!doctype html><base href="/fahint-electric-website/">');
+    await writeFile(join(distDir, 'CNAME'), 'stale.example\n');
+
+    await preparePages({ distDir, expectedBase: '/fahint-electric-website/', customDomain: '' });
+
+    expect(fs.existsSync(join(distDir, 'CNAME'))).toBe(false);
+  });
+
+  it.each([
+    '$(touch injected)',
+    '`touch injected`',
+    'evil.example\nsecond.example',
+    'https://www.fahint.com',
+    'www.fahint.com/path',
+    'www.fahint.com:443'
+  ])('rejects unsafe custom domain %j without creating CNAME', async (customDomain) => {
+    const { preparePages } = await loadPreparePages();
+    const distDir = await createDist('<!doctype html><base href="/fahint-electric-website/">');
+
+    await expect(preparePages({
+      distDir,
+      expectedBase: '/fahint-electric-website/',
+      customDomain
+    })).rejects.toThrow(/custom domain/i);
+    expect(fs.existsSync(join(distDir, 'CNAME'))).toBe(false);
+  });
+
+  it.each([
+    '',
+    '//evil.example/',
+    'https://evil.example/',
+    '/repo\\name/',
+    '/repo/?query=1',
+    '/repo/#hash',
+    '/./',
+    '/../',
+    '/%2e%2e/',
+    '/%E0%A4%A/'
+  ])('rejects unsafe site base %j before preparing files', async (expectedBase) => {
+    const { preparePages } = await loadPreparePages();
+    const distDir = await createDist(`<!doctype html><base href="${expectedBase}">`);
+
+    await expect(preparePages({ distDir, expectedBase })).rejects.toThrow(/expected base/i);
+    expect(fs.existsSync(join(distDir, '404.html'))).toBe(false);
   });
 });

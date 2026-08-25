@@ -41,11 +41,8 @@ jobs:
       # Validate the repository base, add the SPA fallback and disable Jekyll.
       - name: Prepare Pages artifact
         run: node scripts/prepare-pages.mjs
-
-      # Custom domain: set the CNAME repository variable to e.g. www.fahint.com
-      - name: Write CNAME
-        if: vars.CUSTOM_DOMAIN != ''
-        run: echo "${{ vars.CUSTOM_DOMAIN }}" > dist/CNAME
+        env:
+          CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN }}
 
       - uses: actions/configure-pages@v5
 
