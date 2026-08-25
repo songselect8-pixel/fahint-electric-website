@@ -60,6 +60,8 @@
 
 ### Task 1: Lock the verified GFCI data and source map
 
+> **Source-verification amendment (2026-08-25):** The archived GW15/GW20 records identify the products as WR but also state `Indoor Only`. Until written installation approval is supplied, WR is treated only as a product classification. Public application data and filters must not claim `Outdoor / damp locations`. The accepted combined filter contract therefore uses `classification: 'wr'` rather than `application: 'outdoor'`.
+
 **Files:**
 - Create: `docs/product-data/gfci-source-map.md`
 - Create: `src/data/products.test.js`
@@ -117,8 +119,8 @@ describe('verified GFCI product data', () => {
     }
   });
 
-  it('supports combined query, amperage, variant and application filters', () => {
-    expect(filterGfciProducts(products, { query: 'weather', amperage: '20A', variant: 'wr', application: 'outdoor' }).map((p) => p.sku)).toEqual([
+  it('supports combined query, amperage, variant and WR classification filters', () => {
+    expect(filterGfciProducts(products, { query: 'weather', amperage: '20A', variant: 'wr', classification: 'wr' }).map((p) => p.sku)).toEqual([
       'GW20'
     ]);
   });
@@ -638,7 +640,6 @@ describe('GfciSeries', () => {
     renderPage();
     await user.selectOptions(screen.getByLabelText('Amperage'), '20A');
     await user.selectOptions(screen.getByLabelText('Variant'), 'wr');
-    await user.selectOptions(screen.getByLabelText('Application'), 'outdoor');
     expect(screen.getByRole('link', { name: /GW20/ })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /GW15/ })).not.toBeInTheDocument();
     await user.type(screen.getByRole('searchbox', { name: 'Search GFCI models' }), 'not-a-model');
@@ -669,7 +670,7 @@ Expected: FAIL because `GfciSeries.jsx` does not exist.
 Create `src/pages/GfciSeries.jsx` with:
 
 - a compact deep-navy GFCI hero;
-- controlled `query`, `amperage`, `variant` and `application` state;
+- controlled `query`, `amperage`, `variant` and verified `application` state;
 - controlled `filtersOpen` state for the mobile filter drawer;
 - `filterGfciProducts(products, filters)` for results;
 - four labelled controls: search, amperage, variant and application;
@@ -697,7 +698,7 @@ Use this exact control markup so labels and recovery remain accessible. CSS hide
   <label>Search models<input type="search" aria-label="Search GFCI models" value={query} onChange={(event) => setQuery(event.target.value)} /></label>
   <label>Amperage<select aria-label="Amperage" value={amperage} onChange={(event) => setAmperage(event.target.value)}><option value="">All</option><option value="15A">15A</option><option value="20A">20A</option></select></label>
   <label>Variant<select aria-label="Variant" value={variant} onChange={(event) => setVariant(event.target.value)}><option value="">All</option><option value="standard">Standard</option><option value="tr">TR</option><option value="wr">WR</option><option value="blank">Blank face</option></select></label>
-  <label>Application<select aria-label="Application" value={application} onChange={(event) => setApplication(event.target.value)}><option value="">All</option><option value="residential">Residential</option><option value="commercial">Commercial</option><option value="outdoor">Outdoor / damp locations</option></select></label>
+  <label>Application<select aria-label="Application" value={application} onChange={(event) => setApplication(event.target.value)}><option value="">All</option><option value="residential">Residential</option><option value="commercial">Commercial</option></select></label>
 </div>
 ```
 
@@ -750,7 +751,7 @@ export default function GfciSeries() {
           <label>Search models<input type="search" aria-label="Search GFCI models" value={query} onChange={(event) => setQuery(event.target.value)} /></label>
           <label>Amperage<select aria-label="Amperage" value={amperage} onChange={(event) => setAmperage(event.target.value)}><option value="">All</option><option value="15A">15A</option><option value="20A">20A</option></select></label>
           <label>Variant<select aria-label="Variant" value={variant} onChange={(event) => setVariant(event.target.value)}><option value="">All</option><option value="standard">Standard</option><option value="tr">TR</option><option value="wr">WR</option><option value="blank">Blank face</option></select></label>
-          <label>Application<select aria-label="Application" value={application} onChange={(event) => setApplication(event.target.value)}><option value="">All</option><option value="residential">Residential</option><option value="commercial">Commercial</option><option value="outdoor">Outdoor / damp locations</option></select></label>
+          <label>Application<select aria-label="Application" value={application} onChange={(event) => setApplication(event.target.value)}><option value="">All</option><option value="residential">Residential</option><option value="commercial">Commercial</option></select></label>
         </div>
         <p className="gfci-result-count" aria-live="polite">{results.length} verified {results.length === 1 ? 'model' : 'models'}</p>
         {results.length > 0 ? <div className="gfci-product-grid">{results.map((product) => <ProductCard key={product.sku} product={product} />)}</div> : <div className="gfci-empty" role="status"><h2>No verified models match these filters.</h2><p>Clear the filters or contact sales for help matching a specification.</p><button type="button" className="btn btn--ghost" onClick={clearFilters}>Clear filters</button><Link className="textlink" to="/contact">Contact sales <ArrowRight size={15} /></Link></div>}
@@ -760,7 +761,7 @@ export default function GfciSeries() {
 
       <section className="product-story product-story--dark"><div className="container"><header className="product-section-heading"><span className="eyebrow">Engineering proof</span><h2>Protection built on one verified platform.</h2></header><div className="gfci-proof-grid">{engineeringProof.map(([title, body]) => <article key={title}><Check size={18} /><h3>{title}</h3><p>{body}</p></article>)}</div></div></section>
 
-      <section className="product-story product-story--light"><div className="container product-story__split product-story__split--reverse"><SafeImage src="assets/images/editorial-home/application-kitchen-v2.png" alt="GFCI outlet in a kitchen application" loading="lazy" /><div><span className="eyebrow">Applications</span><h2>Protection specified where power meets daily life.</h2><p>Match the model, rating and variant to residential, commercial or damp-location requirements.</p><Link className="textlink" to="/contact">Match a model to your project <ArrowRight size={16} /></Link></div></div></section>
+      <section className="product-story product-story--light"><div className="container product-story__split product-story__split--reverse"><SafeImage src="assets/images/editorial-home/application-kitchen-v2.png" alt="GFCI outlet in a kitchen application" loading="lazy" /><div><span className="eyebrow">Applications</span><h2>Protection specified where power meets daily life.</h2><p>Match each verified model, rating and variant to the documented requirements for the intended project.</p><Link className="textlink" to="/contact">Match a model to your project <ArrowRight size={16} /></Link></div></div></section>
 
       <section className="product-story product-story--warm"><div className="container"><header className="product-section-heading"><span className="eyebrow">OEM / ODM configuration</span><h2>Configure a coordinated GFCI program.</h2></header><ul className="gfci-oem-list">{['Finish coordination', 'Brand marking', 'Packaging coordination', 'Documentation support'].map((item) => <li key={item}><Check size={17} />{item}</li>)}</ul><Link className="btn btn--primary" to="/contact">Discuss your GFCI program <ArrowRight size={16} /></Link></div></section>
     </>
