@@ -5,10 +5,11 @@ import { productLines } from '../data/lines.js';
 
 export default function Footer() {
   const { pathname } = useLocation();
+  const isGfciProductDetail = /^\/products\/gfci\/[^/]+\/?$/i.test(pathname);
   const requiresModelReview = /^\/products\/gfci\/gl20\/?$/i.test(pathname);
 
   return (
-    <footer className="footer">
+    <footer className={`footer${isGfciProductDetail ? ' footer--product-detail' : ''}`}>
       <div className="container">
         <div className="footer__grid">
           <div className="footer__about">

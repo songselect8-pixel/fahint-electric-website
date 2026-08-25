@@ -5602,6 +5602,10 @@ ul {
   .product-mobile-quote {
     right: 78px;
   }
+
+  .footer--product-detail {
+    padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 @media (max-width: 900px) {

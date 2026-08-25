@@ -119,6 +119,9 @@ describe('ProductDetail', () => {
     const styles = readFileSync('src/styles.css', 'utf8');
     expect(styles).toMatch(/@media \(min-width:\s*701px\)[\s\S]*?\.product-mobile-quote\s*\{[\s\S]*?display:\s*none/);
     expect(styles).toMatch(/@media \(max-width:\s*700px\)[\s\S]*?\.product-mobile-quote\s*\{[\s\S]*?right:\s*(?:7[0-9]|[89][0-9])px/);
+    expect(styles).toMatch(
+      /@media \(max-width:\s*700px\)[\s\S]*?\.footer--product-detail\s*\{[\s\S]*?padding-bottom:\s*calc\([^}]*env\(safe-area-inset-bottom/
+    );
   });
 
   it('redirects an unknown sku to the GFCI series route', () => {
