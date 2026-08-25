@@ -9,6 +9,11 @@ function RouteChangeButton() {
   return <button onClick={() => navigate('/products/gfci')}>Open GFCI series</button>;
 }
 
+function ClearHashButton() {
+  const navigate = useNavigate();
+  return <button onClick={() => navigate('/products/gfci')}>Clear hash</button>;
+}
+
 describe('RouteFocusManager', () => {
   beforeEach(() => {
     vi.stubGlobal('requestAnimationFrame', (callback) => {
@@ -41,7 +46,8 @@ describe('RouteFocusManager', () => {
     expect(screen.getByText('Main content')).toHaveFocus();
   });
 
-  it('scrolls to a hash target without resetting main focus and respects reduced motion', () => {
+  it('scrolls to and focuses a hash target while respecting reduced motion', async () => {
+    const user = userEvent.setup();
     const scrollIntoView = vi.fn();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true })));
 
@@ -52,6 +58,7 @@ describe('RouteFocusManager', () => {
       >
         <RouteFocusManager />
         <main id="main-content" tabIndex={-1}>Main content</main>
+        <ClearHashButton />
         <section id="engineering-proof" ref={(node) => { if (node) node.scrollIntoView = scrollIntoView; }}>
           Engineering proof
         </section>
@@ -60,7 +67,13 @@ describe('RouteFocusManager', () => {
 
     expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'auto' });
     expect(window.scrollTo).not.toHaveBeenCalled();
-    expect(screen.getByText('Main content')).not.toHaveFocus();
+    expect(screen.getByText('Engineering proof')).toHaveFocus();
+    expect(screen.getByText('Engineering proof')).toHaveAttribute('tabindex', '-1');
+
+    await user.click(screen.getByRole('button', { name: 'Clear hash' }));
+
+    expect(screen.getByText('Engineering proof')).not.toHaveAttribute('tabindex');
+    expect(screen.getByText('Main content')).toHaveFocus();
   });
 
   it('falls back to the main content when a hash is not a valid selector', () => {

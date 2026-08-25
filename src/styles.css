@@ -1994,7 +1994,7 @@
   font-weight: 700;
 }
 
-.gfci-series__product-grid {
+.gfci-series .gfci-series__product-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
@@ -2058,7 +2058,7 @@
   width: auto;
 }
 
-.gfci-series__table-wrap td:first-child a {
+.gfci-series__table-wrap tbody th a {
   color: #126b91;
   font-weight: 800;
 }
@@ -2153,7 +2153,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .gfci-series__product-grid {
+  .gfci-series .gfci-series__product-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
@@ -2185,7 +2185,7 @@
     display: grid;
   }
 
-  .gfci-series__product-grid {
+  .gfci-series .gfci-series__product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -2220,7 +2220,10 @@
     flex-direction: column;
   }
 
-  .gfci-series__product-grid,
+  .gfci-series .gfci-series__product-grid {
+    grid-template-columns: 1fr;
+  }
+
   .gfci-series__oem-list {
     grid-template-columns: 1fr;
   }

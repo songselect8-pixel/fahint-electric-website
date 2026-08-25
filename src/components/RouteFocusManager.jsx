@@ -16,8 +16,20 @@ export default function RouteFocusManager() {
 
       if (target) {
         const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+        const needsTemporaryTabIndex = !target.matches(
+          'a[href], button, input, select, textarea, [tabindex], [contenteditable="true"]'
+        );
+
+        if (needsTemporaryTabIndex) target.setAttribute('tabindex', '-1');
         target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
-        return undefined;
+        const frame = window.requestAnimationFrame(() => {
+          target.focus({ preventScroll: true });
+        });
+
+        return () => {
+          window.cancelAnimationFrame(frame);
+          if (needsTemporaryTabIndex) target.removeAttribute('tabindex');
+        };
       }
     }
 

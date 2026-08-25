@@ -19,6 +19,7 @@ describe('GfciSeries', () => {
     const grid = container.querySelector('.gfci-series__product-grid');
 
     expect(grid).not.toBeNull();
+    expect(grid).toHaveClass('prod-grid', 'gfci-series__product-grid');
     ['GF15', 'GF20', 'GT15', 'GT20', 'GW15', 'GW20', 'GL20'].forEach((sku) => {
       expect(within(grid).getByRole('link', { name: new RegExp(`^${sku} `) })).toHaveAttribute(
         'href',
@@ -106,12 +107,18 @@ describe('GfciSeries', () => {
     ['Model', 'Rating', 'NEMA', 'Variant', 'Application'].forEach((heading) => {
       expect(within(comparison).getByRole('columnheader', { name: heading })).toBeInTheDocument();
     });
+    expect(within(comparison).getAllByRole('rowheader')).toHaveLength(7);
+    expect(within(comparison).getByRole('rowheader', { name: 'GF15' }))
+      .toContainElement(within(comparison).getByRole('link', { name: 'GF15' }));
     expect(within(comparison).getAllByRole('link')).toHaveLength(7);
 
     [
       ['Self-test protection', 'Automatic protection monitoring on the verified GFCI platform.'],
       ['Reverse-wiring lockout', 'Line/load reversal prevents power at the receptacle face.'],
-      ['Verified GFCI platform', 'UL / cUL listed GFCI range under file E504391.']
+      [
+        'Verified GFCI platform',
+        'Six published models are named under UL / cUL file E504391; GL20 documentation remains under review.'
+      ]
     ].forEach(([heading, body]) => {
       expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument();
       expect(screen.getByText(body)).toBeInTheDocument();
@@ -144,5 +151,16 @@ describe('GfciSeries', () => {
 
     expect(styles).toMatch(/\.gfci-series__search-field:focus-within\s*\{[\s\S]*?outline:/);
     expect(styles).toMatch(/\.gfci-series__table-wrap:focus-visible\s*\{[\s\S]*?outline:/);
+  });
+
+  it('keeps the GFCI product grid at two columns through 768px and one column through 520px', () => {
+    const styles = readFileSync('src/styles.css', 'utf8');
+
+    expect(styles).toMatch(
+      /@media \(max-width: 768px\)[\s\S]*?\.gfci-series \.gfci-series__product-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/
+    );
+    expect(styles).toMatch(
+      /@media \(max-width: 520px\)[\s\S]*?\.gfci-series \.gfci-series__product-grid\s*\{[\s\S]*?grid-template-columns:\s*1fr/
+    );
   });
 });

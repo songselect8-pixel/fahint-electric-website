@@ -36,7 +36,7 @@ const ENGINEERING_PROOF = [
   },
   {
     title: 'Verified GFCI platform',
-    body: 'UL / cUL listed GFCI range under file E504391.'
+    body: 'Six published models are named under UL / cUL file E504391; GL20 documentation remains under review.'
   }
 ];
 
@@ -190,7 +190,7 @@ export default function GfciSeries() {
               <tbody>
                 {products.map((product) => (
                   <tr key={product.sku}>
-                    <td><Link to={`/products/gfci/${product.sku.toLowerCase()}`}>{product.sku}</Link></td>
+                    <th scope="row"><Link to={`/products/gfci/${product.sku.toLowerCase()}`}>{product.sku}</Link></th>
                     <td>{product.rating}</td>
                     <td>{product.nema}</td>
                     <td>{product.feature}</td>
