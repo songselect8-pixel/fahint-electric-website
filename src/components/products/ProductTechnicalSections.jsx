@@ -27,7 +27,7 @@ export function ProductSpecifications({ product }) {
       <div className="container product-technical__narrow">
         <p className="product-section-label">Model data</p>
         <h2>Technical specifications.</h2>
-        <div className="product-specifications__desktop">
+        <div className="product-specifications__desktop product-technical-table">
           <table>
             <caption className="sr-only">{product.sku} technical specifications</caption>
             <tbody>
@@ -35,7 +35,7 @@ export function ProductSpecifications({ product }) {
             </tbody>
           </table>
         </div>
-        <div className="product-specifications__mobile">
+        <div className="product-specifications__mobile product-spec-mobile">
           {rows.map(([label, value]) => (
             <details key={label}><summary>{label}</summary><p>{value}</p></details>
           ))}
@@ -91,13 +91,16 @@ export function ProductInstallation({ product }) {
 function ProductDownloads({ documents }) {
   if (!Array.isArray(documents) || documents.length === 0) return null;
   return (
-    <div className="product-certification__downloads" aria-label="Product downloads">
-      {documents.map((document) => {
-        const href = typeof document === 'string' ? document : document.href || document.url;
-        const label = typeof document === 'string' ? 'Product document' : document.label || document.name;
-        return href ? <a key={href} href={href}>{label || 'Product document'}</a> : null;
-      })}
-    </div>
+    <details className="product-certification__downloads product-documents">
+      <summary>Product documents</summary>
+      <div aria-label="Product downloads">
+        {documents.map((document) => {
+          const href = typeof document === 'string' ? document : document.href || document.url;
+          const label = typeof document === 'string' ? 'Product document' : document.label || document.name;
+          return href ? <a key={href} href={href}>{label || 'Product document'}</a> : null;
+        })}
+      </div>
+    </details>
   );
 }
 

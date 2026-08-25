@@ -92,7 +92,15 @@ describe('GfciSeries', () => {
   });
 
   it('keeps the approved series evidence and program language intact', () => {
-    renderSeries();
+    const { container } = renderSeries();
+
+    expect(container.querySelector('.gfci-series-hero')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-filter-toggle')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-filter-bar')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-product-grid')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-comparison')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-proof-grid')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-oem-list')).toBeInTheDocument();
 
     expect(screen.getByText('GFCI product family')).toBeInTheDocument();
     expect(screen.getByRole('heading', {

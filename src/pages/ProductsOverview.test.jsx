@@ -13,6 +13,16 @@ function renderProductsOverview() {
 }
 
 describe('ProductsOverview', () => {
+  it('ships the product experience responsive and accessibility contract', () => {
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+
+    expect(styles).toMatch(/prefers-reduced-motion:\s*reduce/);
+    expect(styles).toMatch(/@media \(max-width:\s*1024px\)/);
+    expect(styles).toMatch(/@media \(max-width:\s*768px\)/);
+    expect(styles).toMatch(/@media \(max-width:\s*700px\)/);
+    expect(styles).toMatch(/min-height:\s*44px/);
+  });
+
   it('presents exactly the five approved product families as complete links', () => {
     const { container } = renderProductsOverview();
 
@@ -124,6 +134,12 @@ describe('ProductsOverview', () => {
       'product-proof-strip',
       'product-overview-cta'
     ]);
+
+    expect(container.querySelector('.product-overview-hero__inner')).toBeInTheDocument();
+    expect(container.querySelector('.product-family-grid')).toBeInTheDocument();
+    expect(container.querySelectorAll('.product-family-card')).toHaveLength(5);
+    expect(container.querySelector('.product-brand-system__inner')).toBeInTheDocument();
+    expect(container.querySelector('.product-evidence-section__grid')).toBeInTheDocument();
   });
 
   it('prioritizes the coordinated family image in the hero', () => {

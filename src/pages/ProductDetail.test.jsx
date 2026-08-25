@@ -77,6 +77,12 @@ describe('ProductDetail', () => {
     expect(within(technical).getAllByText('Certification')).toHaveLength(2);
     expect(within(technical).getAllByText(/E504391/)).toHaveLength(2);
     expect(within(technical).queryByText(/warranty/i)).not.toBeInTheDocument();
+    expect(technical.querySelector('.product-technical-table')).toBeInTheDocument();
+    expect(technical.querySelector('.product-spec-mobile')).toBeInTheDocument();
+    expect(container.querySelector('.product-key-facts')).toBeInTheDocument();
+    const technicalSource = readFileSync('src/components/products/ProductTechnicalSections.jsx', 'utf8');
+    expect(technicalSource).toContain('<details className="product-certification__downloads product-documents">');
+    expect(technicalSource).toContain('<summary>Product documents</summary>');
   });
 
   it('keeps GL20 certification neutral everywhere', () => {

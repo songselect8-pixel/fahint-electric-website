@@ -16,6 +16,7 @@ import Capabilities from './pages/Capabilities.jsx';
 import About from './pages/About.jsx';
 import Contact from './pages/Contact.jsx';
 import './styles.css';
+import './styles/product-experience.css';
 
 function App() {
   return (

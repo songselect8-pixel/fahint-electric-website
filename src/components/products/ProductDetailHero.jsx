@@ -22,7 +22,7 @@ export default function ProductDetailHero({ product }) {
           <h1>{product.name}</h1>
           <p className="product-detail-hero__summary">{product.summary}</p>
 
-          <dl className="product-detail-hero__facts">
+          <dl className="product-detail-hero__facts product-key-facts">
             {facts.map(([term, description]) => (
               <div key={term}>
                 <dt>{term}</dt>

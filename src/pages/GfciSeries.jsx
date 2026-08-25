@@ -88,7 +88,7 @@ export default function GfciSeries() {
 
   return (
     <div className="gfci-series">
-      <section className="gfci-series__hero">
+      <section className="gfci-series__hero gfci-series-hero">
         <div className="container">
           <p className="gfci-series__eyebrow">GFCI product family</p>
           <h1>Verified protection for residential and commercial programs.</h1>
@@ -107,7 +107,7 @@ export default function GfciSeries() {
             </div>
             <button
               type="button"
-              className="gfci-series__filter-toggle"
+              className="gfci-series__filter-toggle gfci-filter-toggle"
               aria-label="Filter GFCI models"
               aria-expanded={filtersOpen}
               aria-controls="gfci-filters"
@@ -119,7 +119,7 @@ export default function GfciSeries() {
 
           <div
             id="gfci-filters"
-            className={`gfci-series__filters${filtersOpen ? ' is-open' : ''}`}
+            className={`gfci-series__filters gfci-filter-bar${filtersOpen ? ' is-open gfci-filter-bar--open' : ''}`}
             role="search"
             aria-label="GFCI model filters"
           >
@@ -149,7 +149,7 @@ export default function GfciSeries() {
           </div>
 
           {filteredProducts.length > 0 ? (
-            <div className="prod-grid gfci-series__product-grid">
+            <div className="prod-grid gfci-series__product-grid gfci-product-grid">
               {filteredProducts.map((product) => (
                 <ProductCard key={product.sku} product={product} />
               ))}
@@ -171,7 +171,7 @@ export default function GfciSeries() {
         </div>
       </section>
 
-      <section className="gfci-series__comparison section section--gray" aria-labelledby="gfci-comparison-heading">
+      <section className="gfci-series__comparison gfci-comparison section section--gray" aria-labelledby="gfci-comparison-heading">
         <div className="container">
           <div className="section-head">
             <p className="eyebrow">At-a-glance comparison</p>
@@ -213,7 +213,7 @@ export default function GfciSeries() {
             <p className="eyebrow">Engineering proof</p>
             <h2 id="gfci-engineering-heading">Protection documented at platform level</h2>
           </div>
-          <div className="gfci-series__proof-grid">
+          <div className="gfci-series__proof-grid gfci-proof-grid">
             {ENGINEERING_PROOF.map((item, index) => (
               <article key={item.title}>
                 <span aria-hidden="true">0{index + 1}</span>
@@ -252,7 +252,7 @@ export default function GfciSeries() {
             <h2 id="gfci-oem-heading">Coordinate the program around the documented platform.</h2>
           </div>
           <div>
-            <ul className="gfci-series__oem-list">
+            <ul className="gfci-series__oem-list gfci-oem-list">
               {OEM_OPTIONS.map((option) => <li key={option}>{option}</li>)}
             </ul>
             <Link to="/contact" className="btn btn--primary">

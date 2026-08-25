@@ -49,7 +49,7 @@ export default function ProductsOverview() {
         />
         <div className="editorial-hero__shade" />
         <div className="editorial-hero__grid" />
-        <div className="container editorial-hero__content">
+        <div className="container editorial-hero__content product-overview-hero__inner">
           <p className="editorial-eyebrow">Coordinated wiring-device platform</p>
           <h1 id="product-overview-title">Build a complete product line from one system.</h1>
           <p className="editorial-hero__copy">
@@ -75,9 +75,9 @@ export default function ProductsOverview() {
           </p>
         </div>
 
-        <div className="editorial-product-mosaic">
+        <div className="editorial-product-mosaic product-family-grid">
           {productFamilies.map((family) => (
-            <Link className="editorial-product-panel" key={family.name} to={family.href}>
+            <Link className="editorial-product-panel product-family-card" key={family.name} to={family.href}>
               <SafeImage src={family.image} alt="" loading="lazy" />
               <div className="editorial-panel__shade" />
               <div className="editorial-panel__content">
@@ -97,7 +97,7 @@ export default function ProductsOverview() {
       </section>
 
       <section className="product-brand-system editorial-customization" aria-labelledby="product-brand-title">
-        <div className="container editorial-customization__grid">
+        <div className="container editorial-customization__grid product-brand-system__inner">
           <div className="editorial-customization__media">
             <SafeImage
               src="assets/images/company/facility-sampleroom.webp"
@@ -158,7 +158,7 @@ export default function ProductsOverview() {
           loading="lazy"
         />
         <div className="editorial-factory__shade" />
-        <div className="container editorial-factory__content">
+        <div className="container editorial-factory__content product-evidence-section__grid">
           <div className="editorial-factory__copy">
             <p className="editorial-eyebrow">Factory evidence</p>
             <h2 id="product-evidence-title">Verified manufacturing and compliance.</h2>
