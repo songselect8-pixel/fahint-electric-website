@@ -164,4 +164,15 @@ describe('ProductsOverview', () => {
     expect(heroImage).toHaveAttribute('loading', 'eager');
     expect(heroImage).toHaveAttribute('fetchpriority', 'high');
   });
+
+  it('keeps the product hero headline to two intentional lines', () => {
+    const { container } = renderProductsOverview();
+    const titleLines = container.querySelectorAll('.product-overview-hero__title-line');
+
+    expect(titleLines).toHaveLength(2);
+    expect([...titleLines].map((line) => line.textContent)).toEqual([
+      'One platform.',
+      'Complete product lines.'
+    ]);
+  });
 });

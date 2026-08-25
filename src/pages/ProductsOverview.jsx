@@ -51,7 +51,10 @@ export default function ProductsOverview() {
         <div className="editorial-hero__grid" />
         <div className="container editorial-hero__content product-overview-hero__inner">
           <p className="editorial-eyebrow">Coordinated wiring-device platform</p>
-          <h1 id="product-overview-title">Build a complete product line from one system.</h1>
+          <h1 id="product-overview-title">
+            <span className="product-overview-hero__title-line">One platform.</span>
+            <span className="product-overview-hero__title-line">Complete product lines.</span>
+          </h1>
           <p className="editorial-hero__copy">
             Bring protection, charging, receptacles and control together in a range designed for consistent
             specification, branding and project delivery.

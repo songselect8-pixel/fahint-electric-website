@@ -58,6 +58,7 @@ export default function ProductDetail() {
   if (!product) return <Navigate to="/products/gfci" replace />;
 
   const related = products.filter((candidate) => candidate.sku !== product.sku).slice(0, 4);
+  const detailPath = `/products/gfci/${product.sku.toLowerCase()}`;
 
   return (
     <>
@@ -80,9 +81,9 @@ export default function ProductDetail() {
       <RelatedProducts products={related} />
       <ProductInquiry product={product} />
 
-      <a className="product-mobile-quote" href="#inquiry">
+      <Link className="product-mobile-quote" to={`${detailPath}#inquiry`}>
         Request quote for {product.sku}
-      </a>
+      </Link>
     </>
   );
 }

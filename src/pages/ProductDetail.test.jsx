@@ -67,7 +67,14 @@ describe('ProductDetail', () => {
     expect(within(facts).getByText('Rating').nextElementSibling).toHaveTextContent('15A, 125V');
     expect(within(facts).getByText('Configuration').nextElementSibling).toHaveTextContent('NEMA 5-15R');
     expect(screen.getByText('UL / cUL listed · file E504391')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Request a quote/ })).toHaveAttribute('href', '#inquiry');
+    expect(screen.getByRole('link', { name: /Request a quote/ })).toHaveAttribute(
+      'href',
+      '/products/gfci/gf15#inquiry'
+    );
+    expect(screen.getByRole('link', { name: 'Technical details' })).toHaveAttribute(
+      'href',
+      '/products/gfci/gf15#technical-details'
+    );
 
     const headings = [
       'Protection engineered for everyday installation.',
@@ -144,7 +151,10 @@ describe('ProductDetail', () => {
     expect(container.querySelectorAll('#inquiry')).toHaveLength(1);
     expect(screen.getByLabelText('Model of interest')).toHaveValue('GF15');
     expect(screen.getByRole('heading', { level: 3, name: 'Send a product brief.' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Request quote for GF15' })).toHaveAttribute('href', '#inquiry');
+    expect(screen.getByRole('link', { name: 'Request quote for GF15' })).toHaveAttribute(
+      'href',
+      '/products/gfci/gf15#inquiry'
+    );
 
     const styles = readFileSync('src/styles.css', 'utf8');
     expect(styles).toMatch(/@media \(min-width:\s*701px\)[\s\S]*?\.product-mobile-quote\s*\{[\s\S]*?display:\s*none/);

@@ -1,9 +1,11 @@
 import { ArrowRight, FileCheck2, ShieldCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { isVerifiedListing } from '../../data/products.js';
 import ProductGallery from './ProductGallery.jsx';
 
 export default function ProductDetailHero({ product }) {
   const listed = isVerifiedListing(product);
+  const detailPath = `/products/gfci/${product.sku.toLowerCase()}`;
   const configuration = product.nema === 'Blank face' ? product.nema : `NEMA ${product.nema}`;
   const facts = [
     ['Rating', product.rating],
@@ -39,12 +41,12 @@ export default function ProductDetailHero({ product }) {
           </p>
 
           <div className="product-detail-hero__actions">
-            <a href="#inquiry" className="btn btn--primary">
+            <Link to={`${detailPath}#inquiry`} className="btn btn--primary">
               Request a quote <ArrowRight size={16} aria-hidden="true" />
-            </a>
-            <a href="#technical-details" className="btn btn--ghost">
+            </Link>
+            <Link to={`${detailPath}#technical-details`} className="btn btn--ghost">
               Technical details
-            </a>
+            </Link>
           </div>
         </div>
       </div>
