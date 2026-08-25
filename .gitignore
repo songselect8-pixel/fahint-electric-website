@@ -16,6 +16,7 @@ output/
 .playwright-cli/
 .impeccable/
 .superpowers/
+.worktrees/
 
 # Local helper scripts and editor files
 _tools/
