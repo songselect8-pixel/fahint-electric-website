@@ -50,6 +50,35 @@ describe('GitHub Pages deployment', () => {
     expect((await stat(join(distDir, '.nojekyll'))).isFile()).toBe(true);
   });
 
+  it('materializes every public SPA route as a real Pages entry file', async () => {
+    const { preparePages } = await loadPreparePages();
+    const html = '<!doctype html><base href="/fahint-electric-website/"><main>fixture</main>';
+    const distDir = await createDist(html);
+
+    await preparePages({ distDir, expectedBase: '/fahint-electric-website/' });
+
+    const publicRoutes = [
+      'products',
+      'products/gfci',
+      'products/gfci/gf15',
+      'products/gfci/gl20',
+      'products/usb-outlets',
+      'products/receptacles',
+      'products/dimmers',
+      'products/smart-switches',
+      'products/lighting-switches',
+      'products/wallplates',
+      'blog',
+      'capabilities',
+      'about',
+      'contact'
+    ];
+
+    for (const route of publicRoutes) {
+      expect(await readFile(join(distDir, route, 'index.html'), 'utf8')).toBe(html);
+    }
+  });
+
   it('fails when index.html is missing', async () => {
     const { preparePages } = await loadPreparePages();
     const distDir = await createDist();

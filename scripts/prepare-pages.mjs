@@ -1,6 +1,29 @@
-import { copyFile, readFile, rm, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { posts } from '../src/data/posts.js';
+import { products } from '../src/data/products.js';
+
+const STATIC_ROUTES = [
+  'products',
+  'products/gfci',
+  'products/usb-outlets',
+  'products/receptacles',
+  'products/dimmers',
+  'products/smart-switches',
+  'products/lighting-switches',
+  'products/wallplates',
+  'blog',
+  'capabilities',
+  'about',
+  'contact'
+];
+
+export const PUBLIC_ROUTES = [
+  ...STATIC_ROUTES,
+  ...products.map((product) => `products/gfci/${product.sku.toLowerCase()}`),
+  ...posts.map((post) => `blog/${post.slug}`)
+];
 
 function validateExpectedBase(expectedBase) {
   if (typeof expectedBase !== 'string' || expectedBase.length === 0) {
@@ -72,6 +95,11 @@ export async function preparePages({
   }
 
   await copyFile(indexPath, join(outputDir, '404.html'));
+  await Promise.all(PUBLIC_ROUTES.map(async (route) => {
+    const routeDir = join(outputDir, ...route.split('/'));
+    await mkdir(routeDir, { recursive: true });
+    await copyFile(indexPath, join(routeDir, 'index.html'));
+  }));
   await writeFile(join(outputDir, '.nojekyll'), '');
 
   const cnamePath = join(outputDir, 'CNAME');
