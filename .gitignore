@@ -1,0 +1,24 @@
+node_modules
+dist
+.accio
+.accio-site.json
+.env
+.env.local
+.env.*.local
+.DS_Store
+.preview.log
+.preview.err.log
+
+# Local review and handoff artifacts
+_handoff_review/
+_qa/
+output/
+.playwright-cli/
+.impeccable/
+.superpowers/
+
+# Local helper scripts and editor files
+_tools/
+.vscode/
+.idea/
+Thumbs.db
