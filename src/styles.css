@@ -5869,6 +5869,35 @@ ul {
   text-underline-offset: 2px;
 }
 
+.form-card__recovery {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  margin: -6px 0 18px;
+  padding: 14px 16px;
+}
+
+.form-card__recovery p {
+  color: var(--gray-700);
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0 0 10px;
+}
+
+.form-card__copy-status {
+  font-size: 13px;
+  font-weight: 700;
+  margin: -10px 0 18px;
+}
+
+.form-card__copy-status--ok {
+  color: #1c7a48;
+}
+
+.form-card__copy-status--error {
+  color: #9f2d29;
+}
+
 .reveal {
   opacity: 1;
   transform: none;

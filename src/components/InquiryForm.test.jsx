@@ -1,7 +1,7 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import InquiryForm, { buildMailtoUrl, validateInquiry } from './InquiryForm.jsx';
+import InquiryForm, { buildInquiryText, buildMailtoUrl, validateInquiry } from './InquiryForm.jsx';
 
 const validForm = {
   name: 'Avery Chen',
@@ -64,6 +64,20 @@ describe('InquiryForm helpers', () => {
         'Need white & black.\nShip to México?'
     );
   });
+
+  it('builds reusable plain-text inquiry details with the destination email', () => {
+    expect(buildInquiryText(validForm)).toBe(
+      'To: louis@fahint.com\n\n' +
+        'Name: Avery Chen\n' +
+        'Email: avery@example.com\n' +
+        'Company: Northstar\n' +
+        'Country: Canada\n' +
+        'Model of interest: GF15\n' +
+        'Estimated quantity: 5,000 pcs\n\n' +
+        'Requirements:\n' +
+        'Please quote private-label packaging.'
+    );
+  });
 });
 
 describe('InquiryForm', () => {
@@ -94,6 +108,39 @@ describe('InquiryForm', () => {
     expect(screen.getByLabelText('Company')).toHaveValue('Northstar');
   });
 
+  it('clears validation feedback when defaultModel changes', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(<InquiryForm defaultModel="GF15" delivery={vi.fn()} />);
+    await user.click(screen.getByRole('button', { name: 'Send inquiry' }));
+    expect(screen.getByText('Please correct the highlighted fields.')).toHaveAttribute('role', 'alert');
+
+    rerender(<InquiryForm defaultModel="GT20" delivery={vi.fn()} />);
+
+    expect(screen.getByLabelText('Model of interest')).toHaveValue('GT20');
+    expect(screen.queryByText('Please correct the highlighted fields.')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Your name *')).not.toHaveAttribute('aria-invalid');
+  });
+
+  it('clears handoff and copy feedback when defaultModel changes', async () => {
+    const delivery = vi.fn();
+    const clipboardWriter = vi.fn();
+    const { rerender } = render(
+      <InquiryForm defaultModel="GF15" delivery={delivery} clipboardWriter={clipboardWriter} />
+    );
+    fireEvent.change(screen.getByLabelText('Your name *'), { target: { value: validForm.name } });
+    fireEvent.change(screen.getByLabelText('Business email *'), { target: { value: validForm.email } });
+    fireEvent.change(screen.getByLabelText('Requirements *'), { target: { value: validForm.message } });
+    fireEvent.submit(screen.getByRole('button', { name: 'Send inquiry' }).closest('form'));
+    expect(await screen.findByText('Your email app should now be open with the inquiry pre-filled.')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Copy inquiry details' }));
+    expect(await screen.findByText('Inquiry details copied.')).toBeInTheDocument();
+
+    rerender(<InquiryForm defaultModel="GT20" delivery={delivery} clipboardWriter={clipboardWriter} />);
+
+    expect(screen.queryByText('Your email app should now be open with the inquiry pre-filled.')).not.toBeInTheDocument();
+    expect(screen.queryByText('Inquiry details copied.')).not.toBeInTheDocument();
+  });
+
   it('validates explicitly, announces errors, connects field errors, and focuses the first invalid field', async () => {
     const user = userEvent.setup();
     render(<InquiryForm delivery={vi.fn()} />);
@@ -109,14 +156,14 @@ describe('InquiryForm', () => {
     const message = screen.getByLabelText('Requirements *');
     await waitFor(() => expect(name).toHaveFocus());
     expect(name).toHaveAttribute('aria-invalid', 'true');
-    expect(name).toHaveAttribute('aria-describedby', 'f-name-error');
     expect(email).toHaveAttribute('aria-invalid', 'true');
-    expect(email).toHaveAttribute('aria-describedby', 'f-email-error');
     expect(message).toHaveAttribute('aria-invalid', 'true');
-    expect(message).toHaveAttribute('aria-describedby', 'f-msg-error');
-    expect(screen.getByText('Enter your name.')).toHaveAttribute('id', 'f-name-error');
-    expect(screen.getByText('Enter a valid business email.')).toHaveAttribute('id', 'f-email-error');
-    expect(screen.getByText('Describe the product or project you need.')).toHaveAttribute('id', 'f-msg-error');
+    expect(screen.getByText('Enter your name.')).toHaveAttribute('id', name.getAttribute('aria-describedby'));
+    expect(screen.getByText('Enter a valid business email.')).toHaveAttribute('id', email.getAttribute('aria-describedby'));
+    expect(screen.getByText('Describe the product or project you need.')).toHaveAttribute(
+      'id',
+      message.getAttribute('aria-describedby')
+    );
 
     await user.type(name, 'Avery');
     expect(name).not.toHaveAttribute('aria-invalid', 'true');
@@ -152,6 +199,77 @@ describe('InquiryForm', () => {
     );
   });
 
+  it('keeps a synchronous mail handoff locked against rapid duplicate submits, then unlocks', async () => {
+    vi.useFakeTimers();
+    const delivery = vi.fn();
+
+    try {
+      render(<InquiryForm delivery={delivery} />);
+      fireEvent.change(screen.getByLabelText('Your name *'), { target: { value: validForm.name } });
+      fireEvent.change(screen.getByLabelText('Business email *'), { target: { value: validForm.email } });
+      fireEvent.change(screen.getByLabelText('Requirements *'), { target: { value: validForm.message } });
+
+      const button = screen.getByRole('button', { name: /Send inquiry|Opening email app/ });
+      const form = button.closest('form');
+      fireEvent.submit(form);
+      await act(async () => {});
+      fireEvent.submit(form);
+
+      expect(delivery).toHaveBeenCalledTimes(1);
+      expect(button).toBeDisabled();
+
+      await act(async () => {
+        vi.advanceTimersByTime(2_000);
+      });
+      expect(button).toBeEnabled();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('offers an independent copy recovery after a normal mail handoff', async () => {
+    const delivery = vi.fn();
+    const clipboardWriter = vi.fn();
+    const user = userEvent.setup();
+    render(<InquiryForm delivery={delivery} clipboardWriter={clipboardWriter} />);
+    await completeRequiredFields(user);
+
+    await user.click(screen.getByRole('button', { name: 'Send inquiry' }));
+
+    expect(await screen.findByRole('status')).toHaveTextContent(
+      'Your email app should now be open with the inquiry pre-filled.'
+    );
+    expect(screen.getByText(/If it did not open, copy the inquiry details and send them to/)).toHaveTextContent(
+      'louis@fahint.com'
+    );
+    expect(screen.getByText('louis@fahint.com', { selector: 'strong' })).toBeVisible();
+
+    await user.click(screen.getByRole('button', { name: 'Copy inquiry details' }));
+
+    expect(clipboardWriter).toHaveBeenCalledTimes(1);
+    expect(clipboardWriter).toHaveBeenCalledWith(
+      expect.stringContaining('To: louis@fahint.com\n\nName: Avery Chen')
+    );
+    expect(await screen.findByText('Inquiry details copied.')).toHaveAttribute('role', 'status');
+  });
+
+  it('uses copy recovery instead of opening an excessively long mailto URL', async () => {
+    const delivery = vi.fn();
+    render(<InquiryForm delivery={delivery} clipboardWriter={vi.fn()} />);
+    fireEvent.change(screen.getByLabelText('Your name *'), { target: { value: validForm.name } });
+    fireEvent.change(screen.getByLabelText('Business email *'), { target: { value: validForm.email } });
+    fireEvent.change(screen.getByLabelText('Requirements *'), { target: { value: 'x'.repeat(2_000) } });
+
+    fireEvent.submit(screen.getByRole('button', { name: 'Send inquiry' }).closest('form'));
+
+    expect(delivery).not.toHaveBeenCalled();
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'This inquiry is too long to open reliably in an email app.'
+    );
+    expect(screen.getByRole('button', { name: 'Copy inquiry details' })).toBeEnabled();
+    expect(screen.queryByText('Your email app should now be open with the inquiry pre-filled.')).not.toBeInTheDocument();
+  });
+
   it('shows a direct email fallback after failure and allows a retry', async () => {
     const delivery = vi.fn().mockRejectedValueOnce(new Error('blocked')).mockResolvedValueOnce(undefined);
     const user = userEvent.setup();
@@ -164,8 +282,10 @@ describe('InquiryForm', () => {
     expect(failure).toHaveTextContent('We could not open your email app.');
     expect(failure).toHaveTextContent(/try again\./i);
     expect(screen.getByRole('link', { name: 'Email us directly' })).toHaveAttribute('href', 'mailto:louis@fahint.com');
+    expect(screen.getByRole('button', { name: 'Copy inquiry details' })).toBeEnabled();
 
-    await user.click(screen.getByRole('button', { name: 'Send inquiry' }));
+    const retryButton = await screen.findByRole('button', { name: 'Send inquiry' }, { timeout: 2_000 });
+    await user.click(retryButton);
 
     await waitFor(() => expect(delivery).toHaveBeenCalledTimes(2));
     expect(await screen.findByRole('status')).toHaveTextContent(
@@ -180,6 +300,28 @@ describe('InquiryForm', () => {
     expect(screen.getByLabelText('Business email *')).toHaveAttribute('autocomplete', 'email');
     expect(screen.getByLabelText('Company')).toHaveAttribute('autocomplete', 'organization');
     expect(screen.getByLabelText('Country / region')).toHaveAttribute('autocomplete', 'country-name');
+  });
+
+  it('uses unique control and error ids across multiple forms and disables email spellcheck', async () => {
+    render(
+      <>
+        <InquiryForm title="First inquiry" />
+        <InquiryForm title="Second inquiry" />
+      </>
+    );
+    const names = screen.getAllByLabelText('Your name *');
+    const emails = screen.getAllByLabelText('Business email *');
+
+    expect(names[0].id).not.toBe(names[1].id);
+    expect(emails[0].id).not.toBe(emails[1].id);
+    expect(emails[0]).toHaveAttribute('spellcheck', 'false');
+    expect(emails[1]).toHaveAttribute('spellcheck', 'false');
+
+    screen.getAllByRole('button', { name: 'Send inquiry' }).forEach((button) => fireEvent.submit(button.closest('form')));
+    await waitFor(() => expect(names[0]).toHaveAttribute('aria-describedby'));
+    expect(names[0].getAttribute('aria-describedby')).not.toBe(names[1].getAttribute('aria-describedby'));
+    expect(document.getElementById(names[0].getAttribute('aria-describedby'))).toHaveTextContent('Enter your name.');
+    expect(document.getElementById(names[1].getAttribute('aria-describedby'))).toHaveTextContent('Enter your name.');
   });
 
   it('explains that the customer still sends the composed email', () => {

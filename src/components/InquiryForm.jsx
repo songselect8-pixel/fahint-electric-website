@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { Send } from 'lucide-react';
 import { company } from '../data/company.js';
 import { products } from '../data/products.js';
@@ -15,8 +15,28 @@ const EMPTY = {
 
 const EMAIL_PATTERN = /^\S+@\S+\.\S+$/;
 const SUCCESS_MESSAGE = 'Your email app should now be open with the inquiry pre-filled.';
+const MINIMUM_HANDOFF_LOCK_MS = 1_500;
+const MAX_MAILTO_URL_LENGTH = 1_800;
 
 const clean = (value) => String(value ?? '').trim();
+const normalizeInquiry = (form) =>
+  Object.fromEntries(Object.entries(EMPTY).map(([key]) => [key, clean(form[key])]));
+
+const buildInquiryBody = (form) => {
+  const values = normalizeInquiry(form);
+
+  return [
+    `Name: ${values.name}`,
+    `Email: ${values.email}`,
+    `Company: ${values.company}`,
+    `Country: ${values.country}`,
+    `Model of interest: ${values.model || 'Not specified'}`,
+    `Estimated quantity: ${values.quantity || 'Not specified'}`,
+    '',
+    'Requirements:',
+    values.message
+  ].join('\n');
+};
 
 export function validateInquiry(form) {
   const errors = {};
@@ -29,38 +49,76 @@ export function validateInquiry(form) {
 }
 
 export function buildMailtoUrl(form) {
-  const values = Object.fromEntries(Object.entries(EMPTY).map(([key]) => [key, clean(form[key])]));
+  const values = normalizeInquiry(form);
   const sender = values.company || values.name || 'website visitor';
-  const lines = [
-    `Name: ${values.name}`,
-    `Email: ${values.email}`,
-    `Company: ${values.company}`,
-    `Country: ${values.country}`,
-    `Model of interest: ${values.model || 'Not specified'}`,
-    `Estimated quantity: ${values.quantity || 'Not specified'}`,
-    '',
-    'Requirements:',
-    values.message
-  ];
   const subject = encodeURIComponent(`Product inquiry from ${sender}`);
-  const body = encodeURIComponent(lines.join('\n'));
+  const body = encodeURIComponent(buildInquiryBody(values));
 
   return `mailto:${company.email}?subject=${subject}&body=${body}`;
 }
 
-const defaultDelivery = (url) => window.location.assign(url);
+export function buildInquiryText(form) {
+  return `To: ${company.email}\n\n${buildInquiryBody(form)}`;
+}
 
-export default function InquiryForm({ defaultModel = '', title = 'Send a message', delivery = defaultDelivery }) {
+const defaultDelivery = (url) => window.location.assign(url);
+const defaultClipboardWriter = (text) => {
+  if (!navigator.clipboard?.writeText) return Promise.reject(new Error('Clipboard unavailable'));
+  return navigator.clipboard.writeText(text);
+};
+
+export default function InquiryForm({
+  defaultModel = '',
+  title = 'Send a message',
+  delivery = defaultDelivery,
+  clipboardWriter = defaultClipboardWriter
+}) {
   const [form, setForm] = useState({ ...EMPTY, model: defaultModel });
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('');
+  const [copyStatus, setCopyStatus] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCopying, setIsCopying] = useState(false);
   const formRef = useRef(null);
   const inFlightRef = useRef(false);
+  const copyInFlightRef = useRef(false);
+  const cooldownRef = useRef(null);
+  const mountedRef = useRef(true);
+  const modelVersionRef = useRef(0);
+  const idPrefix = useId();
+  const ids = {
+    name: `${idPrefix}-name`,
+    nameError: `${idPrefix}-name-error`,
+    email: `${idPrefix}-email`,
+    emailError: `${idPrefix}-email-error`,
+    company: `${idPrefix}-company`,
+    country: `${idPrefix}-country`,
+    model: `${idPrefix}-model`,
+    quantity: `${idPrefix}-quantity`,
+    message: `${idPrefix}-message`,
+    messageError: `${idPrefix}-message-error`
+  };
 
   useEffect(() => {
+    modelVersionRef.current += 1;
     setForm((current) => ({ ...current, model: defaultModel }));
+    setErrors({});
+    setStatus('');
+    setCopyStatus('');
   }, [defaultModel]);
+
+  useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+      if (cooldownRef.current) {
+        window.clearTimeout(cooldownRef.current.id);
+        cooldownRef.current.resolve();
+        cooldownRef.current = null;
+      }
+    };
+  }, []);
 
   const update = (key) => (event) => {
     const nextValue = event.target.value;
@@ -75,6 +133,26 @@ export default function InquiryForm({ defaultModel = '', title = 'Send a message
       return remainingErrors;
     });
     setStatus('');
+    setCopyStatus('');
+  };
+
+  const copyInquiryDetails = async () => {
+    if (copyInFlightRef.current) return;
+
+    const modelVersion = modelVersionRef.current;
+    copyInFlightRef.current = true;
+    setIsCopying(true);
+    setCopyStatus('');
+
+    try {
+      await clipboardWriter(buildInquiryText(form));
+      if (mountedRef.current && modelVersionRef.current === modelVersion) setCopyStatus('copied');
+    } catch {
+      if (mountedRef.current && modelVersionRef.current === modelVersion) setCopyStatus('copy-failure');
+    } finally {
+      copyInFlightRef.current = false;
+      if (mountedRef.current) setIsCopying(false);
+    }
   };
 
   const submit = async (event) => {
@@ -84,6 +162,7 @@ export default function InquiryForm({ defaultModel = '', title = 'Send a message
     const nextErrors = validateInquiry(form);
     setErrors(nextErrors);
     setStatus('');
+    setCopyStatus('');
 
     if (Object.keys(nextErrors).length > 0) {
       requestAnimationFrame(() => {
@@ -92,17 +171,35 @@ export default function InquiryForm({ defaultModel = '', title = 'Send a message
       return;
     }
 
+    const mailtoUrl = buildMailtoUrl(form);
+    if (mailtoUrl.length > MAX_MAILTO_URL_LENGTH) {
+      setStatus('too-long');
+      return;
+    }
+
     inFlightRef.current = true;
     setIsSubmitting(true);
+    const handoffStartedAt = Date.now();
+    const modelVersion = modelVersionRef.current;
 
     try {
-      await delivery(buildMailtoUrl(form));
-      setStatus('success');
+      await delivery(mailtoUrl);
+      if (mountedRef.current && modelVersionRef.current === modelVersion) setStatus('success');
     } catch {
-      setStatus('failure');
+      if (mountedRef.current && modelVersionRef.current === modelVersion) setStatus('failure');
     } finally {
+      const remainingLockMs = Math.max(0, MINIMUM_HANDOFF_LOCK_MS - (Date.now() - handoffStartedAt));
+      if (remainingLockMs > 0) {
+        await new Promise((resolve) => {
+          const id = window.setTimeout(() => {
+            cooldownRef.current = null;
+            resolve();
+          }, remainingLockMs);
+          cooldownRef.current = { id, resolve };
+        });
+      }
       inFlightRef.current = false;
-      setIsSubmitting(false);
+      if (mountedRef.current) setIsSubmitting(false);
     }
   };
 
@@ -130,41 +227,67 @@ export default function InquiryForm({ defaultModel = '', title = 'Send a message
           We could not open your email app. <a href={`mailto:${company.email}`}>Email us directly</a> or try again.
         </div>
       )}
+      {status === 'too-long' && (
+        <div className="alert alert--error" role="alert">
+          This inquiry is too long to open reliably in an email app. Copy the inquiry details instead.
+        </div>
+      )}
+      {(status === 'success' || status === 'failure' || status === 'too-long') && (
+        <div className="form-card__recovery">
+          <p>
+            If it did not open, copy the inquiry details and send them to <strong>{company.email}</strong>.
+          </p>
+          <button type="button" className="btn btn--ghost" onClick={copyInquiryDetails} disabled={isCopying}>
+            {isCopying ? 'Copying…' : 'Copy inquiry details'}
+          </button>
+        </div>
+      )}
+      {copyStatus === 'copied' && (
+        <p className="form-card__copy-status form-card__copy-status--ok" role="status">
+          Inquiry details copied.
+        </p>
+      )}
+      {copyStatus === 'copy-failure' && (
+        <p className="form-card__copy-status form-card__copy-status--error" role="alert">
+          We could not copy the inquiry details. Please copy them manually.
+        </p>
+      )}
 
       <div className="field-row">
         <div className="field">
-          <label htmlFor="f-name">Your name *</label>
+          <label htmlFor={ids.name}>Your name *</label>
           <input
-            id="f-name"
+            id={ids.name}
             name="name"
             autoComplete="name"
             required
             value={form.name}
             onChange={update('name')}
             placeholder="John Miller"
-            {...validationProps('name', 'f-name-error')}
+            {...validationProps('name', ids.nameError)}
           />
           {errors.name && (
-            <p className="field__error" id="f-name-error">
+            <p className="field__error" id={ids.nameError}>
               {errors.name}
             </p>
           )}
         </div>
         <div className="field">
-          <label htmlFor="f-email">Business email *</label>
+          <label htmlFor={ids.email}>Business email *</label>
           <input
-            id="f-email"
+            id={ids.email}
             name="email"
             type="email"
             autoComplete="email"
+            spellCheck={false}
             required
             value={form.email}
             onChange={update('email')}
             placeholder="john@company.com"
-            {...validationProps('email', 'f-email-error')}
+            {...validationProps('email', ids.emailError)}
           />
           {errors.email && (
-            <p className="field__error" id="f-email-error">
+            <p className="field__error" id={ids.emailError}>
               {errors.email}
             </p>
           )}
@@ -173,9 +296,9 @@ export default function InquiryForm({ defaultModel = '', title = 'Send a message
 
       <div className="field-row">
         <div className="field">
-          <label htmlFor="f-company">Company</label>
+          <label htmlFor={ids.company}>Company</label>
           <input
-            id="f-company"
+            id={ids.company}
             name="company"
             autoComplete="organization"
             value={form.company}
@@ -184,9 +307,9 @@ export default function InquiryForm({ defaultModel = '', title = 'Send a message
           />
         </div>
         <div className="field">
-          <label htmlFor="f-country">Country / region</label>
+          <label htmlFor={ids.country}>Country / region</label>
           <input
-            id="f-country"
+            id={ids.country}
             name="country"
             autoComplete="country-name"
             value={form.country}
@@ -198,8 +321,8 @@ export default function InquiryForm({ defaultModel = '', title = 'Send a message
 
       <div className="field-row">
         <div className="field">
-          <label htmlFor="f-model">Model of interest</label>
-          <select id="f-model" name="model" value={form.model} onChange={update('model')}>
+          <label htmlFor={ids.model}>Model of interest</label>
+          <select id={ids.model} name="model" value={form.model} onChange={update('model')}>
             <option value="">Select a model</option>
             {products.map((product) => (
               <option key={product.sku} value={product.sku}>
@@ -210,9 +333,9 @@ export default function InquiryForm({ defaultModel = '', title = 'Send a message
           </select>
         </div>
         <div className="field">
-          <label htmlFor="f-qty">Estimated quantity</label>
+          <label htmlFor={ids.quantity}>Estimated quantity</label>
           <input
-            id="f-qty"
+            id={ids.quantity}
             name="quantity"
             value={form.quantity}
             onChange={update('quantity')}
@@ -222,18 +345,18 @@ export default function InquiryForm({ defaultModel = '', title = 'Send a message
       </div>
 
       <div className="field">
-        <label htmlFor="f-msg">Requirements *</label>
+        <label htmlFor={ids.message}>Requirements *</label>
         <textarea
-          id="f-msg"
+          id={ids.message}
           name="message"
           required
           value={form.message}
           onChange={update('message')}
           placeholder="Tell us about colours, packaging, private label, certification or delivery requirements."
-          {...validationProps('message', 'f-msg-error')}
+          {...validationProps('message', ids.messageError)}
         />
         {errors.message && (
-          <p className="field__error" id="f-msg-error">
+          <p className="field__error" id={ids.messageError}>
             {errors.message}
           </p>
         )}
