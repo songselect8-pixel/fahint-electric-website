@@ -3,7 +3,14 @@ import { describe, expect, it } from 'vitest';
 import SafeImage from './SafeImage.jsx';
 
 describe('SafeImage', () => {
-  const expectedPlaceholder = ['', 'assets/images/products/product-placeholder.svg'].join('/');
+  const expectedPlaceholder = `${import.meta.env.BASE_URL}assets/images/products/product-placeholder.svg`;
+
+  it('uses the controlled product placeholder when src is missing', () => {
+    render(<SafeImage alt="Product placeholder" />);
+
+    expect(screen.getByRole('img', { name: 'Product placeholder' }))
+      .toHaveAttribute('src', expectedPlaceholder);
+  });
 
   it('switches a failed image to the controlled product placeholder', () => {
     render(<SafeImage src="assets/images/products/missing.webp" alt="Missing product" />);
@@ -23,7 +30,10 @@ describe('SafeImage', () => {
 
     rerender(<SafeImage src="assets/images/products/gf15-main.webp" alt="Product" loading="lazy" />);
 
-    expect(image).toHaveAttribute('src', ['', 'assets/images/products/gf15-main.webp'].join('/'));
+    expect(image).toHaveAttribute(
+      'src',
+      `${import.meta.env.BASE_URL}assets/images/products/gf15-main.webp`
+    );
     expect(image).toHaveAttribute('loading', 'lazy');
   });
 });

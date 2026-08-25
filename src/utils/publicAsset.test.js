@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { publicAsset } from './publicAsset.js';
 
 describe('publicAsset', () => {
-  const expectedProductPath = ['', 'assets/images/products/gf15-main.webp'].join('/');
+  const expectedProductPath = `${import.meta.env.BASE_URL}assets/images/products/gf15-main.webp`;
 
   it('resolves logical public assets against the current base path', () => {
     expect(publicAsset('assets/images/products/gf15-main.webp'))
