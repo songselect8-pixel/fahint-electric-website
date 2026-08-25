@@ -21,6 +21,17 @@ describe('ProductsOverview', () => {
     expect(styles).toMatch(/@media \(max-width:\s*768px\)/);
     expect(styles).toMatch(/@media \(max-width:\s*700px\)/);
     expect(styles).toMatch(/min-height:\s*44px/);
+
+    const leadFamilyRule = styles.match(/\.product-family-card:first-child\s*\{([^}]*)\}/)?.[1] || '';
+    expect(leadFamilyRule).toMatch(/520px/);
+    expect(leadFamilyRule).not.toMatch(/560px/);
+    const familyGridRule = styles.match(/\.product-family-grid\s*\{([^}]*)\}/)?.[1] || '';
+    expect(familyGridRule).toMatch(/grid-auto-rows:\s*clamp\([^;]*520px\)/);
+
+    const productCardRule = styles.match(/\.pcard\s*\{([^}]*)\}/)?.[1] || '';
+    const productCardTransition = productCardRule.match(/transition:\s*([^;]+)/)?.[1] || '';
+    expect(productCardTransition).toMatch(/transform\s+\d+ms[^,]*,\s*opacity\s+\d+ms/);
+    expect(productCardTransition).not.toMatch(/border-color|box-shadow/);
   });
 
   it('presents exactly the five approved product families as complete links', () => {
@@ -140,6 +151,8 @@ describe('ProductsOverview', () => {
     expect(container.querySelectorAll('.product-family-card')).toHaveLength(5);
     expect(container.querySelector('.product-brand-system__inner')).toBeInTheDocument();
     expect(container.querySelector('.product-evidence-section__grid')).toBeInTheDocument();
+    expect(container.querySelector('.product-market-grid')?.parentElement).toHaveClass('container');
+    expect(container.querySelector('.product-evidence-section__grid')).toHaveClass('container');
   });
 
   it('prioritizes the coordinated family image in the hero', () => {

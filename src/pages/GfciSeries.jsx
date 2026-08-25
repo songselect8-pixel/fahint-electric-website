@@ -91,7 +91,7 @@ export default function GfciSeries() {
       <section className="gfci-series__hero gfci-series-hero">
         <div className="container">
           <p className="gfci-series__eyebrow">GFCI product family</p>
-          <h1>Verified protection for residential and commercial programs.</h1>
+          <h1>GFCI protection for residential and commercial programs.</h1>
           <p className="gfci-series__hero-copy">
             Compare seven published models, then confirm the finish and program requirements for your market.
           </p>

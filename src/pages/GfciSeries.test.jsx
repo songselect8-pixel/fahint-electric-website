@@ -104,7 +104,8 @@ describe('GfciSeries', () => {
 
     expect(screen.getByText('GFCI product family')).toBeInTheDocument();
     expect(screen.getByRole('heading', {
-      name: 'Verified protection for residential and commercial programs.'
+      level: 1,
+      name: 'GFCI protection for residential and commercial programs.'
     })).toBeInTheDocument();
     expect(screen.getByText(
       'Compare seven published models, then confirm the finish and program requirements for your market.'

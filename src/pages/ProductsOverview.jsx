@@ -132,21 +132,23 @@ export default function ProductsOverview() {
           <p>Start with the installation environment, then coordinate the product mix around the project brief.</p>
         </div>
 
-        <div className="product-market-grid">
-          {markets.map((market) => (
-            <Link className="editorial-application" key={market.title} to={market.href}>
-              <SafeImage src={market.image} alt="" loading="lazy" />
-              <div className="editorial-application__shade" />
-              <div className="editorial-application__copy">
-                <p>{market.label}</p>
-                <h3>{market.title}</h3>
-                <span>{market.summary}</span>
-              </div>
-              <span className="editorial-application__arrow" aria-hidden="true">
-                <ArrowRight size={19} />
-              </span>
-            </Link>
-          ))}
+        <div className="container">
+          <div className="product-market-grid">
+            {markets.map((market) => (
+              <Link className="editorial-application" key={market.title} to={market.href}>
+                <SafeImage src={market.image} alt="" loading="lazy" />
+                <div className="editorial-application__shade" />
+                <div className="editorial-application__copy">
+                  <p>{market.label}</p>
+                  <h3>{market.title}</h3>
+                  <span>{market.summary}</span>
+                </div>
+                <span className="editorial-application__arrow" aria-hidden="true">
+                  <ArrowRight size={19} />
+                </span>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 

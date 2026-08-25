@@ -169,7 +169,7 @@
   width: min(100%, 1840px);
   margin: 0 auto;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-auto-rows: auto;
+  grid-auto-rows: clamp(420px, 34vw, 520px);
   gap: clamp(14px, 1.4vw, 24px);
 }
 
@@ -185,7 +185,7 @@
 
 .product-family-card:first-child {
   grid-column: 1 / -1;
-  min-height: clamp(460px, 38vw, 560px);
+  min-height: clamp(460px, 34vw, 520px);
 }
 
 .product-family-card img {
@@ -247,8 +247,7 @@
 
 .product-market-grid {
   display: grid;
-  width: min(100%, 1840px);
-  margin: 0 auto;
+  width: 100%;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-auto-rows: clamp(420px, 31vw, 520px);
   gap: clamp(14px, 1.4vw, 24px);
@@ -340,7 +339,7 @@
 }
 
 .gfci-series-hero h1 {
-  max-width: 19ch;
+  max-width: 27ch;
   margin: 14px 0 0;
   color: #fff;
   font-size: clamp(44px, 5vw, 72px);
@@ -401,6 +400,7 @@
   color: var(--product-ink);
   text-decoration: none;
   transform: none;
+  transition: transform 240ms ease, opacity 240ms ease;
 }
 
 .pcard:hover {
