@@ -1,9 +1,12 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { company } from '../data/company.js';
 import { productLines } from '../data/lines.js';
 
 export default function Footer() {
+  const { pathname } = useLocation();
+  const requiresModelReview = /^\/products\/gfci\/gl20\/?$/i.test(pathname);
+
   return (
     <footer className="footer">
       <div className="container">
@@ -21,7 +24,9 @@ export default function Footer() {
               private-label programs.
             </p>
             <p style={{ marginTop: 14, fontSize: 13.5, color: 'rgba(255,255,255,0.5)' }}>
-              UL File {company.ulFile} | ISO 9001 Certified | US &amp; CN Patented
+              {requiresModelReview
+                ? 'Model-specific certification review required | ISO 9001 Certified | US & CN Patented'
+                : <>UL File {company.ulFile} | ISO 9001 Certified | US &amp; CN Patented</>}
             </p>
           </div>
 

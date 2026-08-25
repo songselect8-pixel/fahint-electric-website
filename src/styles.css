@@ -5056,6 +5056,554 @@ ul {
   outline-offset: 3px;
 }
 
+.product-story,
+.product-technical,
+.product-related,
+.product-inquiry {
+  padding: clamp(88px, 8vw, 124px) 0;
+}
+
+.product-story h2,
+.product-technical h2,
+.product-related h2,
+.product-inquiry h2 {
+  max-width: 760px;
+  margin: 0;
+  color: #07152c;
+  font-size: clamp(38px, 4vw, 58px);
+  font-weight: 720;
+  letter-spacing: -.045em;
+  line-height: 1.02;
+  text-transform: none;
+  text-wrap: balance;
+}
+
+.product-section-label {
+  margin: 0 0 18px;
+  color: #148dc9;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.product-story__split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.06fr) minmax(380px, .94fr);
+  align-items: center;
+  gap: clamp(56px, 8vw, 124px);
+}
+
+.product-story__split--reverse {
+  grid-template-columns: minmax(380px, .94fr) minmax(0, 1.06fr);
+}
+
+.product-story__media,
+.product-installation__grid figure,
+.product-certification__media,
+.product-manufacturing__grid figure,
+.product-finish-strip figure {
+  margin: 0;
+}
+
+.product-story__media {
+  min-width: 0;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #edf1f4;
+}
+
+.product-story__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.product-story__media--cover img {
+  object-fit: cover;
+}
+
+.product-story__summary,
+.product-story__note,
+.product-story__oem-head > p,
+.product-technical__head > p,
+.product-certification p,
+.product-inquiry__intro > p:not(.product-section-label) {
+  color: #5c6d80;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.product-story__summary {
+  margin: 26px 0 0;
+}
+
+.product-story__note {
+  margin: 16px 0 24px;
+  font-size: 14px;
+}
+
+.product-story__points {
+  display: grid;
+  gap: 0;
+  margin: 36px 0 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid #d5dde4;
+}
+
+.product-story__points li {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 12px;
+  padding: 16px 0;
+  border-top: 1px solid #d5dde4;
+  color: #173252;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.product-story__points svg,
+.product-oem__capabilities svg {
+  margin-top: 2px;
+  color: #148dc9;
+}
+
+.product-story--application {
+  background: #071d43;
+}
+
+.product-story--application h2,
+.product-story--application .product-story__grade {
+  color: #fff;
+}
+
+.product-story--application .product-story__summary,
+.product-story--application .product-story__note {
+  color: #b6c6d9;
+}
+
+.product-story--application .product-story__grade {
+  display: inline-flex;
+  margin: 28px 0 0;
+  padding: 9px 12px;
+  border: 1px solid rgba(255, 255, 255, .24);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.product-story--application .textlink {
+  color: #72d0f0;
+}
+
+.product-story--oem,
+.product-installation,
+.product-related {
+  background: #f2f5f7;
+}
+
+.product-story__oem-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, .55fr);
+  align-items: end;
+  gap: 64px;
+  margin-bottom: 44px;
+}
+
+.product-story__oem-head > p {
+  margin: 0 0 4px;
+}
+
+.product-finish-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid #d2dbe2;
+  border-left: 1px solid #d2dbe2;
+}
+
+.product-finish-strip figure {
+  min-width: 0;
+  padding: 18px;
+  border-right: 1px solid #d2dbe2;
+  border-bottom: 1px solid #d2dbe2;
+  background: #fff;
+}
+
+.product-finish-strip img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+}
+
+.product-finish-strip figcaption,
+.product-installation__grid figcaption,
+.product-manufacturing__grid figcaption {
+  margin-top: 12px;
+  color: #4f6072;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.product-oem__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 36px;
+  margin-top: 32px;
+}
+
+.product-oem__capabilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 26px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.product-oem__capabilities li {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: #334a62;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.product-specifications {
+  scroll-margin-top: calc(var(--header-h) + 24px);
+  background: #fff;
+}
+
+.product-technical__narrow {
+  max-width: 980px;
+}
+
+.product-specifications__desktop {
+  margin-top: 44px;
+  border-top: 1px solid #ccd6de;
+}
+
+.product-specifications table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.product-specifications th,
+.product-specifications td {
+  padding: 18px 12px;
+  border-bottom: 1px solid #d8e0e6;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.product-specifications th {
+  width: 38%;
+  padding-left: 0;
+  color: #657487;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.product-specifications td {
+  padding-right: 0;
+  color: #102b4d;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.product-specifications__mobile {
+  display: none;
+}
+
+.product-specifications .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.product-technical__head {
+  max-width: 800px;
+  margin-bottom: 44px;
+}
+
+.product-technical__head > p:not(.product-section-label) {
+  max-width: 680px;
+  margin: 22px 0 0;
+}
+
+.product-installation__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.product-installation__grid figure {
+  padding: 22px;
+  border: 1px solid #d6dfe6;
+  background: #fff;
+}
+
+.product-installation__grid img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+}
+
+.product-certification {
+  background: #071d43;
+}
+
+.product-certification__grid {
+  display: grid;
+  grid-template-columns: minmax(300px, .72fr) minmax(0, 1.28fr);
+  align-items: center;
+  gap: clamp(56px, 8vw, 116px);
+}
+
+.product-certification__media {
+  padding: clamp(28px, 4vw, 54px);
+  background: #fff;
+}
+
+.product-certification__media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+}
+
+.product-certification h2,
+.product-certification__reference,
+.product-certification--review svg {
+  color: #fff;
+}
+
+.product-certification p:not(.product-section-label):not(.product-certification__reference) {
+  max-width: 620px;
+  color: #b7c7d9;
+}
+
+.product-certification__reference {
+  margin: 28px 0 14px;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.product-certification .textlink {
+  margin-top: 12px;
+  color: #72d0f0;
+}
+
+.product-certification__downloads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.product-certification__downloads a {
+  padding: 9px 12px;
+  border: 1px solid rgba(255, 255, 255, .26);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.product-certification__review {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 760px);
+  gap: 24px;
+}
+
+.product-manufacturing {
+  background: #fff;
+}
+
+.product-manufacturing__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.product-manufacturing__grid figure {
+  min-width: 0;
+}
+
+.product-manufacturing__grid img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.product-inquiry {
+  scroll-margin-top: calc(var(--header-h) + 24px);
+  background: #071d43;
+}
+
+.product-inquiry__layout {
+  display: grid;
+  grid-template-columns: minmax(300px, .78fr) minmax(520px, 1.22fr);
+  align-items: start;
+  gap: clamp(52px, 8vw, 112px);
+}
+
+.product-inquiry h2 {
+  color: #fff;
+}
+
+.product-inquiry__intro > p:not(.product-section-label) {
+  margin: 24px 0;
+  color: #b7c7d9;
+}
+
+.product-inquiry .textlink {
+  color: #72d0f0;
+}
+
+.product-inquiry .form-card {
+  border: 0;
+  border-radius: 12px;
+  box-shadow: 0 28px 76px rgba(0, 0, 0, .28);
+}
+
+.product-mobile-quote {
+  position: fixed;
+  z-index: 72;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  left: 14px;
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  background: #148dc9;
+  box-shadow: 0 12px 28px rgba(4, 24, 52, .28);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.product-mobile-quote:focus-visible {
+  outline: 3px solid #071d43;
+  outline-offset: 3px;
+}
+
+@media (min-width: 701px) {
+  .product-mobile-quote {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .product-story__split,
+  .product-story__split--reverse,
+  .product-story__oem-head,
+  .product-certification__grid,
+  .product-inquiry__layout {
+    grid-template-columns: 1fr;
+    gap: 46px;
+  }
+
+  .product-story__split--reverse .product-story__content {
+    order: 2;
+  }
+
+  .product-finish-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .product-oem__footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 700px) {
+  .product-story,
+  .product-technical,
+  .product-related,
+  .product-inquiry {
+    padding: 72px 0;
+  }
+
+  .product-story h2,
+  .product-technical h2,
+  .product-related h2,
+  .product-inquiry h2 {
+    font-size: clamp(34px, 9.5vw, 42px);
+  }
+
+  .product-story__split,
+  .product-story__split--reverse {
+    gap: 38px;
+  }
+
+  .product-story__media {
+    aspect-ratio: 1;
+  }
+
+  .product-finish-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .product-specifications__desktop {
+    display: none;
+  }
+
+  .product-specifications__mobile {
+    display: block;
+    margin-top: 36px;
+    border-top: 1px solid #ccd6de;
+  }
+
+  .product-specifications__mobile details {
+    border-bottom: 1px solid #d8e0e6;
+  }
+
+  .product-specifications__mobile summary {
+    padding: 17px 28px 17px 0;
+    color: #4f6072;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .product-specifications__mobile p {
+    margin: 0;
+    padding: 0 0 18px;
+    color: #102b4d;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .product-installation__grid,
+  .product-manufacturing__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-certification__review {
+    grid-template-columns: 1fr;
+  }
+
+  .product-mobile-quote {
+    right: 78px;
+  }
+}
+
 @media (max-width: 900px) {
   .product-detail-hero__grid {
     grid-template-columns: 1fr;
@@ -5109,56 +5657,6 @@ ul {
   .product-gallery__finishes {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-}
-
-.pd-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 54px;
-  align-items: start;
-}
-
-.pd-main {
-  background: var(--gray-100);
-  border-radius: var(--radius-img);
-  aspect-ratio: 1;
-  display: grid;
-  place-items: center;
-  padding: 26px;
-  overflow: hidden;
-}
-
-.pd-main img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.pd-thumbs {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.pd-thumb {
-  background: var(--gray-100);
-  border: 2px solid transparent;
-  border-radius: 11px;
-  padding: 6px;
-  cursor: pointer;
-  aspect-ratio: 1;
-  overflow: hidden;
-}
-
-.pd-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.pd-thumb.is-active {
-  border-color: var(--blue);
 }
 
 .spec-table {
@@ -6996,8 +7494,7 @@ ul {
   .hero__grid,
   .split,
   .faq-layout,
-  .contact-layout,
-  .pd-layout {
+  .contact-layout {
     grid-template-columns: 1fr;
     gap: 40px;
   }
@@ -7155,9 +7652,6 @@ ul {
   }
   .form-card {
     padding: 24px 20px;
-  }
-  .pd-thumbs {
-    grid-template-columns: repeat(5, 1fr);
   }
   /* Keep the contact rail out of the reading column on small screens */
   .rail {

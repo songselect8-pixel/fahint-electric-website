@@ -1,11 +1,55 @@
-import { Link, useParams, Navigate } from 'react-router-dom';
-import { Check, ShieldCheck } from 'lucide-react';
-import { findProduct, colorImage, colors, products, productImage } from '../data/products.js';
-import { company } from '../data/company.js';
+import { Link, Navigate, useParams } from 'react-router-dom';
+import { findProduct, products } from '../data/products.js';
 import ProductCard from '../components/ProductCard.jsx';
 import InquiryForm from '../components/InquiryForm.jsx';
-import SafeImage from '../components/SafeImage.jsx';
-import ProductDetailHero, { hasVerifiedListing } from '../components/products/ProductDetailHero.jsx';
+import ProductDetailHero from '../components/products/ProductDetailHero.jsx';
+import {
+  ProductApplicationStory,
+  ProductFeatureStory,
+  ProductOemStory
+} from '../components/products/ProductStorySections.jsx';
+import {
+  ProductCertification,
+  ProductInstallation,
+  ProductManufacturingProof,
+  ProductSpecifications
+} from '../components/products/ProductTechnicalSections.jsx';
+
+function RelatedProducts({ products: related }) {
+  return (
+    <section className="product-related">
+      <div className="container">
+        <div className="product-technical__head">
+          <p className="product-section-label">Related models</p>
+          <h2>Other verified GFCI models.</h2>
+        </div>
+        <div className="prod-grid">
+          {related.map((product) => <ProductCard key={product.sku} product={product} />)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProductInquiry({ product }) {
+  return (
+    <section className="product-inquiry" id="inquiry">
+      <div className="container product-inquiry__layout">
+        <div className="product-inquiry__intro">
+          <p className="product-section-label">Project inquiry</p>
+          <h2>Request a quotation for {product.sku}.</h2>
+          <p>
+            Share the intended application, target finish and documentation needs so the team can review the product brief.
+          </p>
+          <Link className="textlink" to={`/contact?model=${encodeURIComponent(product.sku)}`}>
+            Use the full contact page
+          </Link>
+        </div>
+        <InquiryForm defaultModel={product.sku} title="Send a product brief." />
+      </div>
+    </section>
+  );
+}
 
 export default function ProductDetail() {
   const { sku } = useParams();
@@ -13,8 +57,7 @@ export default function ProductDetail() {
 
   if (!product) return <Navigate to="/products/gfci" replace />;
 
-  const related = products.filter((p) => p.sku !== product.sku).slice(0, 4);
-  const listed = hasVerifiedListing(product);
+  const related = products.filter((candidate) => candidate.sku !== product.sku).slice(0, 4);
 
   return (
     <>
@@ -27,117 +70,19 @@ export default function ProductDetail() {
       </nav>
 
       <ProductDetailHero product={product} />
+      <ProductFeatureStory product={product} />
+      <ProductApplicationStory product={product} />
+      <ProductOemStory product={product} />
+      <ProductSpecifications product={product} />
+      <ProductInstallation product={product} />
+      <ProductCertification product={product} />
+      <ProductManufacturingProof />
+      <RelatedProducts products={related} />
+      <ProductInquiry product={product} />
 
-      <section className="section section--gray">
-        <div className="container split">
-          <div className="split__media">
-            <SafeImage src={productImage(product.sku, 'features')} alt={`${product.sku} features`} loading="lazy" />
-          </div>
-          <div>
-            <div className="eyebrow">/ Product Features /</div>
-            <h2 style={{ marginBottom: 18 }}>Why This Model Passes Inspection</h2>
-            <ul className="checklist">
-              {product.features.map((f) => (
-                <li key={f}>
-                  <Check size={17} /> {f}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="container">
-          <div className="section-head">
-            <div className="eyebrow">/ Installation /</div>
-            <h2>Wiring and Dimensions</h2>
-            <p>
-              Insert wires through the terminal holes under the screws, tighten clockwise, then press RESET — the green LED
-              confirms correct installation. Test the device monthly.
-            </p>
-          </div>
-          <div className="split">
-            <div className="split__media">
-              <SafeImage src={productImage(product.sku, 'install')} alt={`${product.sku} wiring diagram`} loading="lazy" />
-            </div>
-            <div className="split__media">
-              <SafeImage src={productImage(product.sku, 'dimensions')} alt={`${product.sku} dimensions`} loading="lazy" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section section--gray">
-        <div className="container">
-          <div className="section-head">
-            <div className="eyebrow">/ Finish Range /</div>
-            <h2>{product.sku} in Every Colour</h2>
-          </div>
-          <div className="color-grid">
-            {colors.map((c) => (
-              <div className="color-cell" key={c.slug}>
-                <div className="color-cell__img">
-                  <SafeImage src={colorImage(product.sku, c.slug)} alt={`${product.sku} in ${c.name}`} loading="lazy" />
-                </div>
-                <strong>{c.name}</strong>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section" id="inquiry">
-        <div className="container">
-          <div className="section-head">
-            <div className="eyebrow">/ Inquiry /</div>
-            <h2>Request Pricing for {product.sku}</h2>
-          </div>
-          <div className="contact-layout">
-            <div>
-              <ul className="checklist" style={{ marginBottom: 22 }}>
-                <li>
-                  <ShieldCheck size={17} />{' '}
-                  {listed
-                    ? `UL/cUL listed under file ${company.ulFile}`
-                    : 'Certification documentation available on request'}
-                </li>
-                <li>
-                  <Check size={17} /> Customisation MOQ from 400 cartons
-                </li>
-                <li>
-                  <Check size={17} /> Engineering response within 6 hours
-                </li>
-                <li>
-                  <Check size={17} /> US warehouse stock ships in 3 days
-                </li>
-              </ul>
-              <p style={{ color: 'var(--gray-600)' }}>
-                Prefer to write directly? Email{' '}
-                <a href={`mailto:${company.email}`} style={{ color: 'var(--blue)', fontWeight: 600 }}>
-                  {company.email}
-                </a>{' '}
-                or message {company.phone} on WhatsApp.
-              </p>
-            </div>
-            <InquiryForm defaultModel={product.sku} />
-          </div>
-        </div>
-      </section>
-
-      <section className="section section--gray">
-        <div className="container">
-          <div className="section-head">
-            <div className="eyebrow">/ Related /</div>
-            <h2>Other Models in the Range</h2>
-          </div>
-          <div className="prod-grid">
-            {related.map((p) => (
-              <ProductCard key={p.sku} product={p} />
-            ))}
-          </div>
-        </div>
-      </section>
+      <a className="product-mobile-quote" href="#inquiry">
+        Request quote for {product.sku}
+      </a>
     </>
   );
 }

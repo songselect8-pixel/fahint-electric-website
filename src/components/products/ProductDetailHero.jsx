@@ -2,9 +2,11 @@ import { ArrowRight, FileCheck2, ShieldCheck } from 'lucide-react';
 import ProductGallery from './ProductGallery.jsx';
 
 const VERIFIED_LISTING_REFERENCE = 'E504391';
+const VERIFIED_GFCI_MODELS = new Set(['GF15', 'GF20', 'GT15', 'GT20', 'GW15', 'GW20']);
 
 export function hasVerifiedListing(product) {
-  return product.features?.some((feature) => feature.includes(VERIFIED_LISTING_REFERENCE)) ?? false;
+  return VERIFIED_GFCI_MODELS.has(product?.sku)
+    && (product.features?.some((feature) => feature.includes(VERIFIED_LISTING_REFERENCE)) ?? false);
 }
 
 export default function ProductDetailHero({ product }) {
@@ -27,7 +29,7 @@ export default function ProductDetailHero({ product }) {
           <h1>{product.name}</h1>
           <p className="product-detail-hero__summary">{product.summary}</p>
 
-          <dl className="product-detail-hero__facts" id="technical-details">
+          <dl className="product-detail-hero__facts">
             {facts.map(([term, description]) => (
               <div key={term}>
                 <dt>{term}</dt>
@@ -40,7 +42,7 @@ export default function ProductDetailHero({ product }) {
             {listed ? <ShieldCheck size={19} aria-hidden="true" /> : <FileCheck2 size={19} aria-hidden="true" />}
             {listed
               ? 'UL / cUL listed · file E504391'
-              : 'Certification documentation available on request'}
+              : 'Model-specific certification documentation review required'}
           </p>
 
           <div className="product-detail-hero__actions">
