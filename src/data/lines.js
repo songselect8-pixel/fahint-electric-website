@@ -6,7 +6,7 @@ export const productLines = [
     slug: 'gfci',
     name: 'GFCI Outlets',
     short: 'GFCI',
-    cover: '/assets/images/products/gf15-plate.webp',
+    cover: 'assets/images/products/gf15-plate.webp',
     tagline: 'Class A self-test ground fault protection',
     summary:
       'UL/cUL listed Class A GFCI receptacles in 15A and 20A, covering standard, tamper-resistant, weather-resistant, blank face and industrial grade.',
@@ -20,7 +20,7 @@ export const productLines = [
     slug: 'usb-outlets',
     name: 'USB Outlets',
     short: 'USB',
-    cover: '/assets/images/lines/usb-3100-plate.webp',
+    cover: 'assets/images/lines/usb-3100-plate.webp',
     tagline: 'Type-A, Type-C and PD fast charging receptacles',
     summary:
       'Combination receptacles with integrated USB charging, from 3100 mA Type-A pairs up to 65 W GaN Power Delivery, in 15A and 20A NEMA faces.',
@@ -34,13 +34,13 @@ export const productLines = [
       { name: '5000 mA', items: ['FTR15-5000', 'FTR20-5000'] },
       { name: 'Power Delivery', items: ['PD 20W', 'PD 36W', 'PD 65W GaN'] }
     ],
-    gallery: ['/assets/images/lines/usb-3100-plate.webp', '/assets/images/lines/usb-3100.webp', '/assets/images/lines/usb-pd65-plate.webp', '/assets/images/lines/usb-pd65.webp']
+    gallery: ['assets/images/lines/usb-3100-plate.webp', 'assets/images/lines/usb-3100.webp', 'assets/images/lines/usb-pd65-plate.webp', 'assets/images/lines/usb-pd65.webp']
   },
   {
     slug: 'receptacles',
     name: 'Standard Receptacles',
     short: 'Receptacles',
-    cover: '/assets/images/lines/recep-decora-plate.webp',
+    cover: 'assets/images/lines/recep-decora-plate.webp',
     tagline: 'Duplex, Decora, commercial and industrial grade',
     summary:
       'The full American standard receptacle range covers R series duplex, D series Decora, and C series commercial and industrial grade. Each is available in TR and WR variants.',
@@ -51,26 +51,26 @@ export const productLines = [
       { name: 'D series Decora', items: ['D15', 'D15Q', 'D20', 'DT15', 'DT15Q', 'DT20', 'DW15', 'DW15Q', 'DW20'] },
       { name: 'C series commercial', items: ['C15', 'C20', 'CR15', 'CR20', 'CD20'] }
     ],
-    gallery: ['/assets/images/lines/recep-decora-plate.webp', '/assets/images/lines/recep-decora.webp', '/assets/images/lines/recep-duplex.webp', '/assets/images/lines/recep-duplex-plate.webp']
+    gallery: ['assets/images/lines/recep-decora-plate.webp', 'assets/images/lines/recep-decora.webp', 'assets/images/lines/recep-duplex.webp', 'assets/images/lines/recep-duplex-plate.webp']
   },
   {
     slug: 'dimmers',
     name: 'Dimmers',
     short: 'Dimmers',
-    cover: '/assets/images/lines/dimmer-plate.webp',
+    cover: 'assets/images/lines/dimmer-plate.webp',
     tagline: 'Digital slide dimmers and 0-10V control',
     summary:
       'Digital dimmer light switches for LED, CFL, halogen and incandescent loads, including a 0-10V variant for commercial lighting control.',
     standard: 'UL listed',
     highlights: ['DM2010 digital slide', 'DM2010S 0-10V', 'Seven finishes'],
     groups: [{ name: 'Digital dimmers', items: ['DM2010 - Digital Dimmer Light Switch', 'DM2010S - 0-10V Dimmer Light Switch'] }],
-    gallery: ['/assets/images/lines/dimmer-plate.webp', '/assets/images/lines/dimmer.webp']
+    gallery: ['assets/images/lines/dimmer-plate.webp', 'assets/images/lines/dimmer.webp']
   },
   {
     slug: 'smart-switches',
     name: 'Smart Switches',
     short: 'Smart',
-    cover: '/assets/images/lines/smart-switch.webp',
+    cover: 'assets/images/lines/smart-switch.webp',
     tagline: 'Wi-Fi, Zigbee and touch glass panels',
     summary:
       'Tempered glass touch switches with Wi-Fi and Zigbee connectivity, in both neutral-required and single-live-wire configurations, for US and EU standards.',
@@ -82,13 +82,13 @@ export const productLines = [
       { name: 'Zigbee single live wire', items: ['1 gang', '2 gang', '3 gang'] },
       { name: 'Touch switch', items: ['Neutral required', 'Single live wire'] }
     ],
-    gallery: ['/assets/images/lines/smart-switch.webp', '/assets/images/lines/smart-switch-alt.webp']
+    gallery: ['assets/images/lines/smart-switch.webp', 'assets/images/lines/smart-switch-alt.webp']
   },
   {
     slug: 'lighting-switches',
     name: 'Lighting Switches',
     short: 'Switches',
-    cover: '/assets/images/lines/switch-paddle.webp',
+    cover: 'assets/images/lines/switch-paddle.webp',
     tagline: 'Paddle rocker and toggle wall switches',
     summary:
       'Decorator paddle rocker and classic toggle switches in single pole, three-way and four-way configurations, matched to the same seven-finish palette.',
@@ -98,13 +98,13 @@ export const productLines = [
       { name: 'Paddle rocker', items: ['DS15 single pole', 'DS15.3 three-way', '2 gang', '3 gang'] },
       { name: 'Toggle', items: ['T15', 'T15.3 three-way'] }
     ],
-    gallery: ['/assets/images/lines/switch-paddle.webp', '/assets/images/lines/switch-paddle-alt.webp']
+    gallery: ['assets/images/lines/switch-paddle.webp', 'assets/images/lines/switch-paddle-alt.webp']
   },
   {
     slug: 'wallplates',
     name: 'Wallplates',
     short: 'Wallplates',
-    cover: '/assets/images/lines/wallplate.webp',
+    cover: 'assets/images/lines/wallplate.webp',
     tagline: 'Screwless and standard decorator plates',
     summary:
       'Screwless and standard decorator wallplates from 1 to 4 gang, in glossy and matte finishes, coordinated with every Fahint device family.',
@@ -115,7 +115,7 @@ export const productLines = [
       { name: 'Screwless plates', items: ['BS1803', 'BS18032', 'BS18033', 'BS18034'] },
       { name: 'Specialty', items: ['BS1804 / BS1804M', 'BS1805 extension', 'BS1806', 'BS1807 blank'] }
     ],
-    gallery: ['/assets/images/lines/wallplate.webp', '/assets/images/lines/wallplate-matte.webp']
+    gallery: ['assets/images/lines/wallplate.webp', 'assets/images/lines/wallplate-matte.webp']
   }
 ];
 

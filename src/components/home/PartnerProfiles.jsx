@@ -6,17 +6,17 @@ const partners = [
   {
     title: 'Private-label brands',
     body: 'A coordinated product system, appearance direction and packaging support for building a recognisable line.',
-    image: '/assets/images/company/team-meeting.webp'
+    image: 'assets/images/company/team-meeting.webp'
   },
   {
     title: 'Electrical distributors',
     body: 'Market-ready model selection, compliance references and a practical path from sample review to repeat orders.',
-    image: '/assets/images/company/facility-sampleroom.webp'
+    image: 'assets/images/company/facility-sampleroom.webp'
   },
   {
     title: 'Project buyers',
     body: 'A consolidated source for matched wiring-device families across residential and commercial specifications.',
-    image: '/assets/images/company/facility-uswarehouse.webp'
+    image: 'assets/images/company/facility-uswarehouse.webp'
   }
 ];
 

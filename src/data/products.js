@@ -204,7 +204,7 @@ const FALLBACK = 'gf15';
 export function productImage(sku, shot) {
   const key = String(sku).toLowerCase();
   const base = products.find((p) => p.sku === sku)?.hasImages ? key : FALLBACK;
-  return `/assets/images/products/${base}-${shot}.webp`;
+  return `assets/images/products/${base}-${shot}.webp`;
 }
 
 export function productGallery(sku) {
@@ -214,7 +214,7 @@ export function productGallery(sku) {
 export function colorImage(sku, colorSlug) {
   const key = String(sku).toLowerCase();
   const base = products.find((p) => p.sku === sku)?.hasImages ? key : FALLBACK;
-  return `/assets/images/products/${base}-${colorSlug}.webp`;
+  return `assets/images/products/${base}-${colorSlug}.webp`;
 }
 
 export function findProduct(sku) {

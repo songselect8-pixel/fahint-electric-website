@@ -18,7 +18,7 @@ export default function BrandApplicationStory() {
         </Reveal>
         <Reveal className="home-brand-story__media" delay={100}>
           <img
-            src="/assets/images/company/team-meeting.webp"
+            src="assets/images/company/team-meeting.webp"
             alt="Fahint team reviewing a private-label wiring device program with a customer"
             loading="lazy"
           />

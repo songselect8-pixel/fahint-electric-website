@@ -58,22 +58,22 @@ export const capabilities = [
   {
     title: 'In-House Tooling & Injection',
     body: 'Precision molds and injection lines for thermoplastic and nylon housings.',
-    image: '/assets/images/products/gf15-back-angle.webp'
+    image: 'assets/images/products/gf15-back-angle.webp'
   },
   {
     title: '12 Automated Inspection Lines',
     body: 'Every unit is dielectric, trip-threshold and continuity tested before packing.',
-    image: '/assets/images/products/gf15-mcu.webp'
+    image: 'assets/images/products/gf15-mcu.webp'
   },
   {
     title: 'Thickened Silver Contacts',
     body: 'Reduced temperature rise and longer mechanical life under commercial duty.',
-    image: '/assets/images/products/gf15-sides.webp'
+    image: 'assets/images/products/gf15-sides.webp'
   },
   {
     title: 'Approved ALDI Supplier',
     body: 'Ten years of retail-grade compliance with zero Category A complaints.',
-    image: '/assets/images/products/gf15-lifestyle.webp'
+    image: 'assets/images/products/gf15-lifestyle.webp'
   }
 ];
 

@@ -190,7 +190,7 @@ export default function ProductsOverview() {
       <section className="section">
         <div className="container">
           <div className="sourcing-panel">
-            <img src="/assets/images/company/facility-workshop.webp" alt="Fahint workshop" loading="lazy" />
+            <img src="assets/images/company/facility-workshop.webp" alt="Fahint workshop" loading="lazy" />
             <div className="sourcing-panel__overlay" />
             <div className="sourcing-panel__content">
               <span>OEM / ODM Custom Solutions</span>

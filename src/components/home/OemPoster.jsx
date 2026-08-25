@@ -6,7 +6,7 @@ export default function OemPoster() {
     <section className="home-oem-poster" aria-labelledby="home-oem-title" data-title-align="left">
       <img
         className="home-oem-poster__image"
-        src="/assets/images/hero/hero-factory.webp"
+        src="assets/images/hero/hero-factory.webp"
         alt="Fahint automated wiring device production line"
         loading="lazy"
       />

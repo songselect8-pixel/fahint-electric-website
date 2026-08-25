@@ -10,7 +10,7 @@ export const posts = [
     date: '2026-08-12',
     readMinutes: 7,
     category: 'Technical Guide',
-    cover: '/assets/images/products/gf15-features.webp',
+    cover: 'assets/images/products/gf15-features.webp',
     body: [
       { type: 'p', text: 'Buyers regularly ask us whether a GFCI receptacle can replace an AFCI breaker, or the reverse. It cannot. The two devices monitor different electrical signatures and protect against different hazards, and the National Electrical Code treats them as separate requirements.' },
       { type: 'h2', text: 'What a GFCI detects' },
@@ -36,7 +36,7 @@ export const posts = [
     date: '2026-08-08',
     readMinutes: 6,
     category: 'Compliance',
-    cover: '/assets/images/products/gw15-lifestyle.webp',
+    cover: 'assets/images/products/gw15-lifestyle.webp',
     body: [
       { type: 'p', text: 'One of the most common specification errors we see on outdoor installations is treating a weatherproof enclosure and a weather-resistant receptacle as the same thing. They are complementary, not interchangeable, and NEC Section 406.8 addresses both.' },
       { type: 'h2', text: 'Damp versus wet locations' },
@@ -60,7 +60,7 @@ export const posts = [
     date: '2026-08-04',
     readMinutes: 8,
     category: 'Troubleshooting',
-    cover: '/assets/images/products/gf15-install.webp',
+    cover: 'assets/images/products/gf15-install.webp',
     body: [
       { type: 'p', text: 'When a GFCI trips repeatedly, the instinct is often to assume the device is defective. In practice a tripping GFCI is usually doing exactly what it was designed to do. Working through the causes in order will identify the real problem faster than swapping devices.' },
       { type: 'h2', text: '1. A genuine ground fault' },
@@ -87,7 +87,7 @@ export const posts = [
     date: '2026-07-29',
     readMinutes: 5,
     category: 'Compliance',
-    cover: '/assets/images/products/gt15-plate.webp',
+    cover: 'assets/images/products/gt15-plate.webp',
     body: [
       { type: 'p', text: 'The tamper-resistant requirement is one of the clearest child-safety provisions in the National Electrical Code, and it is also one of the most frequently under-specified when buyers build a purchase order from an older parts list.' },
       { type: 'h2', text: 'How the shutter mechanism works' },
@@ -110,7 +110,7 @@ export const posts = [
     date: '2026-07-22',
     readMinutes: 9,
     category: 'Sourcing',
-    cover: '/assets/images/hero/hero-factory.webp',
+    cover: 'assets/images/hero/hero-factory.webp',
     body: [
       { type: 'p', text: 'GFCI devices are life-safety products. For an importer, a compliance failure is not a quality complaint — it is a recall, a liability exposure and potentially a customs detention. The due diligence is worth doing properly.' },
       { type: 'h2', text: 'Verify the UL file, not the certificate image' },
@@ -139,7 +139,7 @@ export const posts = [
     date: '2026-07-15',
     readMinutes: 5,
     category: 'Specification',
-    cover: '/assets/images/products/gf15-white.webp',
+    cover: 'assets/images/products/gf15-white.webp',
     body: [
       { type: 'p', text: 'Finish is usually the last thing on a wiring device specification and the first thing an end client notices. On a completed project, three slightly different shades of white across receptacles, switches and plates reads as poor workmanship even when the electrical work is flawless.' },
       { type: 'h2', text: 'Why shades drift' },

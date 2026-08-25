@@ -17,7 +17,7 @@ export default function Blog() {
     <>
       <section className="blog-banner">
         <div className="blog-banner__bg">
-          <img src="/assets/images/hero/hero-factory.webp" alt="" />
+          <img src="assets/images/hero/hero-factory.webp" alt="" />
         </div>
         <div className="container blog-banner__inner">
           <h1>GFCI &amp; Wiring Device Insights, Standards and News</h1>

@@ -6,7 +6,7 @@ export default function BrandHero() {
     <section className="home-hero" aria-labelledby="home-hero-title" data-title-align="left">
       <img
         className="home-hero__image"
-        src="/assets/images/hero/hero-interior.webp"
+        src="assets/images/hero/hero-interior.webp"
         alt="Fahint receptacle installed in a modern North American interior"
         fetchpriority="high"
       />

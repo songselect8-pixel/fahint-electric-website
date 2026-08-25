@@ -4,25 +4,25 @@ const stages = [
   {
     title: 'Select',
     detail: 'Choose product families, ratings and market-ready models.',
-    image: '/assets/images/company/facility-sampleroom.webp',
+    image: 'assets/images/company/facility-sampleroom.webp',
     alt: 'Fahint sample room'
   },
   {
     title: 'Customize',
     detail: 'Align finishes, logo placement and retail packaging.',
-    image: '/assets/images/company/team-meeting.webp',
+    image: 'assets/images/company/team-meeting.webp',
     alt: 'Private-label project review'
   },
   {
     title: 'Approve',
     detail: 'Confirm samples, markings and technical documents.',
-    image: '/assets/images/company/facility-lab.webp',
+    image: 'assets/images/company/facility-lab.webp',
     alt: 'Fahint testing laboratory'
   },
   {
     title: 'Produce',
     detail: 'Manufacture, inspect and prepare the approved range for shipment.',
-    image: '/assets/images/company/facility-workshop.webp',
+    image: 'assets/images/company/facility-workshop.webp',
     alt: 'Fahint production workshop'
   }
 ];

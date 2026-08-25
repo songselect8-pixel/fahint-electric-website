@@ -2,7 +2,7 @@ import { ArrowRight, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Reveal from '../Reveal.jsx';
 
-const asset = (name) => `/assets/images/editorial-home/${name}`;
+const asset = (name) => `assets/images/editorial-home/${name}`;
 
 const products = [
   {

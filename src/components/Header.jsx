@@ -44,7 +44,7 @@ export default function Header() {
           <Link to="/" className="logo" aria-label={company.shortName}>
             <img
               className="logo__image"
-              src="/assets/images/brand/fahint-logo-navy.png"
+              src="assets/images/brand/fahint-logo-navy.png"
               alt="Fahint"
               width="204"
               height="34"

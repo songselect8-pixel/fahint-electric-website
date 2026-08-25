@@ -20,7 +20,7 @@ describe('Header', () => {
     renderHeader();
 
     const logo = screen.getByRole('img', { name: 'Fahint' });
-    expect(logo).toHaveAttribute('src', '/assets/images/brand/fahint-logo-navy.png');
+    expect(logo).toHaveAttribute('src', 'assets/images/brand/fahint-logo-navy.png');
     expect(document.querySelector('.logo__mark')).not.toBeInTheDocument();
     expect(document.querySelector('.logo__text')).not.toBeInTheDocument();
   });
