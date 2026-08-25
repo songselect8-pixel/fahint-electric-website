@@ -92,7 +92,7 @@ function ProductDownloads({ documents }) {
   if (!Array.isArray(documents) || documents.length === 0) return null;
   return (
     <details className="product-certification__downloads product-documents">
-      <summary>Product documents</summary>
+      <summary tabIndex={0}>Product documents</summary>
       <div aria-label="Product downloads">
         {documents.map((document) => {
           const href = typeof document === 'string' ? document : document.href || document.url;

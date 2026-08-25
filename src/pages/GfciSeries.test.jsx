@@ -109,6 +109,8 @@ describe('GfciSeries', () => {
     })).toBeInTheDocument();
     const styles = readFileSync('src/styles/product-experience.css', 'utf8');
     expect(styles).not.toMatch(/\.gfci-series-hero h1\s*\{[^}]*max-width:\s*15ch/);
+    const filterRule = styles.match(/\.gfci-filter-bar\s*\{([^}]*)\}/)?.[1] || '';
+    expect(filterRule).toMatch(/top:\s*calc\(var\(--header-h\)\s*\+\s*26px\)/);
     expect(screen.getByText(
       'Compare seven published models, then confirm the finish and program requirements for your market.'
     )).toBeInTheDocument();

@@ -32,6 +32,7 @@ describe('ProductsOverview', () => {
     const productCardTransition = productCardRule.match(/transition:\s*([^;]+)/)?.[1] || '';
     expect(productCardTransition).toMatch(/transform\s+\d+ms[^,]*,\s*opacity\s+\d+ms/);
     expect(productCardTransition).not.toMatch(/border-color|box-shadow/);
+    expect(styles).not.toMatch(/will-change:\s*transform/);
   });
 
   it('presents exactly the five approved product families as complete links', () => {

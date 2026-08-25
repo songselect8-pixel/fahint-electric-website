@@ -4,6 +4,8 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import userEvent from '@testing-library/user-event';
 import ProductDetail from './ProductDetail.jsx';
+import { ProductCertification } from '../components/products/ProductTechnicalSections.jsx';
+import { findProduct } from '../data/products.js';
 
 function LocationProbe() {
   const location = useLocation();
@@ -26,6 +28,30 @@ function renderDetail(sku) {
 }
 
 describe('ProductDetail', () => {
+  it('exposes product documents as a keyboard-focusable disclosure with direct links', async () => {
+    const user = userEvent.setup();
+    const product = {
+      ...findProduct('gf15'),
+      documents: [{ href: '/documents/gf15-datasheet.pdf', label: 'GF15 datasheet' }]
+    };
+    const { container } = render(
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <ProductCertification product={product} />
+      </MemoryRouter>
+    );
+
+    const disclosure = container.querySelector('details.product-documents');
+    const summary = within(disclosure).getByText('Product documents').closest('summary');
+    expect(summary).toHaveAttribute('tabindex', '0');
+    expect(disclosure).not.toHaveAttribute('open');
+    summary.focus();
+    expect(summary).toHaveFocus();
+    await user.click(summary);
+    expect(disclosure).toHaveAttribute('open');
+    expect(within(disclosure).getByRole('link', { name: 'GF15 datasheet' }))
+      .toHaveAttribute('href', '/documents/gf15-datasheet.pdf');
+  });
+
   it('renders the GF15 product story and technical proof in the approved order', () => {
     const { container } = renderDetail('gf15');
 
@@ -80,9 +106,6 @@ describe('ProductDetail', () => {
     expect(technical.querySelector('.product-technical-table')).toBeInTheDocument();
     expect(technical.querySelector('.product-spec-mobile')).toBeInTheDocument();
     expect(container.querySelector('.product-key-facts')).toBeInTheDocument();
-    const technicalSource = readFileSync('src/components/products/ProductTechnicalSections.jsx', 'utf8');
-    expect(technicalSource).toContain('<details className="product-certification__downloads product-documents">');
-    expect(technicalSource).toContain('<summary>Product documents</summary>');
   });
 
   it('keeps GL20 certification neutral everywhere', () => {

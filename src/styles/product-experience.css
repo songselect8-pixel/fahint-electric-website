@@ -360,7 +360,7 @@
 .gfci-filter-bar {
   position: sticky;
   z-index: 20;
-  top: calc(var(--header-h) + 10px);
+  top: calc(var(--header-h) + 26px);
   display: grid;
   grid-template-columns: minmax(260px, 1.5fr) repeat(3, minmax(150px, 1fr));
   gap: 14px;
@@ -598,6 +598,41 @@
   text-decoration: none;
 }
 
+.product-certification .product-documents {
+  display: block;
+  margin-top: 24px;
+  border: 1px solid rgba(157, 229, 255, 0.42);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.product-certification .product-documents summary {
+  min-height: 48px;
+  padding: 0 16px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.product-certification .product-documents summary:focus-visible {
+  outline: 3px solid #9de5ff;
+  outline-offset: 3px;
+}
+
+.product-certification .product-documents > div {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  padding: 0 16px 12px;
+}
+
+.product-certification .product-documents a {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  color: #9de5ff;
+}
+
 .product-inquiry {
   padding: var(--product-section-y) 0;
   background: var(--product-navy);
@@ -621,14 +656,6 @@
 
 .product-mobile-quote {
   display: none;
-}
-
-/* Only opacity and transform animate in this experience stylesheet. */
-.product-family-card img,
-.product-market-grid .editorial-application img,
-.pcard__media img,
-.pcard__foot .textlink svg {
-  will-change: transform;
 }
 
 @media (min-width: 1440px) {
