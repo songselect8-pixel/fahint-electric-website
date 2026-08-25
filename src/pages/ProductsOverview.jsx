@@ -78,7 +78,7 @@ export default function ProductsOverview() {
         <div className="editorial-product-mosaic">
           {productFamilies.map((family) => (
             <Link className="editorial-product-panel" key={family.name} to={family.href}>
-              <SafeImage src={family.image} alt={family.name} loading="lazy" />
+              <SafeImage src={family.image} alt="" loading="lazy" />
               <div className="editorial-panel__shade" />
               <div className="editorial-panel__content">
                 <p className="editorial-panel__label">{family.label}</p>
@@ -132,10 +132,10 @@ export default function ProductsOverview() {
           <p>Start with the installation environment, then coordinate the product mix around the project brief.</p>
         </div>
 
-        <div className="editorial-product-mosaic">
+        <div className="product-market-grid">
           {markets.map((market) => (
             <Link className="editorial-application" key={market.title} to={market.href}>
-              <SafeImage src={market.image} alt={market.title} loading="lazy" />
+              <SafeImage src={market.image} alt="" loading="lazy" />
               <div className="editorial-application__shade" />
               <div className="editorial-application__copy">
                 <p>{market.label}</p>

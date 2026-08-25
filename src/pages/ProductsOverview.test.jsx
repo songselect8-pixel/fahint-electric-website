@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import ProductsOverview from './ProductsOverview.jsx';
 
 function renderProductsOverview() {
@@ -16,16 +17,83 @@ describe('ProductsOverview', () => {
     const { container } = renderProductsOverview();
 
     [
-      ['GFCI Outlets', '/products/gfci'],
-      ['USB & Type-C Outlets', '/products/usb-outlets'],
-      ['Receptacles', '/products/receptacles'],
-      ['Smart Home Controls', '/products/smart-switches'],
-      ['Switches & Dimmers', '/products/dimmers']
-    ].forEach(([name, href]) => {
-      expect(screen.getByRole('heading', { name }).closest('a')).toHaveAttribute('href', href);
+      [
+        'Ground-fault protection GFCI Outlets Self-test protection for residential, commercial and demanding installation environments. Explore the family',
+        '/products/gfci'
+      ],
+      [
+        'In-wall charging USB & Type-C Outlets Integrated charging devices for homes, hospitality and workplace projects. Explore the family',
+        '/products/usb-outlets'
+      ],
+      [
+        'Wiring devices Receptacles Duplex and decorator receptacles with coordinated plates and finish options. Explore the family',
+        '/products/receptacles'
+      ],
+      [
+        'Connected control Smart Home Controls Wi-Fi and Zigbee controls designed for coordinated connected-home programs. Explore the family',
+        '/products/smart-switches'
+      ],
+      [
+        'Lighting control Switches & Dimmers Switching and dimming platforms for residential and commercial specifications. Explore the family',
+        '/products/dimmers'
+      ]
+    ].forEach(([accessibleName, href]) => {
+      const link = screen.getByRole('link', { name: accessibleName });
+      expect(link).toHaveAttribute('href', href);
+      expect(link.querySelector('img')).toHaveAttribute('alt', '');
     });
 
     expect(container.querySelectorAll('.product-family-section .editorial-product-panel')).toHaveLength(5);
+  });
+
+  it('uses complete accessible links for the three approved market cards', () => {
+    const { container } = renderProductsOverview();
+
+    [
+      [
+        'Everyday protection Residential & renovation Coordinated protection and wiring devices for kitchens, bathrooms and renovation programs.',
+        '/products/gfci'
+      ],
+      [
+        'In-room convenience Hospitality & multifamily Integrated charging platforms for guest rooms, shared spaces and multifamily developments.',
+        '/products/usb-outlets'
+      ],
+      [
+        'Project coordination Commercial fit-out Specification and manufacturing support for coordinated commercial wiring-device programs.',
+        '/capabilities'
+      ]
+    ].forEach(([accessibleName, href]) => {
+      const link = screen.getByRole('link', { name: accessibleName });
+      expect(link).toHaveAttribute('href', href);
+      expect(link.querySelector('img')).toHaveAttribute('alt', '');
+    });
+
+    expect(container.querySelector('.product-market-grid')).toBeInTheDocument();
+  });
+
+  it('defines a stable responsive three-card market grid without implicit placements', () => {
+    const styles = readFileSync('src/styles.css', 'utf8');
+
+    expect(styles).toMatch(
+      /\.product-market-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\);[\s\S]*?grid-auto-rows:/
+    );
+    expect(styles).toMatch(
+      /\.product-market-grid \.editorial-application:nth-child\(n\)\s*\{[\s\S]*?grid-column:\s*auto;/
+    );
+    expect(styles).toMatch(
+      /@media \(max-width:\s*1100px\)[\s\S]*?\.product-market-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/
+    );
+    expect(styles).toMatch(
+      /@media \(max-width:\s*760px\)[\s\S]*?\.product-market-grid\s*\{[\s\S]*?grid-template-columns:\s*1fr/
+    );
+  });
+
+  it('gives the dark capability button a high-contrast focus outline', () => {
+    const styles = readFileSync('src/styles.css', 'utf8');
+
+    expect(styles).toMatch(
+      /\.editorial-button--dark:focus-visible\s*\{[\s\S]*?outline-color:\s*#0d274b;/
+    );
   });
 
   it('uses the approved brand-led narrative and removes the catalogue interface', () => {
