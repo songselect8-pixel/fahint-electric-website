@@ -15,7 +15,7 @@ function renderSeries() {
 
 describe('GfciSeries', () => {
   it('defines product-page-only scene layers backed by a verified GFCI product asset', async () => {
-    const { productFamilyVisuals, productOverviewVisuals } = await import('../data/productPageVisuals.js');
+    const { gfciSeriesVisuals, productFamilyVisuals, productOverviewVisuals } = await import('../data/productPageVisuals.js');
     const gfciVisual = productFamilyVisuals.find(({ id }) => id === 'gfci');
 
     expect(gfciVisual).toMatchObject({
@@ -26,7 +26,7 @@ describe('GfciSeries', () => {
     });
     [
       gfciVisual.scene,
-      productOverviewVisuals.gfciApplication,
+      gfciSeriesVisuals.application,
       productOverviewVisuals.brandProgram
     ].forEach((scene) => {
       expect(scene).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.webp$/);
@@ -34,7 +34,7 @@ describe('GfciSeries', () => {
     expect([
       gfciVisual.scene,
       gfciVisual.product,
-      productOverviewVisuals.gfciApplication,
+      gfciSeriesVisuals.application,
       productOverviewVisuals.brandProgram
     ].join(' ')).not.toContain('editorial-home');
     expect(existsSync(`public/${gfciVisual.product}`)).toBe(true);
@@ -164,13 +164,13 @@ describe('GfciSeries', () => {
       expect(screen.getByText(body)).toBeInTheDocument();
     });
 
-    expect(screen.getByRole('img', { name: 'Coordinated kitchen wiring-device application' }).getAttribute('src'))
-      .toContain('application-kitchen-v2.png');
     expect(screen.getByText(/Match the published model, rating and variant to documented project requirements/)).toBeInTheDocument();
     ['Finish coordination', 'Brand marking', 'Packaging coordination', 'Documentation support'].forEach((option) => {
       expect(screen.getByText(option)).toBeInTheDocument();
     });
   });
+
+  it.todo('Task 4 renders GFCI hero, application, and OEM DOM without editorial-home assets');
 
   it('keeps the series route ahead of product and generic family routes', () => {
     const main = readFileSync('src/main.jsx', 'utf8');

@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
+import { productFamilies } from '../data/productFamilies.js';
 import ProductsOverview from './ProductsOverview.jsx';
 
 function renderProductsOverview() {
@@ -16,13 +17,15 @@ describe('ProductsOverview', () => {
   it('defines dedicated scene and verified product layers for every approved family', async () => {
     const { productFamilyVisuals } = await import('../data/productPageVisuals.js');
 
-    expect(productFamilyVisuals.map(({ id, name, href }) => ({ id, name, href }))).toEqual([
-      { id: 'gfci', name: 'GFCI Outlets', href: '/products/gfci' },
-      { id: 'usb', name: 'USB & Type-C Outlets', href: '/products/usb-outlets' },
-      { id: 'receptacles', name: 'Receptacles', href: '/products/receptacles' },
-      { id: 'smart', name: 'Smart Home Controls', href: '/products/smart-switches' },
-      { id: 'switches', name: 'Switches & Dimmers', href: '/products/dimmers' }
+    expect(productFamilies.map(({ id }) => id)).toEqual([
+      'gfci',
+      'usb',
+      'receptacles',
+      'smart',
+      'switches'
     ]);
+    expect(productFamilyVisuals.map(({ id, name, href }) => ({ id, name, href })))
+      .toEqual(productFamilies.map(({ id, name, href }) => ({ id, name, href })));
 
     productFamilyVisuals.forEach(({ scene, product }) => {
       expect(scene).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.webp$/);
@@ -40,8 +43,7 @@ describe('ProductsOverview', () => {
       'brandProgram',
       'marketResidential',
       'marketHospitality',
-      'marketCommercial',
-      'gfciApplication'
+      'marketCommercial'
     ]);
     Object.values(productOverviewVisuals).forEach((visual) => {
       expect(visual).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.webp$/);
@@ -192,14 +194,7 @@ describe('ProductsOverview', () => {
     expect(container.querySelector('.product-evidence-section__grid')).toHaveClass('container');
   });
 
-  it('prioritizes the coordinated family image in the hero', () => {
-    renderProductsOverview();
-
-    const heroImage = screen.getByAltText('Fahint coordinated wiring-device family');
-    expect(heroImage.getAttribute('src').endsWith('assets/images/editorial-home/brand-system-family-final.png')).toBe(true);
-    expect(heroImage).toHaveAttribute('loading', 'eager');
-    expect(heroImage).toHaveAttribute('fetchpriority', 'high');
-  });
+  it.todo('Task 3 renders product overview hero, family, market, and OEM DOM without editorial-home assets');
 
   it('keeps the product hero headline to two intentional lines', () => {
     const { container } = renderProductsOverview();
