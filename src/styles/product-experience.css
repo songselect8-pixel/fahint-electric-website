@@ -657,6 +657,32 @@
   letter-spacing: .09em;
 }
 
+/* GFCI catalogue sample: let the source's white square become the stage. */
+.gfci-series .pcard {
+  border-color: #e1e8ed;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.gfci-series .pcard__media {
+  aspect-ratio: 1;
+  background: #fff;
+}
+
+.gfci-series .pcard__media img {
+  padding: 0;
+}
+
+.gfci-series .pcard__tag {
+  top: 14px;
+  left: 14px;
+}
+
+.gfci-series .pcard:hover {
+  border-color: #cfdbe2;
+  box-shadow: 0 12px 28px rgba(7, 19, 38, .06);
+}
+
 .pcard:hover .pcard__media img {
   transform: scale(1.025);
 }

@@ -270,6 +270,15 @@ describe('GfciSeries', () => {
     );
   });
 
+  it('uses a pure-white square product stage with restrained card chrome', () => {
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+
+    expect(styles).toMatch(/\.gfci-series \.pcard\s*\{[^}]*border-radius:\s*12px[^}]*background:\s*#fff/s);
+    expect(styles).toMatch(/\.gfci-series \.pcard__media\s*\{[^}]*aspect-ratio:\s*1[^}]*background:\s*#fff/s);
+    expect(styles).toMatch(/\.gfci-series \.pcard__media img\s*\{[^}]*padding:\s*0/s);
+    expect(styles).toMatch(/\.gfci-series \.pcard__tag\s*\{[^}]*top:\s*14px[^}]*left:\s*14px/s);
+  });
+
   it('gives series inline actions 44px boxes and removes inherited layout motion', () => {
     const styles = readFileSync('src/styles/product-experience.css', 'utf8');
     const reducedMotion = styles.slice(styles.indexOf('@media (prefers-reduced-motion: reduce)'));
