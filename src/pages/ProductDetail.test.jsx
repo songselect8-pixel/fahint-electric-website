@@ -140,12 +140,12 @@ describe('ProductDetail', () => {
     expect(styles).not.toMatch(/--product-warm|beige|warm media surfaces/i);
     expect(styles).toMatch(/\.product-media-square\s*\{[\s\S]*?aspect-ratio:\s*1\s*\/\s*1/);
     expect(styles).toMatch(/\.product-gallery__main\s*>\s*img[\s\S]*?object-fit:\s*contain[\s\S]*?object-position:\s*center/);
-    expect(styles).toMatch(/\.product-gallery__main[\s\S]*?border-radius:\s*var\(--product-radius-card\)/);
+    expect(styles).toMatch(/\.product-gallery__main[\s\S]*?border-radius:\s*12px/);
     const thumbRules = styles.match(/\.product-gallery__thumb\s*\{[^}]+\}/)?.[0] || '';
-    expect(thumbRules).toMatch(/border-radius:\s*var\(--product-radius-card\)/);
-    expect(styles).toMatch(/\.product-finish-strip\s*\{[\s\S]*?grid-template-columns:\s*repeat\(6,[^;]+\)[\s\S]*?border-radius:\s*var\(--product-radius-card\)/);
+    expect(thumbRules).toMatch(/border-radius:\s*9px/);
+    expect(styles).toMatch(/\.product-finish-strip\s*\{[\s\S]*?grid-template-columns:\s*repeat\(6,[^;]+\)[\s\S]*?border-radius:\s*12px/);
     const finishCellRules = styles.match(/\.product-finish-strip figure\s*\{[^}]+\}/)?.[0] || '';
-    expect(finishCellRules).toMatch(/border-radius:\s*var\(--product-radius-card\)/);
+    expect(finishCellRules).toMatch(/border-radius:\s*12px/);
     const finishImageRules = styles.match(/\.product-finish-strip img\s*\{[^}]+\}/)?.[0] || '';
     expect(finishImageRules).toMatch(/height:\s*auto/);
     expect(finishImageRules).toMatch(/object-fit:\s*contain/);
@@ -161,6 +161,31 @@ describe('ProductDetail', () => {
     expect(reducedMotion).toMatch(/animation:\s*none\s*!important/);
     expect(reducedMotion).toMatch(/transform:\s*none\s*!important/);
     expect(reducedMotion).toMatch(/transition:\s*none\s*!important/);
+  });
+
+  it('uses one pure-white square product stage across catalogues, galleries, finishes, and related cards', () => {
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+    const productCardRules = styles.match(/\.pcard\s*\{[^}]+\}/)?.[0] || '';
+    const productCardMediaRules = styles.match(/\.pcard__media\s*\{[^}]+\}/)?.[0] || '';
+    const productCardImageRules = styles.match(/\.pcard__media img\s*\{[^}]+\}/)?.[0] || '';
+    const galleryMainRules = styles.match(/\.product-gallery__main\s*\{[^}]+\}/)?.[0] || '';
+    const galleryThumbRules = styles.match(/\.product-gallery__thumb\s*\{[^}]+\}/)?.[0] || '';
+    const finishCellRules = styles.match(/\.product-finish-strip figure\s*\{[^}]+\}/)?.[0] || '';
+    const finishImageRules = styles.match(/\.product-finish-strip img\s*\{[^}]+\}/)?.[0] || '';
+
+    expect(productCardRules).toMatch(/border-radius:\s*12px/);
+    expect(productCardRules).toMatch(/background:\s*#fff/);
+    expect(productCardMediaRules).toMatch(/aspect-ratio:\s*1/);
+    expect(productCardMediaRules).toMatch(/background:\s*#fff/);
+    expect(productCardImageRules).toMatch(/padding:\s*0/);
+    expect(galleryMainRules).toMatch(/padding:\s*clamp\(12px,\s*2vw,\s*24px\)/);
+    expect(galleryMainRules).toMatch(/border-radius:\s*12px/);
+    expect(galleryMainRules).toMatch(/background:\s*#fff/);
+    expect(galleryThumbRules).toMatch(/background:\s*#fff/);
+    expect(finishCellRules).toMatch(/border-radius:\s*12px/);
+    expect(finishCellRules).toMatch(/background:\s*#fff/);
+    expect(finishImageRules).toMatch(/padding:\s*0/);
+    expect(finishImageRules).toMatch(/background:\s*#fff/);
   });
 
   it('gives breadcrumbs and detail action links real touch boxes without layout motion', () => {
