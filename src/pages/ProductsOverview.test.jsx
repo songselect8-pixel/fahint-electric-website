@@ -194,7 +194,20 @@ describe('ProductsOverview', () => {
     expect(container.querySelector('.product-evidence-section__grid')).toHaveClass('container');
   });
 
-  it.todo('Task 3 renders product overview hero, family, market, and OEM DOM without editorial-home assets');
+  it.fails('Task 3 renders product overview hero, family, market, and OEM visual layers without editorial-home assets', async () => {
+    const { container } = renderProductsOverview();
+    const { productFamilyVisuals, productOverviewVisuals } = await import('../data/productPageVisuals.js');
+    const markup = container.innerHTML;
+
+    expect.soft(markup).not.toContain('editorial-home');
+    Object.values(productOverviewVisuals).forEach((scene) => {
+      expect.soft(markup).toContain(scene);
+    });
+    productFamilyVisuals.forEach(({ scene, product }) => {
+      expect.soft(markup).toContain(scene);
+      expect.soft(markup).toContain(product);
+    });
+  });
 
   it('keeps the product hero headline to two intentional lines', () => {
     const { container } = renderProductsOverview();

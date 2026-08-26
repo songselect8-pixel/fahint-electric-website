@@ -170,7 +170,22 @@ describe('GfciSeries', () => {
     });
   });
 
-  it.todo('Task 4 renders GFCI hero, application, and OEM DOM without editorial-home assets');
+  it.fails('Task 4 renders GFCI hero, application, and OEM visual layers without editorial-home assets', async () => {
+    const { container } = renderSeries();
+    const { gfciSeriesVisuals, productFamilyVisuals, productOverviewVisuals } = await import('../data/productPageVisuals.js');
+    const gfciVisual = productFamilyVisuals.find(({ id }) => id === 'gfci');
+    const markup = container.innerHTML;
+
+    expect.soft(markup).not.toContain('editorial-home');
+    [
+      gfciVisual.scene,
+      gfciVisual.product,
+      gfciSeriesVisuals.application,
+      productOverviewVisuals.brandProgram
+    ].forEach((visual) => {
+      expect.soft(markup).toContain(visual);
+    });
+  });
 
   it('keeps the series route ahead of product and generic family routes', () => {
     const main = readFileSync('src/main.jsx', 'utf8');
