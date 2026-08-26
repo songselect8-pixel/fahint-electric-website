@@ -58,7 +58,46 @@
 }
 
 /* Shared focus and touch targets */
-.product-overview-hero a,
+.product-overview :where(.editorial-button, .editorial-text-link, .btn) {
+  box-sizing: border-box;
+  display: inline-flex;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+}
+
+.gfci-series :where(.btn, .textlink) {
+  box-sizing: border-box;
+  display: inline-flex;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+}
+
+.gfci-comparison tbody th a {
+  display: inline-flex;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-detail-breadcrumb a,
+.product-detail-hero .btn,
+.product-story .textlink,
+.product-story .btn,
+.product-technical .textlink,
+.product-documents a,
+.product-inquiry .btn,
+.product-mobile-quote,
+.product-inquiry .textlink {
+  box-sizing: border-box;
+  display: inline-flex;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+}
+
 .product-family-card,
 .gfci-series a,
 .gfci-series button,
@@ -84,6 +123,41 @@
 .product-mobile-quote:focus-visible {
   outline: 3px solid var(--product-cyan);
   outline-offset: 4px;
+}
+
+/* Keep product-route feedback free of layout and catch-all motion. */
+.product-overview :where(.editorial-button, .btn) {
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.gfci-series button,
+.gfci-series .btn,
+.product-detail-hero :where(button, .btn),
+.product-gallery button,
+.product-story :where(button, .btn),
+.product-technical button,
+.product-inquiry :where(button, .btn),
+.product-mobile-quote {
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.product-overview .editorial-text-link,
+.gfci-series .textlink,
+.product-story .textlink,
+.product-technical .textlink,
+.product-inquiry .textlink,
+.pcard__foot .textlink {
+  gap: 6px;
+  transition: none;
+}
+
+.product-overview .editorial-text-link:hover,
+.gfci-series .textlink:hover,
+.product-story .textlink:hover,
+.product-technical .textlink:hover,
+.product-inquiry .textlink:hover,
+.pcard__foot .textlink:hover {
+  gap: 6px;
 }
 
 /* Product overview hero */
@@ -233,7 +307,8 @@
   right: 4%;
   box-sizing: border-box;
   width: min(54%, 430px);
-  height: 62%;
+  height: auto;
+  aspect-ratio: 1 / 1;
   padding: clamp(14px, 1.5vw, 24px);
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, .42);
@@ -246,8 +321,8 @@
 .product-family-card:first-child .family-product-stage {
   top: 5%;
   right: 5%;
-  width: min(46%, 620px);
-  height: 76%;
+  width: min(46%, 468px);
+  height: auto;
 }
 
 .product-family-card .family-product-image {
@@ -424,11 +499,7 @@
 }
 
 .gfci-series__hero-shade {
-  background:
-    linear-gradient(90deg, rgba(3, 15, 33, .96) 0%, rgba(5, 24, 49, .8) 44%, rgba(6, 26, 54, .42) 100%),
-    linear-gradient(rgba(71, 180, 222, .08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(71, 180, 222, .08) 1px, transparent 1px);
-  background-size: auto, 48px 48px, 48px 48px;
+  background: linear-gradient(90deg, rgba(3, 15, 33, .96) 0%, rgba(5, 24, 49, .8) 44%, rgba(6, 26, 54, .42) 100%);
 }
 
 .gfci-series-hero .container {
@@ -638,6 +709,7 @@
 }
 
 .gfci-comparison .spec-table {
+  min-width: 760px;
   margin: 0;
   border-collapse: separate;
   border-spacing: 0;
@@ -650,7 +722,7 @@
 }
 
 .gfci-comparison tbody tr {
-  transition: background 160ms ease;
+  transition: none;
 }
 
 .gfci-comparison tbody tr:nth-child(even) {
@@ -1129,7 +1201,14 @@
   }
 }
 
-@media (min-width: 1025px) and (max-width: 1439px) {
+@media (min-width: 1200px) and (max-width: 1439px) {
+  .gfci-product-grid,
+  .gfci-series .gfci-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1199px) {
   .gfci-product-grid,
   .gfci-series .gfci-product-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1234,11 +1313,11 @@
 
 @media (max-width: 768px) {
   .product-family-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .product-family-card:first-child {
-    grid-column: auto;
+    grid-column: 1 / -1;
     min-height: 420px;
   }
 
@@ -1247,17 +1326,21 @@
     top: 5%;
     right: 5%;
     width: min(56%, 360px);
-    height: 58%;
+    height: auto;
   }
 
   .product-market-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-auto-rows: 390px;
   }
 
   .product-market-grid .editorial-application:nth-child(n) {
     grid-column: auto;
     grid-row: auto;
+  }
+
+  .product-market-grid .editorial-application:last-child {
+    grid-column: 1 / -1;
   }
 
   .product-evidence-section__grid {
@@ -1435,12 +1518,26 @@
 }
 
 @media (max-width: 520px) {
+  .product-family-grid,
+  .product-market-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-family-card:first-child,
+  .product-market-grid .editorial-application:nth-child(n) {
+    grid-column: auto;
+  }
+
   .gfci-product-grid,
   .gfci-series .gfci-product-grid {
     grid-template-columns: 1fr;
   }
 
   .product-related .prod-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-finish-strip {
     grid-template-columns: 1fr;
   }
 
@@ -1475,20 +1572,41 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .product-overview a,
+  .product-overview button,
   .product-family-card img,
   .product-market-grid .editorial-application img,
   .pcard,
   .pcard img,
   .pcard__media img,
   .pcard__foot .textlink svg,
+  .gfci-series a,
+  .gfci-series button,
+  .gfci-series input,
+  .gfci-series select,
   .gfci-series__hero-scene,
   .gfci-series__hero-product img,
   .gfci-series__application-scene,
   .gfci-series__application-product img,
   .gfci-series__oem-media img,
   .gfci-comparison tbody tr,
+  .product-detail-breadcrumb a,
+  .product-detail-hero a,
+  .product-detail-hero button,
   .product-gallery img,
+  .product-gallery button,
   .product-gallery__enlarge,
+  .product-story a,
+  .product-story button,
+  .product-technical a,
+  .product-technical button,
+  .product-technical summary,
+  .product-inquiry a,
+  .product-inquiry button,
+  .product-inquiry input,
+  .product-inquiry select,
+  .product-inquiry textarea,
+  .product-mobile-quote,
   .product-finish-strip img {
     animation: none !important;
     transform: none !important;

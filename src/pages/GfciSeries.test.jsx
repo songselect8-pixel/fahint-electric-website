@@ -222,6 +222,7 @@ describe('GfciSeries', () => {
     expect(styles).toMatch(/\.pcard__media img\s*\{[^}]*object-fit:\s*contain[^}]*padding:/s);
     expect(styles).toMatch(/\.pcard__name\s*\{[^}]*overflow-wrap:\s*anywhere/s);
     expect(styles).toMatch(/\.gfci-series__comparison-panel\s*\{[^}]*border-radius:/s);
+    expect(styles).toMatch(/\.gfci-comparison \.spec-table\s*\{[^}]*min-width:\s*760px/s);
     expect(styles).toMatch(/\.gfci-comparison tbody tr:nth-child\(even\)/);
     expect(styles).toMatch(/\.gfci-series__application-scene\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0/s);
     expect(styles).toMatch(/\.gfci-series__oem-media\s*\{[^}]*position:\s*relative/s);
@@ -255,14 +256,30 @@ describe('GfciSeries', () => {
     expect(styles).toMatch(/\.gfci-series__table-wrap:focus-visible\s*\{[\s\S]*?outline:/);
   });
 
-  it('keeps the GFCI product grid at two columns through 768px and one column through 520px', () => {
-    const styles = readFileSync('src/styles.css', 'utf8');
+  it('keeps the GFCI catalogue at four columns at 1280, two at 768, and one at 390', () => {
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
 
     expect(styles).toMatch(
-      /@media \(max-width: 768px\)[\s\S]*?\.gfci-series \.gfci-series__product-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/
+      /@media \(min-width: 1200px\) and \(max-width: 1439px\)[\s\S]*?\.gfci-series \.gfci-product-grid\s*\{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/
     );
     expect(styles).toMatch(
-      /@media \(max-width: 520px\)[\s\S]*?\.gfci-series \.gfci-series__product-grid\s*\{[\s\S]*?grid-template-columns:\s*1fr/
+      /@media \(max-width: 768px\)[\s\S]*?\.gfci-series \.gfci-product-grid\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/
     );
+    expect(styles).toMatch(
+      /@media \(max-width: 520px\)[\s\S]*?\.gfci-series \.gfci-product-grid\s*\{[^}]*grid-template-columns:\s*1fr/
+    );
+  });
+
+  it('gives series inline actions 44px boxes and removes inherited layout motion', () => {
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+    const reducedMotion = styles.slice(styles.indexOf('@media (prefers-reduced-motion: reduce)'));
+
+    expect(styles).toMatch(/\.gfci-comparison tbody th a\s*\{[^}]*display:\s*inline-flex[^}]*min-width:\s*44px[^}]*min-height:\s*44px[^}]*justify-content:\s*center/s);
+    expect(styles).toMatch(/\.gfci-series :where\([^)]*\.btn[^)]*\.textlink[^)]*\)\s*\{[^}]*display:\s*inline-flex[^}]*min-width:\s*44px[^}]*min-height:\s*44px/s);
+    expect(styles).toMatch(/\.gfci-comparison tbody tr\s*\{[^}]*transition:\s*none/s);
+    expect(styles).toMatch(/[^{}]*\.gfci-series \.textlink:hover[^{}]*\{[^}]*gap:\s*6px/s);
+    expect(reducedMotion).toContain('.gfci-series button');
+    expect(reducedMotion).toContain('.gfci-series input');
+    expect(reducedMotion).toContain('.gfci-series select');
   });
 });

@@ -154,7 +154,28 @@ describe('ProductDetail', () => {
     expect(mediaRules(1024)).toMatch(/\.product-related \.prod-grid\s*\{[^}]*grid-template-columns:\s*repeat\(2,/);
     expect(mediaRules(700)).not.toMatch(/\.product-related \.prod-grid/);
     expect(mediaRules(520)).toMatch(/\.product-related \.prod-grid\s*\{[^}]*grid-template-columns:\s*1fr/);
-    expect(styles).toMatch(/@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.product-gallery/);
+    expect(mediaRules(520)).toMatch(/\.product-finish-strip\s*\{[^}]*grid-template-columns:\s*1fr/);
+    const reducedMotion = styles.slice(styles.indexOf('@media (prefers-reduced-motion: reduce)'));
+    expect(reducedMotion).toContain('.product-gallery img');
+    expect(reducedMotion).toContain('.product-finish-strip img');
+    expect(reducedMotion).toMatch(/animation:\s*none\s*!important/);
+    expect(reducedMotion).toMatch(/transform:\s*none\s*!important/);
+    expect(reducedMotion).toMatch(/transition:\s*none\s*!important/);
+  });
+
+  it('gives breadcrumbs and detail action links real touch boxes without layout motion', () => {
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+    const reducedMotion = styles.slice(styles.indexOf('@media (prefers-reduced-motion: reduce)'));
+
+    expect(styles).toMatch(/\.product-detail-breadcrumb a,[\s\S]*?\.product-inquiry \.textlink\s*\{[^}]*display:\s*inline-flex[^}]*min-width:\s*44px[^}]*min-height:\s*44px[^}]*align-items:\s*center/s);
+    const textLinkHoverRule = styles.match(/[^{}]*\.product-story \.textlink:hover[^{}]*\.product-inquiry \.textlink:hover[^{}]*\{[^}]+\}/)?.[0] || '';
+    expect(textLinkHoverRule).toMatch(/gap:\s*6px/);
+    expect(styles).not.toMatch(/\.product-(?:detail|story|technical|inquiry)[^}]*transition:\s*all/);
+    expect(reducedMotion).toContain('.product-detail-breadcrumb a');
+    expect(reducedMotion).toContain('.product-gallery button');
+    expect(reducedMotion).toContain('.product-story a');
+    expect(reducedMotion).toContain('.product-technical a');
+    expect(reducedMotion).toContain('.product-inquiry button');
   });
 
   it('renders one technical anchor with table and mobile disclosures generated from verified rows', () => {

@@ -55,22 +55,22 @@ describe('ProductsOverview', () => {
     });
   });
 
-  it('keeps the final product stylesheet explicit at tablet and mobile market breakpoints', () => {
+  it('keeps overview catalogue grids at two columns at 768px and one at phone widths', () => {
     const styles = readFileSync('src/styles/product-experience.css', 'utf8');
-    const tabletStart = styles.indexOf('@media (min-width: 769px) and (max-width: 1100px)');
-    const tabletEnd = styles.indexOf('@media', tabletStart + 1);
-    const tabletRules = styles.slice(tabletStart, tabletEnd);
-    const mobileStart = styles.indexOf('@media (max-width: 768px)');
-    const mobileEnd = styles.indexOf('@media', mobileStart + 1);
-    const mobileRules = styles.slice(mobileStart, mobileEnd);
+    const mediaRules = (query) => {
+      const start = styles.indexOf(`@media ${query}`);
+      const end = styles.indexOf('\n@media ', start + 1);
+      return styles.slice(start, end === -1 ? undefined : end);
+    };
+    const tabletRules = mediaRules('(max-width: 768px)');
+    const phoneRules = mediaRules('(max-width: 520px)');
 
-    expect(tabletStart).toBeGreaterThan(-1);
-    expect(tabletRules).toMatch(/\.product-market-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
-    expect(tabletRules).toMatch(/\.product-market-grid \.editorial-application:last-child\s*\{[\s\S]*?grid-column:\s*1\s*\/\s*-1/);
+    expect(tabletRules).toMatch(/\.product-family-grid\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
+    expect(tabletRules).toMatch(/\.product-market-grid\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
+    expect(tabletRules).toMatch(/\.product-market-grid \.editorial-application:last-child\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/);
 
-    expect(mobileStart).toBeGreaterThan(-1);
-    expect(mobileRules).toMatch(/\.product-market-grid\s*\{[\s\S]*?grid-template-columns:\s*1fr/);
-    expect(mobileRules).toMatch(/\.product-market-grid \.editorial-application:nth-child\(n\)\s*\{[\s\S]*?grid-column:\s*auto/);
+    expect(phoneRules).toMatch(/\.product-family-grid,\s*\n\s*\.product-market-grid\s*\{[^}]*grid-template-columns:\s*1fr/);
+    expect(phoneRules).toMatch(/\.product-market-grid \.editorial-application:nth-child\(n\)\s*\{[^}]*grid-column:\s*auto/);
   });
 
   it('ships the product experience responsive and accessibility contract', () => {
@@ -92,7 +92,15 @@ describe('ProductsOverview', () => {
     const productCardTransition = productCardRule.match(/transition:\s*([^;]+)/)?.[1] || '';
     expect(productCardTransition).toMatch(/transform\s+\d+ms[^,]*,\s*opacity\s+\d+ms/);
     expect(productCardTransition).not.toMatch(/border-color|box-shadow/);
+    expect(styles).not.toMatch(/transition:\s*[^;]*(?:width|height|margin|padding|gap|grid-template)/);
     expect(styles).not.toMatch(/will-change:\s*transform/);
+
+    const reducedMotion = styles.slice(styles.indexOf('@media (prefers-reduced-motion: reduce)'));
+    expect(reducedMotion).toContain('.product-family-card img');
+    expect(reducedMotion).toContain('.product-market-grid .editorial-application img');
+    expect(reducedMotion).toMatch(/animation:\s*none\s*!important/);
+    expect(reducedMotion).toMatch(/transform:\s*none\s*!important/);
+    expect(reducedMotion).toMatch(/transition:\s*none\s*!important/);
   });
 
   it('presents exactly the five approved product families as complete links', () => {
@@ -276,6 +284,21 @@ describe('ProductsOverview', () => {
     expect.soft(styles).toMatch(/--product-radius-sm:\s*9px/);
     expect.soft(styles).toMatch(/\.family-scene-image\s*\{[\s\S]*?object-fit:\s*cover/);
     expect.soft(styles).toMatch(/\.family-product-image\s*\{[\s\S]*?object-fit:\s*contain/);
+
+    const productStage = styles.match(/\.product-family-card \.family-product-stage\s*\{[^}]+\}/)?.[0] || '';
+    const leadProductStage = styles.match(/\.product-family-card:first-child \.family-product-stage\s*\{[^}]+\}/)?.[0] || '';
+    expect.soft(productStage).toMatch(/aspect-ratio:\s*1\s*\/\s*1/);
+    expect.soft(productStage).toMatch(/height:\s*auto/);
+    expect.soft(leadProductStage).toMatch(/height:\s*auto/);
+    expect.soft(styles).not.toMatch(/\.family-product-stage[^}]*height:\s*\d+%/s);
+  });
+
+  it('gives overview action links real touch boxes without layout-motion transitions', () => {
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+
+    expect(styles).toMatch(/\.product-overview :where\([^)]*\.editorial-button[^)]*\.editorial-text-link[^)]*\.btn[^)]*\)\s*\{[^}]*display:\s*inline-flex[^}]*min-width:\s*44px[^}]*min-height:\s*44px[^}]*align-items:\s*center/s);
+    expect(styles).toMatch(/\.product-overview :where\([^)]*\.editorial-button[^)]*\.btn[^)]*\)\s*\{[^}]*transition:\s*transform[^,]+,\s*opacity/s);
+    expect(styles).not.toMatch(/\.product-overview[^}]*transition:\s*all/);
   });
 
   it('keeps the product hero headline to two intentional lines', () => {
