@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import ProductsOverview from './ProductsOverview.jsx';
 
 function renderProductsOverview() {
@@ -13,6 +13,42 @@ function renderProductsOverview() {
 }
 
 describe('ProductsOverview', () => {
+  it('defines dedicated scene and verified product layers for every approved family', async () => {
+    const { productFamilyVisuals } = await import('../data/productPageVisuals.js');
+
+    expect(productFamilyVisuals.map(({ id, name, href }) => ({ id, name, href }))).toEqual([
+      { id: 'gfci', name: 'GFCI Outlets', href: '/products/gfci' },
+      { id: 'usb', name: 'USB & Type-C Outlets', href: '/products/usb-outlets' },
+      { id: 'receptacles', name: 'Receptacles', href: '/products/receptacles' },
+      { id: 'smart', name: 'Smart Home Controls', href: '/products/smart-switches' },
+      { id: 'switches', name: 'Switches & Dimmers', href: '/products/dimmers' }
+    ]);
+
+    productFamilyVisuals.forEach(({ scene, product }) => {
+      expect(scene).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.webp$/);
+      expect(product).toMatch(/^assets\/images\/(?:products|catalog)\/[a-z0-9.-]+\.webp$/);
+      expect(existsSync(`public/${product}`)).toBe(true);
+      expect(`${scene} ${product}`).not.toContain('editorial-home');
+    });
+  });
+
+  it('reserves product-page-only artwork for hero, OEM, market, and application scenes', async () => {
+    const { productOverviewVisuals } = await import('../data/productPageVisuals.js');
+
+    expect(Object.keys(productOverviewVisuals)).toEqual([
+      'hero',
+      'brandProgram',
+      'marketResidential',
+      'marketHospitality',
+      'marketCommercial',
+      'gfciApplication'
+    ]);
+    Object.values(productOverviewVisuals).forEach((visual) => {
+      expect(visual).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.webp$/);
+      expect(visual).not.toContain('editorial-home');
+    });
+  });
+
   it('ships the product experience responsive and accessibility contract', () => {
     const styles = readFileSync('src/styles/product-experience.css', 'utf8');
 

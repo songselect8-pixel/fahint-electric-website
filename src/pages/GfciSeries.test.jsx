@@ -2,7 +2,7 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import GfciSeries from './GfciSeries.jsx';
 
 function renderSeries() {
@@ -14,6 +14,32 @@ function renderSeries() {
 }
 
 describe('GfciSeries', () => {
+  it('defines product-page-only scene layers backed by a verified GFCI product asset', async () => {
+    const { productFamilyVisuals, productOverviewVisuals } = await import('../data/productPageVisuals.js');
+    const gfciVisual = productFamilyVisuals.find(({ id }) => id === 'gfci');
+
+    expect(gfciVisual).toMatchObject({
+      id: 'gfci',
+      href: '/products/gfci',
+      scene: 'assets/images/editorial-products/family-gfci-background.webp',
+      product: 'assets/images/products/gf15-main.webp'
+    });
+    [
+      gfciVisual.scene,
+      productOverviewVisuals.gfciApplication,
+      productOverviewVisuals.brandProgram
+    ].forEach((scene) => {
+      expect(scene).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.webp$/);
+    });
+    expect([
+      gfciVisual.scene,
+      gfciVisual.product,
+      productOverviewVisuals.gfciApplication,
+      productOverviewVisuals.brandProgram
+    ].join(' ')).not.toContain('editorial-home');
+    expect(existsSync(`public/${gfciVisual.product}`)).toBe(true);
+  });
+
   it('shows full-card links for exactly the seven published public models', () => {
     const { container } = renderSeries();
     const grid = container.querySelector('.gfci-series__product-grid');
