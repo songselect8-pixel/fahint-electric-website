@@ -87,7 +87,10 @@ const OEM_CAPABILITIES = [
 
 export function ProductOemStory({ product }) {
   return (
-    <section className="product-story product-story--oem">
+    <section
+      className="product-story product-story--oem product-story--cool"
+      data-testid="product-oem-story"
+    >
       <div className="container">
         <div className="product-story__oem-head">
           <div>
@@ -98,8 +101,14 @@ export function ProductOemStory({ product }) {
         </div>
         <div className="product-finish-strip" aria-label={`${product.sku} finish references`}>
           {colors.map((finish) => (
-            <figure key={finish.slug}>
-              <SafeImage src={productFinishImage(product.sku, finish.slug)} alt={`${product.sku} ${finish.name} finish`} loading="lazy" />
+            <figure key={finish.slug} data-testid="product-finish-cell">
+              <SafeImage
+                src={productFinishImage(product.sku, finish.slug)}
+                alt={`${product.sku} ${finish.name} finish`}
+                width={620}
+                height={620}
+                loading="lazy"
+              />
               <figcaption>{finish.name}</figcaption>
             </figure>
           ))}
