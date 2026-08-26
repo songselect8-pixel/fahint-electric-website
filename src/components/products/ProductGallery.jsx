@@ -3,11 +3,15 @@ import { Expand, X } from 'lucide-react';
 import { colors, productFinishImage } from '../../data/products.js';
 import SafeImage from '../SafeImage.jsx';
 
+const GALLERY_IMAGE_SIZE = 800;
+const FINISH_IMAGE_SIZE = 620;
+
 export default function ProductGallery({ product }) {
   const [selectedImage, setSelectedImage] = useState(product.assets.hero);
   const [selectedFinish, setSelectedFinish] = useState(null);
   const dialogRef = useRef(null);
   const triggerRef = useRef(null);
+  const selectedImageSize = selectedFinish ? FINISH_IMAGE_SIZE : GALLERY_IMAGE_SIZE;
 
   useEffect(() => {
     setSelectedImage(product.assets.hero);
@@ -46,12 +50,15 @@ export default function ProductGallery({ product }) {
       <button
         ref={triggerRef}
         type="button"
-        className="product-gallery__main"
+        className="product-gallery__main product-media-square"
+        data-testid="product-gallery-main"
         onClick={openDialog}
       >
         <SafeImage
           src={selectedImage}
           alt={`${product.sku} selected product view`}
+          width={selectedImageSize}
+          height={selectedImageSize}
           loading="eager"
           fetchpriority="high"
         />
@@ -65,12 +72,19 @@ export default function ProductGallery({ product }) {
           <button
             key={image}
             type="button"
-            className="product-gallery__thumb"
+            className="product-gallery__thumb product-media-square"
+            data-testid="product-gallery-thumb"
             aria-label={`View ${product.sku} image ${index + 1}`}
             aria-pressed={selectedFinish === null && selectedImage === image}
             onClick={() => selectGalleryImage(image)}
           >
-            <SafeImage src={image} alt="" loading="lazy" />
+            <SafeImage
+              src={image}
+              alt=""
+              width={GALLERY_IMAGE_SIZE}
+              height={GALLERY_IMAGE_SIZE}
+              loading="lazy"
+            />
           </button>
         ))}
       </div>
@@ -113,7 +127,12 @@ export default function ProductGallery({ product }) {
           >
             <X size={20} aria-hidden="true" />
           </button>
-          <SafeImage src={selectedImage} alt={`${product.sku} enlarged product view`} />
+          <SafeImage
+            src={selectedImage}
+            alt={`${product.sku} enlarged product view`}
+            width={selectedImageSize}
+            height={selectedImageSize}
+          />
         </div>
       </dialog>
     </div>

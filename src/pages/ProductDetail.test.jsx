@@ -97,6 +97,87 @@ describe('ProductDetail', () => {
     expect(sectionIndexes).toEqual([...sectionIndexes].sort((a, b) => a - b));
   });
 
+  it('uses cool detail surfaces and six verified finish references', () => {
+    renderDetail('gf15');
+
+    expect(screen.getByTestId('product-oem-story')).toHaveClass('product-story--cool');
+    const finishes = screen.getAllByTestId('product-finish-cell');
+    expect(finishes).toHaveLength(6);
+    finishes.forEach((finish) => {
+      const image = within(finish).getByRole('img');
+      expect(image).toHaveAttribute('src', expect.stringMatching(
+        /assets\/images\/products\/gf15-(white|ivory|almond|black|grey|brown)\.webp$/
+      ));
+      expect(image).toHaveAttribute('width', '620');
+      expect(image).toHaveAttribute('height', '620');
+      expect(image).toHaveAttribute('loading', 'lazy');
+    });
+
+  });
+
+  it('keeps related products as four lowercase full-card links', () => {
+    const { container } = renderDetail('gf15');
+    const related = container.querySelector('.product-related');
+    const cards = within(related).getAllByRole('link');
+
+    expect(cards).toHaveLength(4);
+    cards.forEach((card) => {
+      expect(card).toHaveClass('pcard');
+      expect(card.getAttribute('href')).toMatch(/^\/products\/gfci\/[a-z0-9-]+$/);
+      expect(within(card).getByRole('img')).toBeInTheDocument();
+    });
+  });
+
+  it('defines square contained media, subtle radii, cool surfaces, and responsive related grids', () => {
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+    const mediaRules = (maxWidth) => {
+      const start = styles.indexOf(`@media (max-width: ${maxWidth}px)`);
+      const end = styles.indexOf('\n@media ', start + 1);
+      return styles.slice(start, end === -1 ? undefined : end);
+    };
+
+    expect(styles).toMatch(/--product-surface-strong:\s*#[0-9a-f]{6}/i);
+    expect(styles).not.toMatch(/--product-warm|beige|warm media surfaces/i);
+    expect(styles).toMatch(/\.product-media-square\s*\{[\s\S]*?aspect-ratio:\s*1\s*\/\s*1/);
+    expect(styles).toMatch(/\.product-gallery__main\s*>\s*img[\s\S]*?object-fit:\s*contain[\s\S]*?object-position:\s*center/);
+    expect(styles).toMatch(/\.product-gallery__main[\s\S]*?border-radius:\s*var\(--product-radius-card\)/);
+    const thumbRules = styles.match(/\.product-gallery__thumb\s*\{[^}]+\}/)?.[0] || '';
+    expect(thumbRules).toMatch(/border-radius:\s*var\(--product-radius-card\)/);
+    expect(styles).toMatch(/\.product-finish-strip\s*\{[\s\S]*?grid-template-columns:\s*repeat\(6,[^;]+\)[\s\S]*?border-radius:\s*var\(--product-radius-card\)/);
+    const finishCellRules = styles.match(/\.product-finish-strip figure\s*\{[^}]+\}/)?.[0] || '';
+    expect(finishCellRules).toMatch(/border-radius:\s*var\(--product-radius-card\)/);
+    const finishImageRules = styles.match(/\.product-finish-strip img\s*\{[^}]+\}/)?.[0] || '';
+    expect(finishImageRules).toMatch(/height:\s*auto/);
+    expect(finishImageRules).toMatch(/object-fit:\s*contain/);
+    expect(finishImageRules).toMatch(/border-radius:\s*var\(--product-radius-sm\)/);
+    expect(styles).toMatch(/\.product-related \.prod-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(4,/);
+    expect(mediaRules(1024)).toMatch(/\.product-related \.prod-grid\s*\{[^}]*grid-template-columns:\s*repeat\(2,/);
+    expect(mediaRules(700)).not.toMatch(/\.product-related \.prod-grid/);
+    expect(mediaRules(520)).toMatch(/\.product-related \.prod-grid\s*\{[^}]*grid-template-columns:\s*1fr/);
+    expect(mediaRules(520)).toMatch(/\.product-finish-strip\s*\{[^}]*grid-template-columns:\s*1fr/);
+    const reducedMotion = styles.slice(styles.indexOf('@media (prefers-reduced-motion: reduce)'));
+    expect(reducedMotion).toContain('.product-gallery img');
+    expect(reducedMotion).toContain('.product-finish-strip img');
+    expect(reducedMotion).toMatch(/animation:\s*none\s*!important/);
+    expect(reducedMotion).toMatch(/transform:\s*none\s*!important/);
+    expect(reducedMotion).toMatch(/transition:\s*none\s*!important/);
+  });
+
+  it('gives breadcrumbs and detail action links real touch boxes without layout motion', () => {
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+    const reducedMotion = styles.slice(styles.indexOf('@media (prefers-reduced-motion: reduce)'));
+
+    expect(styles).toMatch(/\.product-detail-breadcrumb a,[\s\S]*?\.product-inquiry \.textlink\s*\{[^}]*display:\s*inline-flex[^}]*min-width:\s*44px[^}]*min-height:\s*44px[^}]*align-items:\s*center/s);
+    const textLinkHoverRule = styles.match(/[^{}]*\.product-story \.textlink:hover[^{}]*\.product-inquiry \.textlink:hover[^{}]*\{[^}]+\}/)?.[0] || '';
+    expect(textLinkHoverRule).toMatch(/gap:\s*6px/);
+    expect(styles).not.toMatch(/\.product-(?:detail|story|technical|inquiry)[^}]*transition:\s*all/);
+    expect(reducedMotion).toContain('.product-detail-breadcrumb a');
+    expect(reducedMotion).toContain('.product-gallery button');
+    expect(reducedMotion).toContain('.product-story a');
+    expect(reducedMotion).toContain('.product-technical a');
+    expect(reducedMotion).toContain('.product-inquiry button');
+  });
+
   it('renders one technical anchor with table and mobile disclosures generated from verified rows', () => {
     const { container } = renderDetail('gf15');
 

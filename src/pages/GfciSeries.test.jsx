@@ -2,7 +2,7 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import GfciSeries from './GfciSeries.jsx';
 
 function renderSeries() {
@@ -14,6 +14,32 @@ function renderSeries() {
 }
 
 describe('GfciSeries', () => {
+  it('defines product-page-only scene layers backed by a verified GFCI product asset', async () => {
+    const { gfciSeriesVisuals, productFamilyVisuals, productOverviewVisuals } = await import('../data/productPageVisuals.js');
+    const gfciVisual = productFamilyVisuals.find(({ id }) => id === 'gfci');
+
+    expect(gfciVisual).toMatchObject({
+      id: 'gfci',
+      href: '/products/gfci',
+      scene: 'assets/images/editorial-products/family-gfci-background.webp',
+      product: 'assets/images/products/gf15-main.webp'
+    });
+    [
+      gfciVisual.scene,
+      gfciSeriesVisuals.application,
+      productOverviewVisuals.brandProgram
+    ].forEach((scene) => {
+      expect(scene).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.webp$/);
+    });
+    expect([
+      gfciVisual.scene,
+      gfciVisual.product,
+      gfciSeriesVisuals.application,
+      productOverviewVisuals.brandProgram
+    ].join(' ')).not.toContain('editorial-home');
+    expect(existsSync(`public/${gfciVisual.product}`)).toBe(true);
+  });
+
   it('shows full-card links for exactly the seven published public models', () => {
     const { container } = renderSeries();
     const grid = container.querySelector('.gfci-series__product-grid');
@@ -138,12 +164,75 @@ describe('GfciSeries', () => {
       expect(screen.getByText(body)).toBeInTheDocument();
     });
 
-    expect(screen.getByRole('img', { name: 'Coordinated kitchen wiring-device application' }).getAttribute('src'))
-      .toContain('application-kitchen-v2.png');
     expect(screen.getByText(/Match the published model, rating and variant to documented project requirements/)).toBeInTheDocument();
     ['Finish coordination', 'Brand marking', 'Packaging coordination', 'Documentation support'].forEach((option) => {
       expect(screen.getByText(option)).toBeInTheDocument();
     });
+  });
+
+  it('emits only known lowercase deployment paths for product cards and comparison links', () => {
+    const { container } = renderSeries();
+    const productLinks = [...container.querySelectorAll('a[href^="/products/gfci/"]')];
+
+    expect(productLinks).toHaveLength(14);
+    productLinks.forEach((link) => {
+      expect(link.getAttribute('href')).toMatch(/^\/products\/gfci\/[a-z0-9]+$/);
+    });
+  });
+
+  it('renders GFCI hero, application, and OEM visual layers without editorial-home assets', async () => {
+    const { container } = renderSeries();
+    const { gfciSeriesVisuals, productFamilyVisuals, productOverviewVisuals } = await import('../data/productPageVisuals.js');
+    const gfciVisual = productFamilyVisuals.find(({ id }) => id === 'gfci');
+    const markup = container.innerHTML;
+
+    expect.soft(markup).not.toContain('editorial-home');
+    [
+      gfciVisual.scene,
+      gfciVisual.product,
+      gfciSeriesVisuals.application,
+      productOverviewVisuals.brandProgram
+    ].forEach((visual) => {
+      expect.soft(markup).toContain(visual);
+    });
+    expect(screen.getByTestId('gfci-hero-scene')).toHaveAttribute('alt', '');
+    expect(screen.getByTestId('gfci-hero-product')).toHaveAttribute('alt', '');
+    expect(screen.getByTestId('gfci-application-scene')).toHaveAttribute('alt', '');
+    expect(screen.getByTestId('gfci-application-scene')).toHaveAttribute('width', '1536');
+    expect(screen.getByTestId('gfci-application-scene')).toHaveAttribute('height', '1024');
+    expect(screen.getByTestId('gfci-application-scene')).toHaveAttribute('loading', 'lazy');
+    expect(screen.getByTestId('gfci-application-product')).toHaveAttribute('alt', '');
+    expect(screen.getByTestId('gfci-application-product')).toHaveAttribute('width', '800');
+    expect(screen.getByTestId('gfci-application-product')).toHaveAttribute('height', '800');
+    expect(screen.getByTestId('gfci-application-product')).toHaveAttribute('loading', 'lazy');
+    expect(screen.getByTestId('gfci-oem-scene')).toHaveAttribute('alt', '');
+  });
+
+  it('uses constrained comparison and cool neutral application and OEM panels', () => {
+    const { container } = renderSeries();
+    const comparison = screen.getByRole('region', { name: 'GFCI model comparison' });
+
+    expect(comparison).toHaveClass('gfci-series__table-wrap');
+    expect(comparison.parentElement).toHaveClass('gfci-series__comparison-panel');
+    expect(container.querySelector('.gfci-series__application-panel')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-series__oem-panel')).toBeInTheDocument();
+
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+    expect(styles).toMatch(/\.pcard__media\s*\{[^}]*aspect-ratio:\s*1/s);
+    expect(styles).toMatch(/\.pcard__media img\s*\{[^}]*object-fit:\s*contain[^}]*padding:/s);
+    expect(styles).toMatch(/\.pcard__name\s*\{[^}]*overflow-wrap:\s*anywhere/s);
+    expect(styles).toMatch(/\.gfci-series__comparison-panel\s*\{[^}]*border-radius:/s);
+    expect(styles).toMatch(/\.gfci-comparison \.spec-table\s*\{[^}]*min-width:\s*760px/s);
+    expect(styles).toMatch(/\.gfci-comparison tbody tr:nth-child\(even\)/);
+    expect(styles).toMatch(/\.gfci-series__application-scene\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0/s);
+    expect(styles).toMatch(/\.gfci-series__oem-media\s*\{[^}]*position:\s*relative/s);
+    expect(styles).toMatch(/\.gfci-series__oem-media img\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0/s);
+    expect(styles).toMatch(/\.gfci-series__oem::before\s*\{[^}]*linear-gradient\([^}]*#e8eff3[^}]*var\(--product-navy\)/s);
+    expect(styles).toMatch(/\.gfci-oem-list li:nth-child\(2n\)\s*\{[^}]*border-right:\s*0/s);
+    expect(styles).toMatch(/@media \(max-width: 520px\)[\s\S]*?\.gfci-series__application-product\s*\{[^}]*right:\s*78px/s);
+    expect(styles).toMatch(/@media \(max-width: 520px\)[\s\S]*?\.gfci-series__application-copy,[\s\S]*?\.gfci-series__oem-content\s*\{[^}]*padding-right:\s*max\(78px,[^}]*safe-area-inset-right/s);
+    expect(styles).toMatch(/@media \(max-width: 700px\)[\s\S]*?\.gfci-oem-list li\s*\{[^}]*border-right:\s*0/s);
+    expect(styles).not.toMatch(/\.gfci-series__oem(?:-panel)?\s*\{[^}]*(?:#f7f5f0|#ece8e1|beige)/is);
   });
 
   it('keeps the series route ahead of product and generic family routes', () => {
@@ -167,14 +256,30 @@ describe('GfciSeries', () => {
     expect(styles).toMatch(/\.gfci-series__table-wrap:focus-visible\s*\{[\s\S]*?outline:/);
   });
 
-  it('keeps the GFCI product grid at two columns through 768px and one column through 520px', () => {
-    const styles = readFileSync('src/styles.css', 'utf8');
+  it('keeps the GFCI catalogue at four columns at 1280, two at 768, and one at 390', () => {
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
 
     expect(styles).toMatch(
-      /@media \(max-width: 768px\)[\s\S]*?\.gfci-series \.gfci-series__product-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/
+      /@media \(min-width: 1200px\) and \(max-width: 1439px\)[\s\S]*?\.gfci-series \.gfci-product-grid\s*\{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/
     );
     expect(styles).toMatch(
-      /@media \(max-width: 520px\)[\s\S]*?\.gfci-series \.gfci-series__product-grid\s*\{[\s\S]*?grid-template-columns:\s*1fr/
+      /@media \(max-width: 768px\)[\s\S]*?\.gfci-series \.gfci-product-grid\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/
     );
+    expect(styles).toMatch(
+      /@media \(max-width: 520px\)[\s\S]*?\.gfci-series \.gfci-product-grid\s*\{[^}]*grid-template-columns:\s*1fr/
+    );
+  });
+
+  it('gives series inline actions 44px boxes and removes inherited layout motion', () => {
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+    const reducedMotion = styles.slice(styles.indexOf('@media (prefers-reduced-motion: reduce)'));
+
+    expect(styles).toMatch(/\.gfci-comparison tbody th a\s*\{[^}]*display:\s*inline-flex[^}]*min-width:\s*44px[^}]*min-height:\s*44px[^}]*justify-content:\s*center/s);
+    expect(styles).toMatch(/\.gfci-series :where\([^)]*\.btn[^)]*\.textlink[^)]*\)\s*\{[^}]*display:\s*inline-flex[^}]*min-width:\s*44px[^}]*min-height:\s*44px/s);
+    expect(styles).toMatch(/\.gfci-comparison tbody tr\s*\{[^}]*transition:\s*none/s);
+    expect(styles).toMatch(/[^{}]*\.gfci-series \.textlink:hover[^{}]*\{[^}]*gap:\s*6px/s);
+    expect(reducedMotion).toContain('.gfci-series button');
+    expect(reducedMotion).toContain('.gfci-series input');
+    expect(reducedMotion).toContain('.gfci-series select');
   });
 });
