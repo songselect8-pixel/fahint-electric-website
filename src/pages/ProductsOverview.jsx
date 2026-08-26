@@ -2,29 +2,30 @@ import { ArrowRight, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SafeImage from '../components/SafeImage.jsx';
 import { productFamilies } from '../data/productFamilies.js';
+import { productFamilyVisuals, productOverviewVisuals } from '../data/productPageVisuals.js';
 
-const editorialAsset = (name) => `assets/images/editorial-home/${name}`;
+const productFamilyById = new Map(productFamilies.map((family) => [family.id, family]));
 
 const markets = [
   {
     title: 'Residential & renovation',
     label: 'Everyday protection',
     summary: 'Coordinated protection and wiring devices for kitchens, bathrooms and renovation programs.',
-    image: editorialAsset('application-kitchen-v2.png'),
+    image: productOverviewVisuals.marketResidential,
     href: '/products/gfci'
   },
   {
     title: 'Hospitality & multifamily',
     label: 'In-room convenience',
     summary: 'Integrated charging platforms for guest rooms, shared spaces and multifamily developments.',
-    image: editorialAsset('application-hotel-v2.png'),
+    image: productOverviewVisuals.marketHospitality,
     href: '/products/usb-outlets'
   },
   {
     title: 'Commercial fit-out',
     label: 'Project coordination',
     summary: 'Specification and manufacturing support for coordinated commercial wiring-device programs.',
-    image: editorialAsset('application-commercial-v2.png'),
+    image: productOverviewVisuals.marketCommercial,
     href: '/capabilities'
   }
 ];
@@ -38,11 +39,15 @@ const proofItems = [
 
 export default function ProductsOverview() {
   return (
-    <div className="editorial-home-front">
-      <section className="product-overview-hero editorial-hero" aria-labelledby="product-overview-title">
+    <div className="product-overview">
+      <section
+        className="product-overview-hero editorial-hero"
+        aria-labelledby="product-overview-title"
+        data-testid="product-overview-hero"
+      >
         <SafeImage
           className="editorial-hero__image"
-          src={editorialAsset('brand-system-family-final.png')}
+          src={productOverviewVisuals.hero}
           alt="Fahint coordinated wiring-device family"
           loading="eager"
           fetchpriority="high"
@@ -79,23 +84,35 @@ export default function ProductsOverview() {
         </div>
 
         <div className="editorial-product-mosaic product-family-grid">
-          {productFamilies.map((family) => (
-            <Link className="editorial-product-panel product-family-card" key={family.name} to={family.href}>
-              <SafeImage src={family.image} alt="" loading="lazy" />
-              <div className="editorial-panel__shade" />
-              <div className="editorial-panel__content">
-                <p className="editorial-panel__label">{family.label}</p>
-                <h3>{family.name}</h3>
-                <p>{family.summary}</p>
-                <div className="editorial-panel__meta">
-                  <span>Explore the family</span>
-                  <span className="editorial-panel__arrow" aria-hidden="true">
-                    <ArrowRight size={18} />
-                  </span>
+          {productFamilyVisuals.map((visual) => {
+            const family = productFamilyById.get(visual.id);
+
+            return (
+              <Link
+                className="editorial-product-panel product-family-card"
+                data-testid="product-family-card"
+                key={visual.id}
+                to={visual.href}
+              >
+                <SafeImage className="family-scene-image" src={visual.scene} alt="" loading="lazy" />
+                <div className="family-product-stage" aria-hidden="true">
+                  <SafeImage className="family-product-image" src={visual.product} alt="" loading="lazy" />
                 </div>
-              </div>
-            </Link>
-          ))}
+                <div className="editorial-panel__shade" />
+                <div className="editorial-panel__content">
+                  <p className="editorial-panel__label">{family.label}</p>
+                  <h3>{visual.name}</h3>
+                  <p>{family.summary}</p>
+                  <div className="editorial-panel__meta">
+                    <span>Explore the family</span>
+                    <span className="editorial-panel__arrow" aria-hidden="true">
+                      <ArrowRight size={18} />
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
@@ -103,8 +120,8 @@ export default function ProductsOverview() {
         <div className="container editorial-customization__grid product-brand-system__inner">
           <div className="editorial-customization__media">
             <SafeImage
-              src="assets/images/company/facility-sampleroom.webp"
-              alt="Fahint sample room for product and finish review"
+              src={productOverviewVisuals.brandProgram}
+              alt="Coordinated Fahint product, finish and packaging program"
               loading="lazy"
             />
             <div className="editorial-customization__caption">

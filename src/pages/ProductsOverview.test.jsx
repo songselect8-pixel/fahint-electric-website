@@ -194,10 +194,29 @@ describe('ProductsOverview', () => {
     expect(container.querySelector('.product-evidence-section__grid')).toHaveClass('container');
   });
 
-  it.fails('Task 3 renders product overview hero, family, market, and OEM visual layers without editorial-home assets', async () => {
+  it('Task 3 renders product overview hero, family, market, and OEM visual layers without editorial-home assets', async () => {
     const { container } = renderProductsOverview();
     const { productFamilyVisuals, productOverviewVisuals } = await import('../data/productPageVisuals.js');
     const markup = container.innerHTML;
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+
+    const hero = screen.getByTestId('product-overview-hero');
+    expect(hero.querySelector('img')).toHaveAttribute('src', expect.stringContaining(productOverviewVisuals.hero));
+
+    const familyCards = screen.getAllByTestId('product-family-card');
+    expect(familyCards).toHaveLength(5);
+    familyCards.forEach((card, index) => {
+      expect(card.tagName).toBe('A');
+      expect(card).toHaveAttribute('href', productFamilyVisuals[index].href);
+      expect(card.querySelector('.family-scene-image')).toHaveAttribute(
+        'src',
+        expect.stringContaining(productFamilyVisuals[index].scene)
+      );
+      expect(card.querySelector('.family-product-image')).toHaveAttribute(
+        'src',
+        expect.stringContaining(productFamilyVisuals[index].product)
+      );
+    });
 
     expect.soft(markup).not.toContain('editorial-home');
     Object.values(productOverviewVisuals).forEach((scene) => {
@@ -207,6 +226,12 @@ describe('ProductsOverview', () => {
       expect.soft(markup).toContain(scene);
       expect.soft(markup).toContain(product);
     });
+
+    expect.soft(styles).toMatch(/--product-radius-lg:\s*20px/);
+    expect.soft(styles).toMatch(/--product-radius-card:\s*15px/);
+    expect.soft(styles).toMatch(/--product-radius-sm:\s*9px/);
+    expect.soft(styles).toMatch(/\.family-scene-image\s*\{[\s\S]*?object-fit:\s*cover/);
+    expect.soft(styles).toMatch(/\.family-product-image\s*\{[\s\S]*?object-fit:\s*contain/);
   });
 
   it('keeps the product hero headline to two intentional lines', () => {
