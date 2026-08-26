@@ -4,6 +4,12 @@ import { ArrowRight, Filter, Search } from 'lucide-react';
 import ProductCard from '../components/ProductCard.jsx';
 import SafeImage from '../components/SafeImage.jsx';
 import { filterGfciProducts, isVerifiedListing, products } from '../data/products.js';
+import {
+  gfciSeriesVisuals,
+  productFamilyVisuals,
+  productOverviewVisualDimensions,
+  productOverviewVisuals
+} from '../data/productPageVisuals.js';
 
 const AMPERAGES = [
   { value: '', label: 'All' },
@@ -28,6 +34,8 @@ const APPLICATIONS = [
 const verifiedListings = products.filter(isVerifiedListing);
 const reviewListings = products.filter((product) => !isVerifiedListing(product));
 const verifiedListingFile = verifiedListings[0]?.listing.file;
+const gfciVisual = productFamilyVisuals.find(({ id }) => id === 'gfci');
+const GFCI_APPLICATION_DIMENSIONS = Object.freeze({ width: 1536, height: 1024 });
 
 const ENGINEERING_PROOF = [
   {
@@ -89,12 +97,36 @@ export default function GfciSeries() {
   return (
     <div className="gfci-series">
       <section className="gfci-series__hero gfci-series-hero">
-        <div className="container">
-          <p className="gfci-series__eyebrow">GFCI product family</p>
-          <h1>GFCI Product Range</h1>
-          <p className="gfci-series__hero-copy">
-            Compare seven published models, then confirm the finish and program requirements for your market.
-          </p>
+        <SafeImage
+          className="gfci-series__hero-scene"
+          data-testid="gfci-hero-scene"
+          src={gfciVisual.scene}
+          alt=""
+          width={gfciVisual.sceneWidth}
+          height={gfciVisual.sceneHeight}
+          loading="eager"
+          fetchpriority="high"
+        />
+        <div className="gfci-series__hero-shade" />
+        <div className="container gfci-series__hero-grid">
+          <div className="gfci-series__hero-content">
+            <p className="gfci-series__eyebrow">GFCI product family</p>
+            <h1>GFCI Product Range</h1>
+            <p className="gfci-series__hero-copy">
+              Compare seven published models, then confirm the finish and program requirements for your market.
+            </p>
+          </div>
+          <div className="gfci-series__hero-product" aria-hidden="true">
+            <span>Self-test platform</span>
+            <SafeImage
+              data-testid="gfci-hero-product"
+              src={gfciVisual.product}
+              alt=""
+              width={gfciVisual.productWidth}
+              height={gfciVisual.productHeight}
+              loading="eager"
+            />
+          </div>
         </div>
       </section>
 
@@ -172,7 +204,7 @@ export default function GfciSeries() {
       </section>
 
       <section className="gfci-series__comparison gfci-comparison section section--gray" aria-labelledby="gfci-comparison-heading">
-        <div className="container">
+        <div className="container gfci-series__comparison-panel">
           <div className="section-head">
             <p className="eyebrow">At-a-glance comparison</p>
             <h2 id="gfci-comparison-heading">Compare the published range</h2>
@@ -226,38 +258,64 @@ export default function GfciSeries() {
       </section>
 
       <section className="gfci-series__application section section--gray" aria-labelledby="gfci-application-heading">
-        <div className="container gfci-series__application-grid">
-          <div className="gfci-series__application-media">
-            <SafeImage
-              src="assets/images/editorial-home/application-kitchen-v2.png"
-              alt="Coordinated kitchen wiring-device application"
-              loading="lazy"
-            />
-          </div>
-          <div className="gfci-series__application-copy">
-            <p className="eyebrow">Application support</p>
-            <h2 id="gfci-application-heading">Specify from documented requirements.</h2>
-            <p>
-              Match the published model, rating and variant to documented project requirements, then confirm the selected configuration before ordering.
-            </p>
-            <Link to="/contact" className="textlink">Discuss a project <ArrowRight size={15} aria-hidden="true" /></Link>
+        <div className="container">
+          <div className="gfci-series__application-panel gfci-series__application-grid">
+            <div className="gfci-series__application-media">
+              <SafeImage
+                className="gfci-series__application-scene"
+                data-testid="gfci-application-scene"
+                src={gfciSeriesVisuals.application}
+                alt=""
+                width={GFCI_APPLICATION_DIMENSIONS.width}
+                height={GFCI_APPLICATION_DIMENSIONS.height}
+                loading="lazy"
+              />
+              <div className="gfci-series__application-product" aria-hidden="true">
+                <SafeImage
+                  data-testid="gfci-application-product"
+                  src={gfciVisual.product}
+                  alt=""
+                  width={gfciVisual.productWidth}
+                  height={gfciVisual.productHeight}
+                  loading="lazy"
+                />
+              </div>
+            </div>
+            <div className="gfci-series__application-copy">
+              <p className="eyebrow">Application support</p>
+              <h2 id="gfci-application-heading">Specify from documented requirements.</h2>
+              <p>
+                Match the published model, rating and variant to documented project requirements, then confirm the selected configuration before ordering.
+              </p>
+              <Link to="/contact" className="textlink">Discuss a project <ArrowRight size={15} aria-hidden="true" /></Link>
+            </div>
           </div>
         </div>
       </section>
 
       <section className="gfci-series__oem section" aria-labelledby="gfci-oem-heading">
-        <div className="container gfci-series__oem-grid">
-          <div>
-            <p className="eyebrow">OEM configuration</p>
-            <h2 id="gfci-oem-heading">Coordinate the program around the documented platform.</h2>
-          </div>
-          <div>
-            <ul className="gfci-series__oem-list gfci-oem-list">
-              {OEM_OPTIONS.map((option) => <li key={option}>{option}</li>)}
-            </ul>
-            <Link to="/contact" className="btn btn--primary">
-              Start an OEM conversation <ArrowRight size={16} aria-hidden="true" />
-            </Link>
+        <div className="container">
+          <div className="gfci-series__oem-panel gfci-series__oem-grid">
+            <div className="gfci-series__oem-media">
+              <SafeImage
+                data-testid="gfci-oem-scene"
+                src={productOverviewVisuals.brandProgram}
+                alt=""
+                width={productOverviewVisualDimensions.brandProgram.width}
+                height={productOverviewVisualDimensions.brandProgram.height}
+                loading="lazy"
+              />
+            </div>
+            <div className="gfci-series__oem-content">
+              <p className="eyebrow">OEM configuration</p>
+              <h2 id="gfci-oem-heading">Coordinate the program around the documented platform.</h2>
+              <ul className="gfci-series__oem-list gfci-oem-list">
+                {OEM_OPTIONS.map((option) => <li key={option}>{option}</li>)}
+              </ul>
+              <Link to="/contact" className="btn btn--primary">
+                Start an OEM conversation <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            </div>
           </div>
         </div>
       </section>

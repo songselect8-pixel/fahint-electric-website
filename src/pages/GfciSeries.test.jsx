@@ -170,7 +170,17 @@ describe('GfciSeries', () => {
     });
   });
 
-  it.fails('Task 4 renders GFCI hero, application, and OEM visual layers without editorial-home assets', async () => {
+  it('emits only known lowercase deployment paths for product cards and comparison links', () => {
+    const { container } = renderSeries();
+    const productLinks = [...container.querySelectorAll('a[href^="/products/gfci/"]')];
+
+    expect(productLinks).toHaveLength(14);
+    productLinks.forEach((link) => {
+      expect(link.getAttribute('href')).toMatch(/^\/products\/gfci\/[a-z0-9]+$/);
+    });
+  });
+
+  it('renders GFCI hero, application, and OEM visual layers without editorial-home assets', async () => {
     const { container } = renderSeries();
     const { gfciSeriesVisuals, productFamilyVisuals, productOverviewVisuals } = await import('../data/productPageVisuals.js');
     const gfciVisual = productFamilyVisuals.find(({ id }) => id === 'gfci');
@@ -185,6 +195,43 @@ describe('GfciSeries', () => {
     ].forEach((visual) => {
       expect.soft(markup).toContain(visual);
     });
+    expect(screen.getByTestId('gfci-hero-scene')).toHaveAttribute('alt', '');
+    expect(screen.getByTestId('gfci-hero-product')).toHaveAttribute('alt', '');
+    expect(screen.getByTestId('gfci-application-scene')).toHaveAttribute('alt', '');
+    expect(screen.getByTestId('gfci-application-scene')).toHaveAttribute('width', '1536');
+    expect(screen.getByTestId('gfci-application-scene')).toHaveAttribute('height', '1024');
+    expect(screen.getByTestId('gfci-application-scene')).toHaveAttribute('loading', 'lazy');
+    expect(screen.getByTestId('gfci-application-product')).toHaveAttribute('alt', '');
+    expect(screen.getByTestId('gfci-application-product')).toHaveAttribute('width', '800');
+    expect(screen.getByTestId('gfci-application-product')).toHaveAttribute('height', '800');
+    expect(screen.getByTestId('gfci-application-product')).toHaveAttribute('loading', 'lazy');
+    expect(screen.getByTestId('gfci-oem-scene')).toHaveAttribute('alt', '');
+  });
+
+  it('uses constrained comparison and cool neutral application and OEM panels', () => {
+    const { container } = renderSeries();
+    const comparison = screen.getByRole('region', { name: 'GFCI model comparison' });
+
+    expect(comparison).toHaveClass('gfci-series__table-wrap');
+    expect(comparison.parentElement).toHaveClass('gfci-series__comparison-panel');
+    expect(container.querySelector('.gfci-series__application-panel')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-series__oem-panel')).toBeInTheDocument();
+
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+    expect(styles).toMatch(/\.pcard__media\s*\{[^}]*aspect-ratio:\s*1/s);
+    expect(styles).toMatch(/\.pcard__media img\s*\{[^}]*object-fit:\s*contain[^}]*padding:/s);
+    expect(styles).toMatch(/\.pcard__name\s*\{[^}]*overflow-wrap:\s*anywhere/s);
+    expect(styles).toMatch(/\.gfci-series__comparison-panel\s*\{[^}]*border-radius:/s);
+    expect(styles).toMatch(/\.gfci-comparison tbody tr:nth-child\(even\)/);
+    expect(styles).toMatch(/\.gfci-series__application-scene\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0/s);
+    expect(styles).toMatch(/\.gfci-series__oem-media\s*\{[^}]*position:\s*relative/s);
+    expect(styles).toMatch(/\.gfci-series__oem-media img\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0/s);
+    expect(styles).toMatch(/\.gfci-series__oem::before\s*\{[^}]*linear-gradient\([^}]*#e8eff3[^}]*var\(--product-navy\)/s);
+    expect(styles).toMatch(/\.gfci-oem-list li:nth-child\(2n\)\s*\{[^}]*border-right:\s*0/s);
+    expect(styles).toMatch(/@media \(max-width: 520px\)[\s\S]*?\.gfci-series__application-product\s*\{[^}]*right:\s*78px/s);
+    expect(styles).toMatch(/@media \(max-width: 520px\)[\s\S]*?\.gfci-series__application-copy,[\s\S]*?\.gfci-series__oem-content\s*\{[^}]*padding-right:\s*max\(78px,[^}]*safe-area-inset-right/s);
+    expect(styles).toMatch(/@media \(max-width: 700px\)[\s\S]*?\.gfci-oem-list li\s*\{[^}]*border-right:\s*0/s);
+    expect(styles).not.toMatch(/\.gfci-series__oem(?:-panel)?\s*\{[^}]*(?:#f7f5f0|#ece8e1|beige)/is);
   });
 
   it('keeps the series route ahead of product and generic family routes', () => {

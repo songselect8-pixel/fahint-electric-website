@@ -401,28 +401,96 @@
 }
 
 .gfci-series-hero {
-  padding: calc(var(--header-h) + 52px) 0 72px;
-  background:
-    radial-gradient(circle at 86% 16%, rgba(71, 180, 222, .15), transparent 31%),
-    var(--product-navy);
+  position: relative;
+  min-height: clamp(560px, 48vw, 720px);
+  overflow: hidden;
+  padding: calc(var(--header-h) + 54px) 0 74px;
+  background: var(--product-navy);
   color: #fff;
 }
 
+.gfci-series__hero-scene,
+.gfci-series__hero-shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.gfci-series__hero-scene {
+  object-fit: cover;
+  object-position: center;
+  opacity: .74;
+}
+
+.gfci-series__hero-shade {
+  background:
+    linear-gradient(90deg, rgba(3, 15, 33, .96) 0%, rgba(5, 24, 49, .8) 44%, rgba(6, 26, 54, .42) 100%),
+    linear-gradient(rgba(71, 180, 222, .08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(71, 180, 222, .08) 1px, transparent 1px);
+  background-size: auto, 48px 48px, 48px 48px;
+}
+
 .gfci-series-hero .container {
+  position: relative;
+  z-index: 1;
   width: min(100% - clamp(32px, 7vw, 128px), 1320px);
   max-width: none;
   margin-right: auto;
   margin-left: auto;
 }
 
+.gfci-series__hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
+  align-items: center;
+  gap: clamp(48px, 8vw, 120px);
+}
+
+.gfci-series__hero-content {
+  max-width: 720px;
+}
+
 .gfci-series-hero h1 {
-  max-width: 27ch;
+  max-width: 18ch;
   margin: 14px 0 0;
   color: #fff;
   font-size: clamp(44px, 5vw, 72px);
   line-height: .98;
   letter-spacing: -.05em;
   text-wrap: balance;
+}
+
+.gfci-series__hero-product {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: var(--product-radius-lg);
+  background: rgba(244, 248, 250, .96);
+  box-shadow: 0 28px 72px rgba(1, 10, 24, .34);
+}
+
+.gfci-series__hero-product > span {
+  position: absolute;
+  z-index: 1;
+  top: 18px;
+  left: 18px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  background: var(--product-navy);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.gfci-series__hero-product img {
+  width: 100%;
+  height: 100%;
+  padding: clamp(24px, 3vw, 42px);
+  object-fit: contain;
 }
 
 .gfci-series__catalog {
@@ -468,32 +536,54 @@
   display: grid;
   min-width: 0;
   min-height: 100%;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: auto 1fr;
   overflow: hidden;
   border: 1px solid var(--product-line);
-  border-radius: 0;
+  border-radius: var(--product-radius-card);
   background: #fff;
   box-shadow: none;
   color: var(--product-ink);
   text-decoration: none;
   transform: none;
-  transition: transform 240ms ease, opacity 240ms ease;
+  transition: transform 220ms ease, opacity 220ms ease;
 }
 
 .pcard:hover {
   border-color: rgba(71, 180, 222, .7);
-  box-shadow: none;
-  transform: none;
+  box-shadow: 0 18px 42px rgba(7, 19, 38, .09);
+  transform: translateY(-3px);
 }
 
 .pcard__media {
-  min-height: clamp(260px, 25vw, 390px);
-  background: var(--product-surface);
+  position: relative;
+  min-height: 0;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #eef3f6;
 }
 
 .pcard__media img {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  padding: clamp(22px, 2vw, 34px);
   transform: scale(1);
   transition: transform 360ms cubic-bezier(.16, 1, .3, 1);
+}
+
+.pcard__tag {
+  z-index: 2;
+  top: 14px;
+  left: 14px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--product-navy);
+  box-shadow: 0 6px 18px rgba(6, 26, 54, .18);
+  font-size: 10px;
+  letter-spacing: .09em;
 }
 
 .pcard:hover .pcard__media img {
@@ -501,8 +591,16 @@
 }
 
 .pcard__body {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   padding: 24px;
+}
+
+.pcard__name {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
 }
 
 .pcard__foot .textlink {
@@ -518,15 +616,54 @@
 }
 
 .gfci-comparison {
-  padding: var(--product-section-y) 0;
-  background: var(--product-surface);
+  padding: clamp(68px, 6vw, 100px) 0;
+  background: #e8eff3;
+}
+
+.gfci-series__comparison-panel {
+  max-width: 1240px;
+  padding: clamp(24px, 4vw, 48px);
+  overflow: hidden;
+  border: 1px solid var(--product-line);
+  border-radius: var(--product-radius-lg);
+  background: #fff;
+  box-shadow: 0 20px 54px rgba(7, 19, 38, .07);
 }
 
 .gfci-comparison .gfci-series__table-wrap {
   overflow-x: auto;
-  border-top: 1px solid var(--product-line);
-  border-bottom: 1px solid var(--product-line);
+  border: 1px solid var(--product-line);
+  border-radius: var(--product-radius-sm);
   -webkit-overflow-scrolling: touch;
+}
+
+.gfci-comparison .spec-table {
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.gfci-comparison thead th {
+  border-bottom-color: rgba(255, 255, 255, .14);
+  background: var(--product-navy);
+  color: #fff;
+}
+
+.gfci-comparison tbody tr {
+  transition: background 160ms ease;
+}
+
+.gfci-comparison tbody tr:nth-child(even) {
+  background: #f4f7f9;
+}
+
+.gfci-comparison tbody tr:hover {
+  background: #e9f4f8;
+}
+
+.gfci-comparison tbody tr:last-child th,
+.gfci-comparison tbody tr:last-child td {
+  border-bottom: 0;
 }
 
 .gfci-comparison tbody th a:focus-visible {
@@ -541,20 +678,147 @@
   border-color: var(--product-line);
 }
 
+.gfci-series__application {
+  background: #e8eff3;
+}
+
+.gfci-series__application-panel {
+  overflow: hidden;
+  border: 1px solid var(--product-line);
+  border-radius: var(--product-radius-lg);
+  background: #fff;
+}
+
+.gfci-series__application-panel.gfci-series__application-grid {
+  grid-template-columns: minmax(0, 1.12fr) minmax(360px, .88fr);
+  gap: 0;
+}
+
+.gfci-series__application-media {
+  position: relative;
+  min-height: 520px;
+  aspect-ratio: auto;
+  background: #d9e4ea;
+}
+
+.gfci-series__application-scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gfci-series__application-product {
+  position: absolute;
+  z-index: 1;
+  top: 14%;
+  right: 7%;
+  width: min(34%, 220px);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .48);
+  border-radius: var(--product-radius-card);
+  background: #f4f7f9;
+  box-shadow: 0 18px 44px rgba(2, 12, 28, .28);
+}
+
+.gfci-series__application-product img {
+  width: 100%;
+  height: 100%;
+  padding: 12px;
+  object-fit: contain;
+}
+
+.gfci-series__application-copy {
+  padding: clamp(36px, 5vw, 72px);
+}
+
+.gfci-series__oem {
+  position: relative;
+  isolation: isolate;
+  background: var(--product-navy);
+  color: #fff;
+}
+
+.gfci-series__oem::before {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: clamp(28px, 3vw, 48px);
+  background: linear-gradient(180deg, #e8eff3 0%, var(--product-navy) 100%);
+  content: '';
+  pointer-events: none;
+}
+
+.gfci-series__oem > .container {
+  position: relative;
+  z-index: 1;
+}
+
+.gfci-series__oem-panel {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: var(--product-radius-lg);
+  background: var(--product-navy-soft);
+}
+
+.gfci-series__oem-panel.gfci-series__oem-grid {
+  grid-template-columns: minmax(340px, .8fr) minmax(0, 1.2fr);
+  gap: 0;
+}
+
+.gfci-series__oem-media {
+  position: relative;
+  min-height: 480px;
+  overflow: hidden;
+  background: #0b2342;
+}
+
+.gfci-series__oem-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gfci-series__oem-content {
+  padding: clamp(38px, 5vw, 72px);
+}
+
+.gfci-series__oem-content .eyebrow {
+  color: var(--product-cyan);
+}
+
+.gfci-series__oem-content h2 {
+  max-width: 660px;
+  color: #fff;
+}
+
 .gfci-oem-list,
 .gfci-series__oem-list.gfci-oem-list {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-color: var(--product-line);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 32px;
+  border-color: rgba(255, 255, 255, .16);
 }
 
 .gfci-oem-list li {
   min-width: 0;
-  padding: 18px 12px;
-  border-right: 1px solid var(--product-line);
+  padding: 18px 12px 18px 0;
+  border-color: rgba(255, 255, 255, .16);
+  border-right: 1px solid rgba(255, 255, 255, .16);
+  color: #fff;
 }
 
 .gfci-oem-list li:last-child {
+  border-right: 0;
+}
+
+.gfci-oem-list li:nth-child(2n) {
   border-right: 0;
 }
 
@@ -811,6 +1075,28 @@
   }
 }
 
+@media (max-width: 900px) {
+  .gfci-series__hero-grid,
+  .gfci-series__application-panel.gfci-series__application-grid,
+  .gfci-series__oem-panel.gfci-series__oem-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gfci-series__hero-grid {
+    gap: 42px;
+  }
+
+  .gfci-series__hero-product {
+    width: min(100%, 380px);
+    justify-self: center;
+  }
+
+  .gfci-series__application-media,
+  .gfci-series__oem-media {
+    min-height: 430px;
+  }
+}
+
 @media (max-width: 768px) {
   .product-family-grid {
     grid-template-columns: 1fr;
@@ -919,11 +1205,6 @@
     font-size: clamp(36px, 10vw, 46px);
   }
 
-  .gfci-product-grid,
-  .gfci-series .gfci-product-grid {
-    grid-template-columns: 1fr;
-  }
-
   .gfci-proof-grid,
   .gfci-series__proof-grid.gfci-proof-grid,
   .gfci-oem-list,
@@ -933,6 +1214,10 @@
 
   .gfci-proof-grid article:last-child {
     grid-column: auto;
+  }
+
+  .gfci-oem-list li {
+    border-right: 0;
   }
 
   .product-detail-hero__actions {
@@ -1010,13 +1295,55 @@
   }
 }
 
+@media (max-width: 520px) {
+  .gfci-product-grid,
+  .gfci-series .gfci-product-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gfci-series__hero-product {
+    width: min(100%, 300px);
+  }
+
+  .gfci-series__application-media,
+  .gfci-series__oem-media {
+    min-height: 330px;
+  }
+
+  .gfci-series__application-product {
+    right: 78px;
+    width: min(30%, 120px);
+  }
+
+  .gfci-series__application-copy,
+  .gfci-series__oem-content {
+    padding: 24px;
+    padding-right: max(78px, calc(24px + env(safe-area-inset-right, 0px)));
+  }
+
+  .gfci-series__comparison-panel {
+    padding: 24px;
+  }
+
+  .gfci-oem-list,
+  .gfci-series__oem-list.gfci-oem-list {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .product-family-card img,
   .product-market-grid .editorial-application img,
   .pcard,
   .pcard img,
   .pcard__media img,
-  .pcard__foot .textlink svg {
+  .pcard__foot .textlink svg,
+  .gfci-series__hero-scene,
+  .gfci-series__hero-product img,
+  .gfci-series__application-scene,
+  .gfci-series__application-product img,
+  .gfci-series__oem-media img,
+  .gfci-comparison tbody tr {
     animation: none !important;
     transform: none !important;
     transition: none !important;

@@ -3,6 +3,17 @@ import { ArrowRight } from 'lucide-react';
 import { productImage } from '../data/products.js';
 import SafeImage from './SafeImage.jsx';
 
+const VARIANT_LABELS = {
+  standard: 'STANDARD',
+  tr: 'TR',
+  wr: 'TR + WR',
+  blank: 'BLANK FACE'
+};
+
+export function productVariantLabel(product) {
+  return VARIANT_LABELS[product.category] || 'STANDARD';
+}
+
 export default function ProductCard({ product }) {
   const productLabel = `${product.sku} ${product.name}`;
   const receptacleType = product.nema === 'Blank face' ? product.nema : `NEMA ${product.nema}`;
@@ -14,8 +25,14 @@ export default function ProductCard({ product }) {
       aria-label={productLabel}
     >
       <div className="pcard__media">
-        <span className="pcard__tag">{product.feature}</span>
-        <SafeImage src={productImage(product.sku, 'card')} alt={productLabel} loading="lazy" />
+        <span className="pcard__tag">{productVariantLabel(product)}</span>
+        <SafeImage
+          src={productImage(product.sku, 'hero')}
+          alt={productLabel}
+          width={800}
+          height={800}
+          loading="lazy"
+        />
       </div>
       <div className="pcard__body">
         <div className="pcard__sku">{product.sku}</div>
