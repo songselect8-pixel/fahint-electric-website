@@ -2,7 +2,11 @@ import { ArrowRight, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SafeImage from '../components/SafeImage.jsx';
 import { productFamilies } from '../data/productFamilies.js';
-import { productFamilyVisuals, productOverviewVisuals } from '../data/productPageVisuals.js';
+import {
+  productFamilyVisuals,
+  productOverviewVisualDimensions,
+  productOverviewVisuals
+} from '../data/productPageVisuals.js';
 
 const productFamilyById = new Map(productFamilies.map((family) => [family.id, family]));
 
@@ -11,6 +15,7 @@ const markets = [
     title: 'Residential & renovation',
     label: 'Everyday protection',
     summary: 'Coordinated protection and wiring devices for kitchens, bathrooms and renovation programs.',
+    visualKey: 'marketResidential',
     image: productOverviewVisuals.marketResidential,
     href: '/products/gfci'
   },
@@ -18,6 +23,7 @@ const markets = [
     title: 'Hospitality & multifamily',
     label: 'In-room convenience',
     summary: 'Integrated charging platforms for guest rooms, shared spaces and multifamily developments.',
+    visualKey: 'marketHospitality',
     image: productOverviewVisuals.marketHospitality,
     href: '/products/usb-outlets'
   },
@@ -25,6 +31,7 @@ const markets = [
     title: 'Commercial fit-out',
     label: 'Project coordination',
     summary: 'Specification and manufacturing support for coordinated commercial wiring-device programs.',
+    visualKey: 'marketCommercial',
     image: productOverviewVisuals.marketCommercial,
     href: '/capabilities'
   }
@@ -48,7 +55,9 @@ export default function ProductsOverview() {
         <SafeImage
           className="editorial-hero__image"
           src={productOverviewVisuals.hero}
-          alt="Fahint coordinated wiring-device family"
+          alt=""
+          width={productOverviewVisualDimensions.hero.width}
+          height={productOverviewVisualDimensions.hero.height}
           loading="eager"
           fetchpriority="high"
         />
@@ -94,9 +103,23 @@ export default function ProductsOverview() {
                 key={visual.id}
                 to={visual.href}
               >
-                <SafeImage className="family-scene-image" src={visual.scene} alt="" loading="lazy" />
+                <SafeImage
+                  className="family-scene-image"
+                  src={visual.scene}
+                  alt=""
+                  width={visual.sceneWidth}
+                  height={visual.sceneHeight}
+                  loading="lazy"
+                />
                 <div className="family-product-stage" aria-hidden="true">
-                  <SafeImage className="family-product-image" src={visual.product} alt="" loading="lazy" />
+                  <SafeImage
+                    className="family-product-image"
+                    src={visual.product}
+                    alt=""
+                    width={visual.productWidth}
+                    height={visual.productHeight}
+                    loading="lazy"
+                  />
                 </div>
                 <div className="editorial-panel__shade" />
                 <div className="editorial-panel__content">
@@ -121,7 +144,9 @@ export default function ProductsOverview() {
           <div className="editorial-customization__media">
             <SafeImage
               src={productOverviewVisuals.brandProgram}
-              alt="Coordinated Fahint product, finish and packaging program"
+              alt=""
+              width={productOverviewVisualDimensions.brandProgram.width}
+              height={productOverviewVisualDimensions.brandProgram.height}
               loading="lazy"
             />
             <div className="editorial-customization__caption">
@@ -156,7 +181,13 @@ export default function ProductsOverview() {
           <div className="product-market-grid">
             {markets.map((market) => (
               <Link className="editorial-application" key={market.title} to={market.href}>
-                <SafeImage src={market.image} alt="" loading="lazy" />
+                <SafeImage
+                  src={market.image}
+                  alt=""
+                  width={productOverviewVisualDimensions[market.visualKey].width}
+                  height={productOverviewVisualDimensions[market.visualKey].height}
+                  loading="lazy"
+                />
                 <div className="editorial-application__shade" />
                 <div className="editorial-application__copy">
                   <p>{market.label}</p>

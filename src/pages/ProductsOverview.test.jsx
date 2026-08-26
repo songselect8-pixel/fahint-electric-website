@@ -30,13 +30,14 @@ describe('ProductsOverview', () => {
     productFamilyVisuals.forEach(({ scene, product }) => {
       expect(scene).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.webp$/);
       expect(product).toMatch(/^assets\/images\/(?:products|catalog)\/[a-z0-9.-]+\.webp$/);
+      expect(existsSync(`public/${scene}`)).toBe(true);
       expect(existsSync(`public/${product}`)).toBe(true);
       expect(`${scene} ${product}`).not.toContain('editorial-home');
     });
   });
 
   it('reserves product-page-only artwork for hero, OEM, market, and application scenes', async () => {
-    const { productOverviewVisuals } = await import('../data/productPageVisuals.js');
+    const { gfciSeriesVisuals, productOverviewVisuals } = await import('../data/productPageVisuals.js');
 
     expect(Object.keys(productOverviewVisuals)).toEqual([
       'hero',
@@ -45,10 +46,31 @@ describe('ProductsOverview', () => {
       'marketHospitality',
       'marketCommercial'
     ]);
-    Object.values(productOverviewVisuals).forEach((visual) => {
+    expect(Object.keys(gfciSeriesVisuals)).toEqual(['application']);
+
+    [...Object.values(productOverviewVisuals), ...Object.values(gfciSeriesVisuals)].forEach((visual) => {
       expect(visual).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.webp$/);
+      expect(existsSync(`public/${visual}`)).toBe(true);
       expect(visual).not.toContain('editorial-home');
     });
+  });
+
+  it('keeps the final product stylesheet explicit at tablet and mobile market breakpoints', () => {
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+    const tabletStart = styles.indexOf('@media (min-width: 769px) and (max-width: 1100px)');
+    const tabletEnd = styles.indexOf('@media', tabletStart + 1);
+    const tabletRules = styles.slice(tabletStart, tabletEnd);
+    const mobileStart = styles.indexOf('@media (max-width: 768px)');
+    const mobileEnd = styles.indexOf('@media', mobileStart + 1);
+    const mobileRules = styles.slice(mobileStart, mobileEnd);
+
+    expect(tabletStart).toBeGreaterThan(-1);
+    expect(tabletRules).toMatch(/\.product-market-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
+    expect(tabletRules).toMatch(/\.product-market-grid \.editorial-application:last-child\s*\{[\s\S]*?grid-column:\s*1\s*\/\s*-1/);
+
+    expect(mobileStart).toBeGreaterThan(-1);
+    expect(mobileRules).toMatch(/\.product-market-grid\s*\{[\s\S]*?grid-template-columns:\s*1fr/);
+    expect(mobileRules).toMatch(/\.product-market-grid \.editorial-application:nth-child\(n\)\s*\{[\s\S]*?grid-column:\s*auto/);
   });
 
   it('ships the product experience responsive and accessibility contract', () => {
@@ -201,22 +223,44 @@ describe('ProductsOverview', () => {
     const styles = readFileSync('src/styles/product-experience.css', 'utf8');
 
     const hero = screen.getByTestId('product-overview-hero');
-    expect(hero.querySelector('img')).toHaveAttribute('src', expect.stringContaining(productOverviewVisuals.hero));
+    const heroImage = hero.querySelector('img');
+    expect(heroImage).toHaveAttribute('src', expect.stringContaining(productOverviewVisuals.hero));
+    expect(heroImage).toHaveAttribute('alt', '');
+    expect(heroImage).toHaveAttribute('width', '2048');
+    expect(heroImage).toHaveAttribute('height', '1152');
 
     const familyCards = screen.getAllByTestId('product-family-card');
+    const familySceneDimensions = [[2048, 1365], [1536, 1024], [1536, 1024], [1536, 1024], [1536, 1024]];
     expect(familyCards).toHaveLength(5);
     familyCards.forEach((card, index) => {
+      const sceneImage = card.querySelector('.family-scene-image');
+      const productImage = card.querySelector('.family-product-image');
+
       expect(card.tagName).toBe('A');
       expect(card).toHaveAttribute('href', productFamilyVisuals[index].href);
-      expect(card.querySelector('.family-scene-image')).toHaveAttribute(
-        'src',
-        expect.stringContaining(productFamilyVisuals[index].scene)
-      );
-      expect(card.querySelector('.family-product-image')).toHaveAttribute(
-        'src',
-        expect.stringContaining(productFamilyVisuals[index].product)
-      );
+      expect(sceneImage).toHaveAttribute('src', expect.stringContaining(productFamilyVisuals[index].scene));
+      expect(sceneImage).toHaveAttribute('width', `${familySceneDimensions[index][0]}`);
+      expect(sceneImage).toHaveAttribute('height', `${familySceneDimensions[index][1]}`);
+      expect(productImage).toHaveAttribute('src', expect.stringContaining(productFamilyVisuals[index].product));
+      expect(productImage).toHaveAttribute('width', '800');
+      expect(productImage).toHaveAttribute('height', '800');
     });
+
+    const brandImage = container.querySelector('.product-brand-system .editorial-customization__media > img');
+    expect(brandImage).toHaveAttribute('alt', '');
+    expect(brandImage).toHaveAttribute('width', '1536');
+    expect(brandImage).toHaveAttribute('height', '1024');
+
+    const marketImages = [...container.querySelectorAll('.product-market-grid .editorial-application > img')];
+    expect(marketImages.map((image) => [image.getAttribute('width'), image.getAttribute('height')])).toEqual([
+      ['1535', '1024'],
+      ['1536', '1024'],
+      ['1536', '1024']
+    ]);
+    marketImages.forEach((image) => expect(image).toHaveAttribute('alt', ''));
+
+    expect(container.querySelector('.product-evidence-section .editorial-factory__bg'))
+      .toHaveAttribute('alt', 'Fahint wiring-device manufacturing workshop');
 
     expect.soft(markup).not.toContain('editorial-home');
     Object.values(productOverviewVisuals).forEach((scene) => {
