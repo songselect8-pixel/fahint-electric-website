@@ -24,10 +24,10 @@ describe('GfciSeries', () => {
     });
     expect(gfciSeriesHeroVisual.scene).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.(?:webp|png)$/);
     expect(gfciSeriesVisuals.applicationPoster).toBe(
-      'assets/images/editorial-products/gfci-application-installed-poster-v2.png'
+      'assets/images/editorial-products/gfci-application-installed-poster-v2-optimized.webp'
     );
     expect(gfciSeriesVisuals.oemPoster).toBe(
-      'assets/images/editorial-products/gfci-oem-program-poster-v3.png'
+      'assets/images/editorial-products/gfci-oem-program-poster-v3-optimized.webp'
     );
     [
       gfciSeriesHeroVisual.scene,
@@ -203,8 +203,10 @@ describe('GfciSeries', () => {
     expect(video).toHaveProperty('muted', true);
     expect(video).toHaveProperty('loop', true);
     expect(video).toHaveProperty('playsInline', true);
-    expect(source).toHaveAttribute('src', publicAsset('assets/videos/gfci-product-video.mp4'));
+    expect(source).toHaveAttribute('src', publicAsset('assets/videos/gfci-product-video-optimized.mp4'));
     expect(source).toHaveAttribute('type', 'video/mp4');
+    expect(video).toHaveAttribute('poster', publicAsset('assets/videos/gfci-product-video-poster.webp'));
+    expect(video).toHaveAttribute('preload', 'metadata');
     expect(container.querySelector('.gfci-series__hero-product')).not.toBeInTheDocument();
     expect(screen.queryByTestId('gfci-hero-scene')).not.toBeInTheDocument();
     expect(screen.queryByTestId('gfci-hero-product')).not.toBeInTheDocument();

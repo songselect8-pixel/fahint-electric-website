@@ -28,7 +28,7 @@ describe('ProductsOverview', () => {
       .toEqual(productFamilies.map(({ id, name, href }) => ({ id, name, href })));
 
     productFamilyVisuals.forEach(({ scene, product }) => {
-      expect(scene).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.png$/);
+      expect(scene).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+-optimized\.webp$/);
       expect(existsSync(`public/${scene}`)).toBe(true);
       expect(product).toBeUndefined();
       expect(scene).not.toContain('editorial-home');

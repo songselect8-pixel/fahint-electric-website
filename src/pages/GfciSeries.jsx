@@ -6,7 +6,8 @@ import SafeImage from '../components/SafeImage.jsx';
 import { filterGfciProducts, isVerifiedListing, products } from '../data/products.js';
 import { gfciSeriesVisuals } from '../data/productPageVisuals.js';
 
-const GFCI_HERO_VIDEO = `${import.meta.env.BASE_URL}assets/videos/gfci-product-video.mp4`;
+const GFCI_HERO_VIDEO = `${import.meta.env.BASE_URL}assets/videos/gfci-product-video-optimized.mp4`;
+const GFCI_HERO_POSTER = `${import.meta.env.BASE_URL}assets/videos/gfci-product-video-poster.webp`;
 
 const AMPERAGES = [
   { value: '', label: 'All' },
@@ -98,7 +99,8 @@ export default function GfciSeries() {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
+          poster={GFCI_HERO_POSTER}
           aria-hidden="true"
         >
           <source src={GFCI_HERO_VIDEO} type="video/mp4" />

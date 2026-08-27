@@ -19,6 +19,7 @@ export default function SafeImage({ src, alt, onError, ...imgProps }) {
 
   return (
     <img
+      decoding="async"
       {...imgProps}
       src={displayedSrc}
       alt={alt}

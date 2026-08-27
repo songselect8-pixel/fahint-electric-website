@@ -8,7 +8,7 @@ const products = [
   {
     name: 'GFCI Outlets',
     label: 'Safety Protection',
-    image: asset('product-gfci.jpg'),
+    image: asset('product-gfci-optimized.webp'),
     href: '/products/gfci',
     description: 'Self-test protection devices for residential, commercial and demanding installation environments.',
     specs: '15A / 20A · TR / WR options'
@@ -16,7 +16,7 @@ const products = [
   {
     name: 'USB & Type-C Outlets',
     label: 'In-Wall Charging',
-    image: asset('product-usb.jpg'),
+    image: asset('product-usb-optimized.webp'),
     href: '/products/usb-outlets',
     description: 'Integrated charging solutions designed for modern homes, hospitality and workplace projects.',
     specs: 'USB-A · Type-C · PD options'
@@ -24,7 +24,7 @@ const products = [
   {
     name: 'Receptacles',
     label: 'Wiring Devices',
-    image: asset('product-receptacle.jpg'),
+    image: asset('product-receptacle-optimized.webp'),
     href: '/products/receptacles',
     description: 'Decorator, duplex and specialty receptacles with coordinated plates and finish options.',
     specs: 'Residential / Commercial grade'
@@ -32,7 +32,7 @@ const products = [
   {
     name: 'Switches & Dimmers',
     label: 'Lighting Control',
-    image: asset('category-switches.jpg'),
+    image: asset('category-switches-optimized.webp'),
     href: '/products/dimmers',
     description: 'Decorator switches, dimmers and sensor controls for clean, consistent wall-device programs.',
     specs: 'Switch · Dimmer · Sensor'
@@ -40,7 +40,7 @@ const products = [
   {
     name: 'Smart Home Controls',
     label: 'Connected Living',
-    image: asset('product-smart.jpg'),
+    image: asset('product-smart-optimized.webp'),
     href: '/products/smart-switches',
     description: 'Wi-Fi and Zigbee lighting controls built for app, voice and shared-home experiences.',
     specs: 'Wi-Fi · Zigbee · Voice control'
@@ -48,7 +48,7 @@ const products = [
   {
     name: 'Wall Plates & Accessories',
     label: 'Finishing System',
-    image: asset('category-wallplates.jpg'),
+    image: asset('category-wallplates-optimized.webp'),
     href: '/products/wallplates',
     description: 'Screwless, standard and metal wall plates developed to complete a coordinated device range.',
     specs: 'Glossy · Matte · Metal'
@@ -59,28 +59,28 @@ const applications = [
   {
     title: 'Kitchens & Wet Areas',
     label: 'Residential safety',
-    image: asset('application-kitchen-v2.png'),
+    image: asset('application-kitchen-v2-optimized.webp'),
     href: '/products/gfci',
     copy: 'Integrated GFCI protection for premium kitchens and water-adjacent locations.'
   },
   {
     title: 'Hospitality & Multifamily',
     label: 'Connected convenience',
-    image: asset('application-hotel-v2.png'),
+    image: asset('application-hotel-v2-optimized.webp'),
     href: '/products/usb-outlets',
     copy: 'USB and Type-C charging where guests and residents naturally need power.'
   },
   {
     title: 'Commercial Fit-Out',
     label: 'Professional installation',
-    image: asset('application-commercial-v2.png'),
+    image: asset('application-commercial-v2-optimized.webp'),
     href: '/capabilities',
     copy: 'Dependable wiring-device programs for contractors and project buyers.'
   },
   {
     title: 'Bathrooms & Renovation',
     label: 'Protected spaces',
-    image: asset('application-bathroom-v2.png'),
+    image: asset('application-bathroom-v2-optimized.webp'),
     href: '/products/receptacles',
     copy: 'Clean, coordinated protection for modern bathroom and renovation projects.'
   }
@@ -122,9 +122,10 @@ export default function EditorialHomepageFront() {
       <section className="editorial-hero" aria-labelledby="editorial-hero-title">
         <img
           className="editorial-hero__image"
-          src={asset('hero-1.jpg')}
+          src={asset('hero-1-optimized.webp')}
           alt="Fahint North American wiring devices"
           fetchpriority="high"
+          decoding="async"
         />
         <div className="editorial-hero__shade" />
         <div className="editorial-hero__grid" />
@@ -161,9 +162,10 @@ export default function EditorialHomepageFront() {
         <div className="container editorial-brand__grid">
           <Reveal className="editorial-brand__media reveal--media">
             <img
-              src={asset('brand-system-family-final.png')}
+              src={asset('brand-system-family-final-optimized.webp')}
               alt="Fahint coordinated wiring-device product family"
               loading="lazy"
+              decoding="async"
             />
             <span className="editorial-brand__index">One system · Five product platforms</span>
           </Reveal>
@@ -205,7 +207,12 @@ export default function EditorialHomepageFront() {
               to={product.href}
               aria-label={`View ${product.name}`}
             >
-              <img src={product.image} alt={product.name} loading={index > 1 ? 'lazy' : 'eager'} />
+              <img
+                src={product.image}
+                alt={product.name}
+                loading={index > 1 ? 'lazy' : 'eager'}
+                decoding="async"
+              />
               <div className="editorial-panel__shade" />
               <div className="editorial-panel__content">
                 <div className="editorial-panel__number">{String(index + 1).padStart(2, '0')}</div>
@@ -223,7 +230,7 @@ export default function EditorialHomepageFront() {
       </section>
 
       <section className="editorial-engineering" aria-labelledby="editorial-engineering-title">
-        <img className="editorial-engineering__bg" src={asset('product-gfci.jpg')} alt="Fahint wiring-device engineering platform" loading="lazy" />
+        <img className="editorial-engineering__bg" src={asset('product-gfci-optimized.webp')} alt="Fahint wiring-device engineering platform" loading="lazy" decoding="async" />
         <div className="editorial-engineering__shade" />
         <div className="container editorial-engineering__content">
           <div className="editorial-engineering__copy">
@@ -265,7 +272,7 @@ export default function EditorialHomepageFront() {
               to={item.href}
               aria-label={`View ${item.title} solution`}
             >
-              <img src={item.image} alt={item.title} loading="lazy" />
+              <img src={item.image} alt={item.title} loading="lazy" decoding="async" />
               <div className="editorial-application__shade" />
               <div className="editorial-application__copy">
                 <p>{item.label}</p><h3>{item.title}</h3><span>{item.copy}</span>
@@ -279,7 +286,7 @@ export default function EditorialHomepageFront() {
       <section className="editorial-customization" aria-labelledby="editorial-customization-title">
         <div className="container editorial-customization__grid">
           <Reveal className="editorial-customization__media reveal--media">
-            <img src={asset('product-receptacle.jpg')} alt="Coordinated Fahint receptacle and switch range" loading="lazy" />
+            <img src={asset('product-receptacle-optimized.webp')} alt="Coordinated Fahint receptacle and switch range" loading="lazy" decoding="async" />
             <div className="editorial-customization__caption">
               <span>Private-label programme</span>
               <strong>One product language across the wall.</strong>
@@ -307,7 +314,7 @@ export default function EditorialHomepageFront() {
       </section>
 
       <section className="editorial-factory" aria-labelledby="editorial-factory-title">
-        <img className="editorial-factory__bg" src={asset('factory.jpg')} alt="Fahint production and testing line" loading="lazy" />
+        <img className="editorial-factory__bg" src={asset('factory-optimized.webp')} alt="Fahint production and testing line" loading="lazy" decoding="async" />
         <div className="editorial-factory__shade" />
         <div className="container editorial-factory__content">
           <div className="editorial-factory__copy">
@@ -332,7 +339,7 @@ export default function EditorialHomepageFront() {
       </section>
 
       <section className="editorial-oem" aria-labelledby="editorial-oem-title">
-        <img className="editorial-oem__bg" src={asset('about-fahint.jpg')} alt="Fahint automated manufacturing equipment" loading="lazy" />
+        <img className="editorial-oem__bg" src={asset('about-fahint-optimized.webp')} alt="Fahint automated manufacturing equipment" loading="lazy" decoding="async" />
         <div className="editorial-oem__shade" />
         <div className="container editorial-oem__content">
           <div className="editorial-heading">

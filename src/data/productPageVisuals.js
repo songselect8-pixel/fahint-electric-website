@@ -19,8 +19,8 @@ export const productOverviewVisualDimensions = {
 };
 
 export const gfciSeriesVisuals = {
-  applicationPoster: editorialProduct('gfci-application-installed-poster-v2.png'),
-  oemPoster: editorialProduct('gfci-oem-program-poster-v3.png')
+  applicationPoster: editorialProduct('gfci-application-installed-poster-v2-optimized.webp'),
+  oemPoster: editorialProduct('gfci-oem-program-poster-v3-optimized.webp')
 };
 
 export const gfciSeriesHeroVisual = {
@@ -35,31 +35,31 @@ export const gfciSeriesHeroVisual = {
 const familyVisuals = [
   {
     id: 'gfci',
-    scene: editorialProduct('family-gfci-installed-v3.png'),
+    scene: editorialProduct('family-gfci-installed-v3-optimized.webp'),
     sceneWidth: 1536,
     sceneHeight: 1024
   },
   {
     id: 'usb',
-    scene: editorialProduct('family-usb-installed-v3.png'),
+    scene: editorialProduct('family-usb-installed-v3-optimized.webp'),
     sceneWidth: 1536,
     sceneHeight: 1024
   },
   {
     id: 'receptacles',
-    scene: editorialProduct('family-receptacle-installed-v3.png'),
+    scene: editorialProduct('family-receptacle-installed-v3-optimized.webp'),
     sceneWidth: 1536,
     sceneHeight: 1024
   },
   {
     id: 'smart',
-    scene: editorialProduct('family-smart-installed-v3.png'),
+    scene: editorialProduct('family-smart-installed-v3-optimized.webp'),
     sceneWidth: 1536,
     sceneHeight: 1024
   },
   {
     id: 'switches',
-    scene: editorialProduct('family-switch-installed-v3.png'),
+    scene: editorialProduct('family-switch-installed-v3-optimized.webp'),
     sceneWidth: 1536,
     sceneHeight: 1024
   }
