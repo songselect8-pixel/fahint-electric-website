@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
 import GfciSeries from './GfciSeries.jsx';
+import { publicAsset } from '../utils/publicAsset.js';
 
 function renderSeries() {
   return render(
@@ -202,16 +203,22 @@ describe('GfciSeries', () => {
     expect(video).toHaveProperty('muted', true);
     expect(video).toHaveProperty('loop', true);
     expect(video).toHaveProperty('playsInline', true);
-    expect(source).toHaveAttribute('src', '/assets/videos/gfci-product-video.mp4');
+    expect(source).toHaveAttribute('src', publicAsset('assets/videos/gfci-product-video.mp4'));
     expect(source).toHaveAttribute('type', 'video/mp4');
     expect(container.querySelector('.gfci-series__hero-product')).not.toBeInTheDocument();
     expect(screen.queryByTestId('gfci-hero-scene')).not.toBeInTheDocument();
     expect(screen.queryByTestId('gfci-hero-product')).not.toBeInTheDocument();
-    expect(screen.getByTestId('gfci-application-poster')).toHaveAttribute('src', `/${gfciSeriesVisuals.applicationPoster}`);
+    expect(screen.getByTestId('gfci-application-poster')).toHaveAttribute(
+      'src',
+      publicAsset(gfciSeriesVisuals.applicationPoster)
+    );
     expect(screen.getByTestId('gfci-application-poster')).toHaveAttribute('width', '1536');
     expect(screen.getByTestId('gfci-application-poster')).toHaveAttribute('height', '1024');
     expect(screen.getByTestId('gfci-application-poster')).toHaveAttribute('loading', 'lazy');
-    expect(screen.getByTestId('gfci-oem-poster')).toHaveAttribute('src', `/${gfciSeriesVisuals.oemPoster}`);
+    expect(screen.getByTestId('gfci-oem-poster')).toHaveAttribute(
+      'src',
+      publicAsset(gfciSeriesVisuals.oemPoster)
+    );
     expect(screen.getByTestId('gfci-oem-poster')).toHaveAttribute('width', '1536');
     expect(screen.getByTestId('gfci-oem-poster')).toHaveAttribute('height', '1024');
     expect(container.querySelector('.gfci-series__poster--application')).toBeInTheDocument();
