@@ -81,6 +81,23 @@ export default function ProductsOverview() {
         </div>
       </section>
 
+      <section className="product-overview-platform-strip" aria-label="Product platform summary">
+        <div className="container product-overview-platform-strip__inner">
+          <div>
+            <strong>UL / cUL</strong>
+            <span>Listed product platforms</span>
+          </div>
+          <div>
+            <strong>5 families</strong>
+            <span>One coordinated device range</span>
+          </div>
+          <div>
+            <strong>OEM / ODM</strong>
+            <span>Brand and program support</span>
+          </div>
+        </div>
+      </section>
+
       <section className="product-family-section editorial-products" aria-labelledby="product-family-title">
         <div className="container editorial-heading">
           <div>
@@ -111,16 +128,6 @@ export default function ProductsOverview() {
                   height={visual.sceneHeight}
                   loading="lazy"
                 />
-                <div className="family-product-stage" aria-hidden="true">
-                  <SafeImage
-                    className="family-product-image"
-                    src={visual.product}
-                    alt=""
-                    width={visual.productWidth}
-                    height={visual.productHeight}
-                    loading="lazy"
-                  />
-                </div>
                 <div className="editorial-panel__shade" />
                 <div className="editorial-panel__content">
                   <p className="editorial-panel__label">{family.label}</p>

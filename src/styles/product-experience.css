@@ -179,13 +179,14 @@
   height: 100%;
   object-fit: cover;
   object-position: 62% center;
+  filter: brightness(1.14) saturate(.94);
 }
 
 .product-overview-hero .editorial-hero__shade {
   z-index: -2;
   background:
-    linear-gradient(90deg, var(--product-navy) 0%, rgba(6, 26, 54, .96) 34%, rgba(6, 26, 54, .62) 64%, rgba(6, 26, 54, .18) 100%),
-    linear-gradient(0deg, rgba(6, 26, 54, .34), rgba(6, 26, 54, .04));
+    linear-gradient(90deg, rgba(6, 26, 54, .9) 0%, rgba(6, 26, 54, .78) 36%, rgba(6, 26, 54, .38) 68%, rgba(6, 26, 54, .08) 100%),
+    linear-gradient(0deg, rgba(6, 26, 54, .14), rgba(6, 26, 54, 0));
 }
 
 .product-overview-hero .editorial-hero__grid {
@@ -233,10 +234,48 @@
   margin-top: 36px;
 }
 
+.product-overview-platform-strip {
+  position: relative;
+  z-index: 2;
+  border-block: 1px solid rgba(13, 39, 75, .1);
+  background: #edf4f7;
+  color: var(--product-ink);
+}
+
+.product-overview-platform-strip__inner {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-height: 112px;
+  align-items: stretch;
+}
+
+.product-overview-platform-strip__inner > div {
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  padding: 22px clamp(22px, 3vw, 48px);
+  border-left: 1px solid rgba(13, 39, 75, .1);
+}
+
+.product-overview-platform-strip__inner > div:last-child {
+  border-right: 1px solid rgba(13, 39, 75, .1);
+}
+
+.product-overview-platform-strip strong {
+  color: var(--product-navy);
+  font-size: clamp(20px, 1.7vw, 28px);
+  line-height: 1;
+}
+
+.product-overview-platform-strip span {
+  color: var(--product-muted);
+  font-size: 14px;
+}
+
 /* Product family editorial mosaic */
 .product-family-section {
   padding: var(--product-section-y) clamp(16px, 2vw, 32px);
-  background: var(--product-navy);
+  background: #071c3a;
   color: #fff;
 }
 
@@ -300,48 +339,15 @@
   transition: transform 420ms cubic-bezier(.16, 1, .3, 1);
 }
 
-.product-family-card .family-product-stage {
-  position: absolute;
-  z-index: 1;
-  top: 7%;
-  right: 4%;
-  box-sizing: border-box;
-  width: min(54%, 430px);
-  height: auto;
-  aspect-ratio: 1 / 1;
-  padding: clamp(14px, 1.5vw, 24px);
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, .42);
-  border-radius: var(--product-radius-card);
-  background: rgba(247, 250, 252, .96);
-  box-shadow: 0 24px 52px rgba(2, 12, 28, .2);
-  pointer-events: none;
-}
-
-.product-family-card:first-child .family-product-stage {
-  top: 5%;
-  right: 5%;
-  width: min(46%, 468px);
-  height: auto;
-}
-
-.product-family-card .family-product-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  filter: drop-shadow(0 24px 32px rgba(2, 12, 28, .28));
-  transform: translateY(0) scale(1);
-  transition: transform 360ms cubic-bezier(.16, 1, .3, 1);
-}
-
 .product-family-card .editorial-panel__shade {
-  z-index: 2;
-  background: linear-gradient(180deg, rgba(4, 15, 33, .02) 22%, rgba(4, 15, 33, .3) 58%, rgba(4, 15, 33, .94) 100%);
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(4, 15, 33, .7) 0%, rgba(4, 15, 33, .28) 48%, rgba(4, 15, 33, 0) 74%),
+    linear-gradient(180deg, rgba(4, 15, 33, .02) 42%, rgba(4, 15, 33, .9) 100%);
 }
 
 .product-family-card .editorial-panel__content {
-  z-index: 3;
+  z-index: 2;
   padding: clamp(28px, 3.2vw, 52px);
 }
 
@@ -350,9 +356,6 @@
     transform: scale(1.018);
   }
 
-  .product-family-card:hover .family-product-image {
-    transform: translateY(-6px) scale(1.018);
-  }
 }
 
 /* Brand/OEM system split */
@@ -418,6 +421,38 @@
   background: var(--product-navy-soft);
 }
 
+.product-market-grid .editorial-application__shade {
+  background: linear-gradient(180deg, rgba(3, 10, 24, 0) 28%, rgba(3, 10, 24, .25) 52%, rgba(3, 10, 24, .94) 100%);
+}
+
+.product-market-grid .editorial-application__copy > p {
+  color: #72d2f3;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, .55);
+}
+
+.product-market-grid .editorial-application__copy > h3,
+.product-market-grid .editorial-application__copy > span {
+  text-shadow: 0 2px 16px rgba(0, 0, 0, .68);
+}
+
+.product-market-grid .editorial-application__arrow {
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(255, 255, 255, .82);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .94);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .24);
+  color: var(--product-navy);
+  backdrop-filter: blur(10px);
+}
+
+.product-market-grid .editorial-application:hover .editorial-application__arrow,
+.product-market-grid .editorial-application:focus-visible .editorial-application__arrow {
+  background: var(--product-cyan);
+  color: var(--product-navy);
+  transform: translateX(4px);
+}
+
 .product-market-grid .editorial-application img {
   width: 100%;
   height: 100%;
@@ -478,13 +513,16 @@
 .gfci-series-hero {
   position: relative;
   min-height: clamp(560px, 48vw, 720px);
+  display: flex;
+  align-items: center;
   overflow: hidden;
   padding: calc(var(--header-h) + 54px) 0 74px;
   background: var(--product-navy);
   color: #fff;
+  isolation: isolate;
 }
 
-.gfci-series__hero-scene,
+.gfci-series__hero-video,
 .gfci-series__hero-shade {
   position: absolute;
   inset: 0;
@@ -492,14 +530,18 @@
   height: 100%;
 }
 
-.gfci-series__hero-scene {
+.gfci-series__hero-video {
+  z-index: -2;
+  display: block;
   object-fit: cover;
   object-position: center;
-  opacity: .74;
 }
 
 .gfci-series__hero-shade {
-  background: linear-gradient(90deg, rgba(3, 15, 33, .96) 0%, rgba(5, 24, 49, .8) 44%, rgba(6, 26, 54, .42) 100%);
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(3, 15, 33, .9) 0%, rgba(5, 24, 49, .64) 48%, rgba(6, 26, 54, .18) 100%),
+    linear-gradient(180deg, rgba(3, 15, 33, .12) 52%, rgba(3, 15, 33, .5) 100%);
 }
 
 .gfci-series-hero .container {
@@ -512,10 +554,7 @@
 }
 
 .gfci-series__hero-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
-  align-items: center;
-  gap: clamp(48px, 8vw, 120px);
+  display: block;
 }
 
 .gfci-series__hero-content {
@@ -530,38 +569,6 @@
   line-height: .98;
   letter-spacing: -.05em;
   text-wrap: balance;
-}
-
-.gfci-series__hero-product {
-  position: relative;
-  aspect-ratio: 1;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, .22);
-  border-radius: var(--product-radius-lg);
-  background: rgba(244, 248, 250, .96);
-  box-shadow: 0 28px 72px rgba(1, 10, 24, .34);
-}
-
-.gfci-series__hero-product > span {
-  position: absolute;
-  z-index: 1;
-  top: 18px;
-  left: 18px;
-  padding: 7px 10px;
-  border-radius: 6px;
-  background: var(--product-navy);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
-
-.gfci-series__hero-product img {
-  width: 100%;
-  height: 100%;
-  padding: clamp(24px, 3vw, 42px);
-  object-fit: contain;
 }
 
 .gfci-series__catalog {
@@ -750,148 +757,149 @@
   border-color: var(--product-line);
 }
 
-.gfci-series__application {
+.gfci-series__wide-container {
+  width: min(calc(100% - clamp(32px, 5vw, 96px)), 1760px);
+  margin-inline: auto;
+}
+
+.gfci-series__poster-section {
+  position: relative;
+  padding: clamp(72px, 7vw, 112px) 0;
+}
+
+.gfci-series__poster-section--application {
   background: #e8eff3;
 }
 
-.gfci-series__application-panel {
-  overflow: hidden;
-  border: 1px solid var(--product-line);
-  border-radius: var(--product-radius-lg);
-  background: #fff;
+.gfci-series__poster-section--oem {
+  margin-bottom: -1px;
+  background: var(--product-navy);
+  color: #fff;
+  box-shadow: 0 2px 0 var(--product-navy);
 }
 
-.gfci-series__application-panel.gfci-series__application-grid {
-  grid-template-columns: minmax(0, 1.12fr) minmax(360px, .88fr);
-  gap: 0;
-}
-
-.gfci-series__application-media {
+.gfci-series__poster {
   position: relative;
-  min-height: 520px;
-  aspect-ratio: auto;
-  background: #d9e4ea;
+  isolation: isolate;
+  display: grid;
+  align-items: center;
+  min-height: clamp(620px, 46vw, 790px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 20px;
+  background: #071a33;
+  box-shadow: 0 30px 80px rgba(7, 28, 55, .18);
 }
 
-.gfci-series__application-scene {
+.gfci-series__poster-image {
   position: absolute;
+  z-index: -2;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform .8s cubic-bezier(.2, .7, .2, 1);
 }
 
-.gfci-series__application-product {
+.gfci-series__poster:hover .gfci-series__poster-image {
+  transform: scale(1.018);
+}
+
+.gfci-series__poster-shade {
   position: absolute;
-  z-index: 1;
-  top: 14%;
-  right: 7%;
-  width: min(34%, 220px);
-  aspect-ratio: 1;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, .48);
-  border-radius: var(--product-radius-card);
-  background: #f4f7f9;
-  box-shadow: 0 18px 44px rgba(2, 12, 28, .28);
-}
-
-.gfci-series__application-product img {
-  width: 100%;
-  height: 100%;
-  padding: 12px;
-  object-fit: contain;
-}
-
-.gfci-series__application-copy {
-  padding: clamp(36px, 5vw, 72px);
-}
-
-.gfci-series__oem {
-  position: relative;
-  isolation: isolate;
-  background: var(--product-navy);
-  color: #fff;
-}
-
-.gfci-series__oem::before {
-  position: absolute;
-  z-index: 0;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: clamp(28px, 3vw, 48px);
-  background: linear-gradient(180deg, #e8eff3 0%, var(--product-navy) 100%);
-  content: '';
+  z-index: -1;
+  inset: 0;
   pointer-events: none;
 }
 
-.gfci-series__oem > .container {
+.gfci-series__poster--application .gfci-series__poster-shade {
+  background:
+    linear-gradient(90deg, rgba(3, 17, 35, .97) 0%, rgba(3, 17, 35, .86) 41%, rgba(3, 17, 35, .18) 75%, rgba(3, 17, 35, .28) 100%),
+    linear-gradient(180deg, rgba(3, 17, 35, .08), rgba(3, 17, 35, .36));
+}
+
+.gfci-series__poster--oem .gfci-series__poster-shade {
+  background:
+    linear-gradient(270deg, rgba(3, 17, 35, .97) 0%, rgba(3, 17, 35, .86) 41%, rgba(3, 17, 35, .16) 76%, rgba(3, 17, 35, .3) 100%),
+    linear-gradient(180deg, rgba(3, 17, 35, .08), rgba(3, 17, 35, .4));
+}
+
+.gfci-series__poster-copy {
   position: relative;
   z-index: 1;
+  display: flex;
+  width: min(100%, 640px);
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(40px, 5.5vw, 96px);
+  color: #fff;
 }
 
-.gfci-series__oem-panel {
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, .14);
-  border-radius: var(--product-radius-lg);
-  background: var(--product-navy-soft);
+.gfci-series__poster-copy--right {
+  justify-self: end;
 }
 
-.gfci-series__oem-panel.gfci-series__oem-grid {
-  grid-template-columns: minmax(340px, .8fr) minmax(0, 1.2fr);
+.gfci-series__poster-copy h2 {
+  max-width: 13ch;
+  color: #fff;
+  font-size: clamp(42px, 4vw, 68px);
+  line-height: .99;
+}
+
+.gfci-series__poster-copy > p:not(.eyebrow) {
+  max-width: 540px;
+  color: rgba(255, 255, 255, .74);
+}
+
+.gfci-series__application-points {
+  display: grid;
   gap: 0;
+  margin: 28px 0 34px;
+  padding: 0;
+  border-top: 1px solid rgba(255, 255, 255, .18);
+  list-style: none;
 }
 
-.gfci-series__oem-media {
+.gfci-series__application-points li {
   position: relative;
-  min-height: 480px;
-  overflow: hidden;
-  background: #0b2342;
+  padding: 14px 0 14px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, .18);
+  color: #fff;
+  font-weight: 700;
 }
 
-.gfci-series__oem-media img {
+.gfci-series__application-points li::before {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  top: 20px;
+  left: 2px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--product-cyan);
+  content: '';
 }
 
-.gfci-series__oem-content {
-  padding: clamp(38px, 5vw, 72px);
+.gfci-series__poster-copy .textlink {
+  color: #fff;
 }
 
-.gfci-series__oem-content .eyebrow {
+.gfci-series__poster-copy .eyebrow {
   color: var(--product-cyan);
 }
 
-.gfci-series__oem-content h2 {
-  max-width: 660px;
-  color: #fff;
-}
-
-.gfci-oem-list,
-.gfci-series__oem-list.gfci-oem-list {
+.gfci-series__oem-rail {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-top: 32px;
-  border-color: rgba(255, 255, 255, .16);
+  margin: 30px 0;
+  padding: 0;
+  border-top: 1px solid rgba(255, 255, 255, .17);
+  list-style: none;
 }
 
-.gfci-oem-list li {
-  min-width: 0;
-  padding: 18px 12px 18px 0;
-  border-color: rgba(255, 255, 255, .16);
-  border-right: 1px solid rgba(255, 255, 255, .16);
+.gfci-series__oem-rail li {
+  padding: 16px 14px 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, .17);
   color: #fff;
-}
-
-.gfci-oem-list li:last-child {
-  border-right: 0;
-}
-
-.gfci-oem-list li:nth-child(2n) {
-  border-right: 0;
 }
 
 /* Product detail */
@@ -1264,11 +1272,6 @@
     grid-column: 1 / -1;
   }
 
-  .gfci-oem-list,
-  .gfci-series__oem-list.gfci-oem-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .product-story__split,
   .product-story__split--reverse,
   .product-story__oem-head,
@@ -1290,28 +1293,30 @@
 }
 
 @media (max-width: 900px) {
-  .gfci-series__hero-grid,
-  .gfci-series__application-panel.gfci-series__application-grid,
-  .gfci-series__oem-panel.gfci-series__oem-grid {
-    grid-template-columns: 1fr;
+  .gfci-series__poster {
+    min-height: clamp(560px, 75vw, 700px);
   }
 
-  .gfci-series__hero-grid {
-    gap: 42px;
-  }
-
-  .gfci-series__hero-product {
-    width: min(100%, 380px);
-    justify-self: center;
-  }
-
-  .gfci-series__application-media,
-  .gfci-series__oem-media {
-    min-height: 430px;
+  .gfci-series__poster-copy {
+    width: min(100%, 560px);
   }
 }
 
 @media (max-width: 768px) {
+  .product-overview-platform-strip__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .product-overview-platform-strip__inner > div {
+    min-height: 86px;
+    border-right: 1px solid rgba(13, 39, 75, .1);
+    border-bottom: 1px solid rgba(13, 39, 75, .1);
+  }
+
+  .product-overview-platform-strip__inner > div:last-child {
+    border-bottom: 0;
+  }
+
   .product-family-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1319,14 +1324,6 @@
   .product-family-card:first-child {
     grid-column: 1 / -1;
     min-height: 420px;
-  }
-
-  .product-family-card .family-product-stage,
-  .product-family-card:first-child .family-product-stage {
-    top: 5%;
-    right: 5%;
-    width: min(56%, 360px);
-    height: auto;
   }
 
   .product-market-grid {
@@ -1424,18 +1421,12 @@
   }
 
   .gfci-proof-grid,
-  .gfci-series__proof-grid.gfci-proof-grid,
-  .gfci-oem-list,
-  .gfci-series__oem-list.gfci-oem-list {
+  .gfci-series__proof-grid.gfci-proof-grid {
     grid-template-columns: 1fr;
   }
 
   .gfci-proof-grid article:last-child {
     grid-column: auto;
-  }
-
-  .gfci-oem-list li {
-    border-right: 0;
   }
 
   .product-detail-hero__actions {
@@ -1541,34 +1532,43 @@
     grid-template-columns: 1fr;
   }
 
-  .gfci-series__hero-product {
-    width: min(100%, 300px);
+  .gfci-series__wide-container {
+    width: calc(100% - 24px);
   }
 
-  .gfci-series__application-media,
-  .gfci-series__oem-media {
-    min-height: 330px;
+  .gfci-series__poster-section {
+    padding: 56px 0;
   }
 
-  .gfci-series__application-product {
-    right: 78px;
-    width: min(30%, 120px);
+  .gfci-series__poster {
+    min-height: 600px;
+    border-radius: 14px;
   }
 
-  .gfci-series__application-copy,
-  .gfci-series__oem-content {
-    padding: 24px;
-    padding-right: max(78px, calc(24px + env(safe-area-inset-right, 0px)));
+  .gfci-series__poster-copy {
+    width: 100%;
+    align-self: end;
+    padding: 30px;
+    padding-right: max(78px, calc(30px + env(safe-area-inset-right, 0px)));
+  }
+
+  .gfci-series__poster-copy h2 {
+    font-size: clamp(36px, 11vw, 48px);
+  }
+
+  .gfci-series__poster--application .gfci-series__poster-shade,
+  .gfci-series__poster--oem .gfci-series__poster-shade {
+    background: linear-gradient(180deg, rgba(3, 17, 35, .08) 8%, rgba(3, 17, 35, .96) 72%);
   }
 
   .gfci-series__comparison-panel {
     padding: 24px;
   }
 
-  .gfci-oem-list,
-  .gfci-series__oem-list.gfci-oem-list {
+  .gfci-series__oem-rail {
     grid-template-columns: 1fr;
   }
+
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1584,11 +1584,8 @@
   .gfci-series button,
   .gfci-series input,
   .gfci-series select,
-  .gfci-series__hero-scene,
-  .gfci-series__hero-product img,
-  .gfci-series__application-scene,
-  .gfci-series__application-product img,
-  .gfci-series__oem-media img,
+  .gfci-series__hero-video,
+  .gfci-series__poster-image,
   .gfci-comparison tbody tr,
   .product-detail-breadcrumb a,
   .product-detail-hero a,

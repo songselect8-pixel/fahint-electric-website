@@ -4,69 +4,64 @@ const editorialProduct = (name) => `assets/images/editorial-products/${name}`;
 
 export const productOverviewVisuals = {
   hero: editorialProduct('overview-hero-background.webp'),
-  brandProgram: editorialProduct('brand-program-background.webp'),
-  marketResidential: editorialProduct('application-residential-background.webp'),
-  marketHospitality: editorialProduct('application-hospitality-background.webp'),
-  marketCommercial: editorialProduct('application-commercial-background.webp')
+  brandProgram: editorialProduct('brand-program-review-v2.webp'),
+  marketResidential: editorialProduct('application-residential-installed-v2.webp'),
+  marketHospitality: editorialProduct('application-hospitality-installed-v4.webp'),
+  marketCommercial: editorialProduct('application-commercial-installed-v2.webp')
 };
 
 export const productOverviewVisualDimensions = {
   hero: { width: 2048, height: 1152 },
   brandProgram: { width: 1536, height: 1024 },
-  marketResidential: { width: 1535, height: 1024 },
+  marketResidential: { width: 1536, height: 1024 },
   marketHospitality: { width: 1536, height: 1024 },
   marketCommercial: { width: 1536, height: 1024 }
 };
 
 export const gfciSeriesVisuals = {
-  application: editorialProduct('gfci-application-background.webp')
+  applicationPoster: editorialProduct('gfci-application-installed-poster-v2.png'),
+  oemPoster: editorialProduct('gfci-oem-program-poster-v3.png')
+};
+
+export const gfciSeriesHeroVisual = {
+  scene: editorialProduct('family-gfci-background.webp'),
+  sceneWidth: 2048,
+  sceneHeight: 1365,
+  product: 'assets/images/products/gf15-main.webp',
+  productWidth: 800,
+  productHeight: 800
 };
 
 const familyVisuals = [
   {
     id: 'gfci',
-    scene: editorialProduct('family-gfci-background.webp'),
-    sceneWidth: 2048,
-    sceneHeight: 1365,
-    product: 'assets/images/products/gf15-main.webp',
-    productWidth: 800,
-    productHeight: 800
+    scene: editorialProduct('family-gfci-installed-v3.png'),
+    sceneWidth: 1536,
+    sceneHeight: 1024
   },
   {
     id: 'usb',
-    scene: editorialProduct('family-usb-background.webp'),
+    scene: editorialProduct('family-usb-installed-v3.png'),
     sceneWidth: 1536,
-    sceneHeight: 1024,
-    product: 'assets/images/catalog/usb-ftr15dc-3100.webp',
-    productWidth: 800,
-    productHeight: 800
+    sceneHeight: 1024
   },
   {
     id: 'receptacles',
-    scene: editorialProduct('family-receptacle-background.webp'),
+    scene: editorialProduct('family-receptacle-installed-v3.png'),
     sceneWidth: 1536,
-    sceneHeight: 1024,
-    product: 'assets/images/catalog/receptacle-r15.webp',
-    productWidth: 800,
-    productHeight: 800
+    sceneHeight: 1024
   },
   {
     id: 'smart',
-    scene: editorialProduct('family-smart-background.webp'),
+    scene: editorialProduct('family-smart-installed-v3.png'),
     sceneWidth: 1536,
-    sceneHeight: 1024,
-    product: 'assets/images/catalog/smart-usw8811.webp',
-    productWidth: 800,
-    productHeight: 800
+    sceneHeight: 1024
   },
   {
     id: 'switches',
-    scene: editorialProduct('family-switch-background.webp'),
+    scene: editorialProduct('family-switch-installed-v3.png'),
     sceneWidth: 1536,
-    sceneHeight: 1024,
-    product: 'assets/images/catalog/dimmer-dm2010.webp',
-    productWidth: 800,
-    productHeight: 800
+    sceneHeight: 1024
   }
 ];
 

@@ -14,7 +14,7 @@ function renderProductsOverview() {
 }
 
 describe('ProductsOverview', () => {
-  it('defines dedicated scene and verified product layers for every approved family', async () => {
+  it('defines one dedicated installed scene for every approved family', async () => {
     const { productFamilyVisuals } = await import('../data/productPageVisuals.js');
 
     expect(productFamilies.map(({ id }) => id)).toEqual([
@@ -28,11 +28,10 @@ describe('ProductsOverview', () => {
       .toEqual(productFamilies.map(({ id, name, href }) => ({ id, name, href })));
 
     productFamilyVisuals.forEach(({ scene, product }) => {
-      expect(scene).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.webp$/);
-      expect(product).toMatch(/^assets\/images\/(?:products|catalog)\/[a-z0-9.-]+\.webp$/);
+      expect(scene).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.png$/);
       expect(existsSync(`public/${scene}`)).toBe(true);
-      expect(existsSync(`public/${product}`)).toBe(true);
-      expect(`${scene} ${product}`).not.toContain('editorial-home');
+      expect(product).toBeUndefined();
+      expect(scene).not.toContain('editorial-home');
     });
   });
 
@@ -46,10 +45,10 @@ describe('ProductsOverview', () => {
       'marketHospitality',
       'marketCommercial'
     ]);
-    expect(Object.keys(gfciSeriesVisuals)).toEqual(['application']);
+    expect(Object.keys(gfciSeriesVisuals)).toEqual(['applicationPoster', 'oemPoster']);
 
     [...Object.values(productOverviewVisuals), ...Object.values(gfciSeriesVisuals)].forEach((visual) => {
-      expect(visual).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.webp$/);
+      expect(visual).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.(?:webp|png)$/);
       expect(existsSync(`public/${visual}`)).toBe(true);
       expect(visual).not.toContain('editorial-home');
     });
@@ -207,6 +206,7 @@ describe('ProductsOverview', () => {
 
     expect([...container.querySelectorAll('section')].map((section) => section.classList[0])).toEqual([
       'product-overview-hero',
+      'product-overview-platform-strip',
       'product-family-section',
       'product-brand-system',
       'product-market-section',
@@ -238,7 +238,7 @@ describe('ProductsOverview', () => {
     expect(heroImage).toHaveAttribute('height', '1152');
 
     const familyCards = screen.getAllByTestId('product-family-card');
-    const familySceneDimensions = [[2048, 1365], [1536, 1024], [1536, 1024], [1536, 1024], [1536, 1024]];
+    const familySceneDimensions = [[1536, 1024], [1536, 1024], [1536, 1024], [1536, 1024], [1536, 1024]];
     expect(familyCards).toHaveLength(5);
     familyCards.forEach((card, index) => {
       const sceneImage = card.querySelector('.family-scene-image');
@@ -249,19 +249,23 @@ describe('ProductsOverview', () => {
       expect(sceneImage).toHaveAttribute('src', expect.stringContaining(productFamilyVisuals[index].scene));
       expect(sceneImage).toHaveAttribute('width', `${familySceneDimensions[index][0]}`);
       expect(sceneImage).toHaveAttribute('height', `${familySceneDimensions[index][1]}`);
-      expect(productImage).toHaveAttribute('src', expect.stringContaining(productFamilyVisuals[index].product));
-      expect(productImage).toHaveAttribute('width', '800');
-      expect(productImage).toHaveAttribute('height', '800');
+      expect(productImage).not.toBeInTheDocument();
     });
 
     const brandImage = container.querySelector('.product-brand-system .editorial-customization__media > img');
     expect(brandImage).toHaveAttribute('alt', '');
+    expect(brandImage).toHaveAttribute('src', expect.stringContaining('brand-program-review-v2.webp'));
     expect(brandImage).toHaveAttribute('width', '1536');
     expect(brandImage).toHaveAttribute('height', '1024');
 
     const marketImages = [...container.querySelectorAll('.product-market-grid .editorial-application > img')];
+    expect(marketImages.map((image) => image.getAttribute('src'))).toEqual([
+      expect.stringContaining('application-residential-installed-v2.webp'),
+        expect.stringContaining('application-hospitality-installed-v4.webp'),
+      expect.stringContaining('application-commercial-installed-v2.webp')
+    ]);
     expect(marketImages.map((image) => [image.getAttribute('width'), image.getAttribute('height')])).toEqual([
-      ['1535', '1024'],
+      ['1536', '1024'],
       ['1536', '1024'],
       ['1536', '1024']
     ]);
@@ -276,21 +280,15 @@ describe('ProductsOverview', () => {
     });
     productFamilyVisuals.forEach(({ scene, product }) => {
       expect.soft(markup).toContain(scene);
-      expect.soft(markup).toContain(product);
+      expect.soft(product).toBeUndefined();
     });
 
     expect.soft(styles).toMatch(/--product-radius-lg:\s*20px/);
     expect.soft(styles).toMatch(/--product-radius-card:\s*15px/);
     expect.soft(styles).toMatch(/--product-radius-sm:\s*9px/);
     expect.soft(styles).toMatch(/\.family-scene-image\s*\{[\s\S]*?object-fit:\s*cover/);
-    expect.soft(styles).toMatch(/\.family-product-image\s*\{[\s\S]*?object-fit:\s*contain/);
-
-    const productStage = styles.match(/\.product-family-card \.family-product-stage\s*\{[^}]+\}/)?.[0] || '';
-    const leadProductStage = styles.match(/\.product-family-card:first-child \.family-product-stage\s*\{[^}]+\}/)?.[0] || '';
-    expect.soft(productStage).toMatch(/aspect-ratio:\s*1\s*\/\s*1/);
-    expect.soft(productStage).toMatch(/height:\s*auto/);
-    expect.soft(leadProductStage).toMatch(/height:\s*auto/);
-    expect.soft(styles).not.toMatch(/\.family-product-stage[^}]*height:\s*\d+%/s);
+    expect.soft(styles).not.toContain('.family-product-stage');
+    expect.soft(styles).not.toContain('.family-product-image');
   });
 
   it('gives overview action links real touch boxes without layout-motion transitions', () => {

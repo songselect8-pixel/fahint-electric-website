@@ -15,29 +15,33 @@ function renderSeries() {
 
 describe('GfciSeries', () => {
   it('defines product-page-only scene layers backed by a verified GFCI product asset', async () => {
-    const { gfciSeriesVisuals, productFamilyVisuals, productOverviewVisuals } = await import('../data/productPageVisuals.js');
-    const gfciVisual = productFamilyVisuals.find(({ id }) => id === 'gfci');
+    const { gfciSeriesHeroVisual, gfciSeriesVisuals } = await import('../data/productPageVisuals.js');
 
-    expect(gfciVisual).toMatchObject({
-      id: 'gfci',
-      href: '/products/gfci',
+    expect(gfciSeriesHeroVisual).toMatchObject({
       scene: 'assets/images/editorial-products/family-gfci-background.webp',
       product: 'assets/images/products/gf15-main.webp'
     });
+    expect(gfciSeriesHeroVisual.scene).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.(?:webp|png)$/);
+    expect(gfciSeriesVisuals.applicationPoster).toBe(
+      'assets/images/editorial-products/gfci-application-installed-poster-v2.png'
+    );
+    expect(gfciSeriesVisuals.oemPoster).toBe(
+      'assets/images/editorial-products/gfci-oem-program-poster-v3.png'
+    );
     [
-      gfciVisual.scene,
-      gfciSeriesVisuals.application,
-      productOverviewVisuals.brandProgram
+      gfciSeriesHeroVisual.scene,
+      gfciSeriesVisuals.applicationPoster,
+      gfciSeriesVisuals.oemPoster
     ].forEach((scene) => {
-      expect(scene).toMatch(/^assets\/images\/editorial-products\/[a-z0-9-]+\.webp$/);
+      expect(existsSync(`public/${scene}`)).toBe(true);
     });
     expect([
-      gfciVisual.scene,
-      gfciVisual.product,
-      gfciSeriesVisuals.application,
-      productOverviewVisuals.brandProgram
+      gfciSeriesHeroVisual.scene,
+      gfciSeriesHeroVisual.product,
+      gfciSeriesVisuals.applicationPoster,
+      gfciSeriesVisuals.oemPoster
     ].join(' ')).not.toContain('editorial-home');
-    expect(existsSync(`public/${gfciVisual.product}`)).toBe(true);
+    expect(existsSync(`public/${gfciSeriesHeroVisual.product}`)).toBe(true);
   });
 
   it('shows full-card links for exactly the seven published public models', () => {
@@ -126,7 +130,7 @@ describe('GfciSeries', () => {
     expect(container.querySelector('.gfci-product-grid')).toBeInTheDocument();
     expect(container.querySelector('.gfci-comparison')).toBeInTheDocument();
     expect(container.querySelector('.gfci-proof-grid')).toBeInTheDocument();
-    expect(container.querySelector('.gfci-oem-list')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-series__oem-rail')).toBeInTheDocument();
 
     expect(screen.getByText('GFCI product family')).toBeInTheDocument();
     expect(screen.getByRole('heading', {
@@ -164,7 +168,7 @@ describe('GfciSeries', () => {
       expect(screen.getByText(body)).toBeInTheDocument();
     });
 
-    expect(screen.getByText(/Match the published model, rating and variant to documented project requirements/)).toBeInTheDocument();
+    expect(screen.getByText(/Match the published model, rating and variant to the project brief/)).toBeInTheDocument();
     ['Finish coordination', 'Brand marking', 'Packaging coordination', 'Documentation support'].forEach((option) => {
       expect(screen.getByText(option)).toBeInTheDocument();
     });
@@ -180,42 +184,53 @@ describe('GfciSeries', () => {
     });
   });
 
-  it('renders GFCI hero, application, and OEM visual layers without editorial-home assets', async () => {
+  it('renders a full-bleed looping GFCI hero video instead of the static hero product card', async () => {
     const { container } = renderSeries();
-    const { gfciSeriesVisuals, productFamilyVisuals, productOverviewVisuals } = await import('../data/productPageVisuals.js');
-    const gfciVisual = productFamilyVisuals.find(({ id }) => id === 'gfci');
+    const { gfciSeriesVisuals } = await import('../data/productPageVisuals.js');
     const markup = container.innerHTML;
+    const video = screen.getByTestId('gfci-hero-video');
+    const source = video.querySelector('source');
 
     expect.soft(markup).not.toContain('editorial-home');
     [
-      gfciVisual.scene,
-      gfciVisual.product,
-      gfciSeriesVisuals.application,
-      productOverviewVisuals.brandProgram
+      gfciSeriesVisuals.applicationPoster,
+      gfciSeriesVisuals.oemPoster
     ].forEach((visual) => {
       expect.soft(markup).toContain(visual);
     });
-    expect(screen.getByTestId('gfci-hero-scene')).toHaveAttribute('alt', '');
-    expect(screen.getByTestId('gfci-hero-product')).toHaveAttribute('alt', '');
-    expect(screen.getByTestId('gfci-application-scene')).toHaveAttribute('alt', '');
-    expect(screen.getByTestId('gfci-application-scene')).toHaveAttribute('width', '1536');
-    expect(screen.getByTestId('gfci-application-scene')).toHaveAttribute('height', '1024');
-    expect(screen.getByTestId('gfci-application-scene')).toHaveAttribute('loading', 'lazy');
-    expect(screen.getByTestId('gfci-application-product')).toHaveAttribute('alt', '');
-    expect(screen.getByTestId('gfci-application-product')).toHaveAttribute('width', '800');
-    expect(screen.getByTestId('gfci-application-product')).toHaveAttribute('height', '800');
-    expect(screen.getByTestId('gfci-application-product')).toHaveAttribute('loading', 'lazy');
-    expect(screen.getByTestId('gfci-oem-scene')).toHaveAttribute('alt', '');
+    expect(video).toHaveProperty('autoplay', true);
+    expect(video).toHaveProperty('muted', true);
+    expect(video).toHaveProperty('loop', true);
+    expect(video).toHaveProperty('playsInline', true);
+    expect(source).toHaveAttribute('src', '/assets/videos/gfci-product-video.mp4');
+    expect(source).toHaveAttribute('type', 'video/mp4');
+    expect(container.querySelector('.gfci-series__hero-product')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('gfci-hero-scene')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('gfci-hero-product')).not.toBeInTheDocument();
+    expect(screen.getByTestId('gfci-application-poster')).toHaveAttribute('src', `/${gfciSeriesVisuals.applicationPoster}`);
+    expect(screen.getByTestId('gfci-application-poster')).toHaveAttribute('width', '1536');
+    expect(screen.getByTestId('gfci-application-poster')).toHaveAttribute('height', '1024');
+    expect(screen.getByTestId('gfci-application-poster')).toHaveAttribute('loading', 'lazy');
+    expect(screen.getByTestId('gfci-oem-poster')).toHaveAttribute('src', `/${gfciSeriesVisuals.oemPoster}`);
+    expect(screen.getByTestId('gfci-oem-poster')).toHaveAttribute('width', '1536');
+    expect(screen.getByTestId('gfci-oem-poster')).toHaveAttribute('height', '1024');
+    expect(container.querySelector('.gfci-series__poster--application')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-series__poster-copy--left')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-series__poster--oem')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-series__poster-copy--right')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-series__oem-rail')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-series__application-product-stage')).not.toBeInTheDocument();
+    expect(container.querySelector('.gfci-series__oem-platform')).not.toBeInTheDocument();
   });
 
-  it('uses constrained comparison and cool neutral application and OEM panels', () => {
+  it('uses constrained comparison and full-width application and OEM posters', () => {
     const { container } = renderSeries();
     const comparison = screen.getByRole('region', { name: 'GFCI model comparison' });
 
     expect(comparison).toHaveClass('gfci-series__table-wrap');
     expect(comparison.parentElement).toHaveClass('gfci-series__comparison-panel');
-    expect(container.querySelector('.gfci-series__application-panel')).toBeInTheDocument();
-    expect(container.querySelector('.gfci-series__oem-panel')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-series__poster--application')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-series__poster--oem')).toBeInTheDocument();
 
     const styles = readFileSync('src/styles/product-experience.css', 'utf8');
     expect(styles).toMatch(/\.pcard__media\s*\{[^}]*aspect-ratio:\s*1/s);
@@ -224,14 +239,17 @@ describe('GfciSeries', () => {
     expect(styles).toMatch(/\.gfci-series__comparison-panel\s*\{[^}]*border-radius:/s);
     expect(styles).toMatch(/\.gfci-comparison \.spec-table\s*\{[^}]*min-width:\s*760px/s);
     expect(styles).toMatch(/\.gfci-comparison tbody tr:nth-child\(even\)/);
-    expect(styles).toMatch(/\.gfci-series__application-scene\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0/s);
-    expect(styles).toMatch(/\.gfci-series__oem-media\s*\{[^}]*position:\s*relative/s);
-    expect(styles).toMatch(/\.gfci-series__oem-media img\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0/s);
-    expect(styles).toMatch(/\.gfci-series__oem::before\s*\{[^}]*linear-gradient\([^}]*#e8eff3[^}]*var\(--product-navy\)/s);
-    expect(styles).toMatch(/\.gfci-oem-list li:nth-child\(2n\)\s*\{[^}]*border-right:\s*0/s);
-    expect(styles).toMatch(/@media \(max-width: 520px\)[\s\S]*?\.gfci-series__application-product\s*\{[^}]*right:\s*78px/s);
-    expect(styles).toMatch(/@media \(max-width: 520px\)[\s\S]*?\.gfci-series__application-copy,[\s\S]*?\.gfci-series__oem-content\s*\{[^}]*padding-right:\s*max\(78px,[^}]*safe-area-inset-right/s);
-    expect(styles).toMatch(/@media \(max-width: 700px\)[\s\S]*?\.gfci-oem-list li\s*\{[^}]*border-right:\s*0/s);
+    expect(styles).toMatch(/\.gfci-series__poster\s*\{[^}]*min-height:\s*clamp\(/s);
+    expect(styles).toMatch(/\.gfci-series__poster-image\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0/s);
+    expect(styles).toMatch(/\.gfci-series__poster--application \.gfci-series__poster-shade\s*\{[^}]*background:/s);
+    expect(styles).toMatch(/\.gfci-series__poster--oem \.gfci-series__poster-shade\s*\{[^}]*background:/s);
+    expect(styles).toMatch(/\.gfci-series__poster-copy--right\s*\{[^}]*justify-self:\s*end/s);
+    expect(styles).not.toMatch(/\.gfci-series__oem::before\s*\{/s);
+    expect(styles).toMatch(/@media \(max-width: 520px\)[\s\S]*?\.gfci-series__poster-copy\s*\{[^}]*padding-right:\s*max\(78px,[^}]*safe-area-inset-right/s);
+    expect(styles).toMatch(/@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.gfci-series__poster-image/s);
+    expect(styles).toMatch(/\.gfci-series__poster-section--oem\s*\{[^}]*margin-bottom:\s*-1px/s);
+    expect(styles).not.toContain('.gfci-series__application-product-stage');
+    expect(styles).not.toContain('.gfci-series__oem-platform');
     expect(styles).not.toMatch(/\.gfci-series__oem(?:-panel)?\s*\{[^}]*(?:#f7f5f0|#ece8e1|beige)/is);
   });
 
