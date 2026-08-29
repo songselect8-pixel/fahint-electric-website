@@ -2,6 +2,7 @@ import { ArrowRight, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { stats as companyStats } from '../../data/company.js';
 import Reveal from '../Reveal.jsx';
+import HomeCertifications from './HomeCertifications.jsx';
 
 const asset = (name) => `assets/images/editorial-home/${name}`;
 
@@ -116,7 +117,7 @@ const customizationOptions = [
 const factoryArea = companyStats.find((item) => item.label === 'Factory area (sq ft)');
 
 const proof = [
-  ['UL / cUL', 'Listed product lines'],
+  ['UL / cUL', 'Selected listed models'],
   ['100%', 'Comprehensive testing'],
   [factoryArea?.value || '70,000', factoryArea?.label || 'Factory area (sq ft)'],
   ['OEM / ODM', 'Flexible program support']
@@ -145,18 +146,18 @@ export default function EditorialHomepageFront() {
         <div className="editorial-hero__shade" />
         <div className="editorial-hero__grid" />
         <div className="container editorial-hero__content">
-          <p className="editorial-eyebrow">Wiring-device manufacturer · Yueqing, China</p>
-          <h1 id="editorial-hero-title">Safer Power.<br />Smarter Control.</h1>
+          <p className="editorial-eyebrow">North American wiring devices · OEM/ODM manufacturing</p>
+          <h1 id="editorial-hero-title">Wiring-device programs built for your market.</h1>
           <p className="editorial-hero__copy">
-            GFCI outlets, USB charging receptacles and connected wiring devices engineered for distributors,
-            contractors and OEM partners.
+            GFCI outlets, USB and Type-C receptacles, wiring devices, controls and wall plates for distributors,
+            contractors and private-label programs.
           </p>
           <div className="editorial-hero__actions">
             <Link className="editorial-button" to="/products">
-              Explore Products <ArrowRight size={17} />
+              Browse certified models <ArrowRight size={17} />
             </Link>
-            <Link className="editorial-text-link" to="/capabilities">
-              See our manufacturing capability <ArrowRight size={16} />
+            <Link className="editorial-text-link" to="/contact">
+              Start an OEM brief <ArrowRight size={16} />
             </Link>
           </div>
         </div>
@@ -170,38 +171,6 @@ export default function EditorialHomepageFront() {
           {proof.map(([value, label]) => (
             <div key={value}><strong>{value}</strong><span>{label}</span></div>
           ))}
-        </div>
-      </section>
-
-      <section className="editorial-brand" aria-labelledby="editorial-brand-title">
-        <div className="container editorial-brand__grid">
-          <Reveal className="editorial-brand__media reveal--media">
-            <img
-              src={asset('brand-system-family-final-optimized.webp')}
-              alt="Fahint coordinated wiring-device product family"
-              width="1254"
-              height="1254"
-              loading="lazy"
-              decoding="async"
-            />
-            <span className="editorial-brand__index">One system · Five product platforms</span>
-          </Reveal>
-          <div className="editorial-brand__copy">
-            <p className="editorial-eyebrow">Built as one brand system</p>
-            <h2 id="editorial-brand-title">A wiring-device brand built as one system.</h2>
-            <p className="editorial-brand__lede">
-              Fahint brings protection, charging, receptacles and control into one coordinated range—so the product,
-              finish, documentation and packaging all speak the same brand language.
-            </p>
-            <div className="editorial-brand__principles" aria-label="Fahint brand principles">
-              <div><span>01</span><strong>Coordinated product systems</strong></div>
-              <div><span>02</span><strong>Verified engineering</strong></div>
-              <div><span>03</span><strong>Market-ready support</strong></div>
-            </div>
-            <Link className="editorial-text-link editorial-text-link--dark" to="/about">
-              Discover Fahint <ArrowRight size={17} />
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -248,86 +217,33 @@ export default function EditorialHomepageFront() {
         </Reveal>
       </section>
 
-      <section className="editorial-engineering" aria-labelledby="editorial-engineering-title">
-        <img className="editorial-engineering__bg" src={asset('product-gfci-optimized.webp')} alt="Fahint wiring-device engineering platform" width="1600" height="888" loading="lazy" decoding="async" />
-        <div className="editorial-engineering__shade" />
-        <div className="container editorial-engineering__content">
-          <div className="editorial-engineering__copy">
-            <p className="editorial-eyebrow">Shared engineering platform</p>
-            <h2 id="editorial-engineering-title">Engineering shared across every device platform.</h2>
-            <p>
-              Protection, charging, switching and control are developed as one coordinated system—making the range
-              easier to specify, brand and support across different project types.
+      <section className="editorial-brand homepage-why-fahint" aria-labelledby="editorial-brand-title">
+        <div className="container editorial-brand__grid">
+          <Reveal className="editorial-brand__media reveal--media">
+            <img
+              src={asset('brand-system-family-final-optimized.webp')}
+              alt="Fahint coordinated wiring-device product family"
+              width="1254"
+              height="1254"
+              loading="lazy"
+              decoding="async"
+            />
+            <span className="editorial-brand__index">One system · Five product platforms</span>
+          </Reveal>
+          <div className="editorial-brand__copy">
+            <p className="editorial-eyebrow">Why Fahint</p>
+            <h2 id="editorial-brand-title">One coordinated system—from product platform to program support.</h2>
+            <p className="editorial-brand__lede">
+              Product families, visible finishes, model documentation and program support are developed as one system,
+              helping buyers build a coherent range without coordinating disconnected suppliers.
             </p>
             <ul className="editorial-feature-list editorial-feature-list--platform">
               {engineeringCapabilities.map(([number, title, copy]) => (
                 <li key={number}><span>{number}</span><div><strong>{title}</strong><small>{copy}</small></div></li>
               ))}
             </ul>
-            <Link className="editorial-button editorial-button--outline" to="/capabilities">
-              Explore engineering capability <ArrowRight size={17} />
-            </Link>
-          </div>
-          <div className="editorial-engineering__callout">
-            <span>One coordinated platform</span>
-            <strong>Protection, charging, control and finish developed to work as one range.</strong>
-          </div>
-        </div>
-      </section>
-
-      <section className="editorial-applications" aria-labelledby="editorial-applications-title">
-        <div className="container editorial-heading editorial-heading--applications">
-          <div>
-            <p className="editorial-eyebrow">Applications</p>
-            <h2 id="editorial-applications-title">Built for the places power matters most.</h2>
-          </div>
-          <p>Product programs for residential construction, hospitality, commercial projects and field installation.</p>
-        </div>
-        <Reveal className="editorial-application-grid reveal--group">
-          {applications.map((item) => (
-            <Link
-              className="editorial-application"
-              data-mobile-focal={item.mobileFocal}
-              key={item.title}
-              to={item.href}
-              aria-label={`View ${item.title} solution`}
-            >
-              <img src={item.image} alt={item.title} width="1600" height="900" loading="lazy" decoding="async" />
-              <div className="editorial-application__shade" />
-              <div className="editorial-application__copy">
-                <p>{item.label}</p><h3>{item.title}</h3><span>{item.copy}</span>
-              </div>
-              <span className="editorial-application__arrow" aria-hidden="true"><ArrowRight size={19} /></span>
-            </Link>
-          ))}
-        </Reveal>
-      </section>
-
-      <section className="editorial-customization" aria-labelledby="editorial-customization-title">
-        <div className="container editorial-customization__grid">
-          <Reveal className="editorial-customization__media reveal--media">
-            <img src={asset('product-receptacle-optimized.webp')} alt="Coordinated Fahint receptacle and switch range" width="1600" height="888" loading="lazy" decoding="async" />
-            <div className="editorial-customization__caption">
-              <span>Private-label programme</span>
-              <strong>One product language across the wall.</strong>
-            </div>
-          </Reveal>
-          <div className="editorial-customization__content">
-            <p className="editorial-eyebrow">OEM/ODM customization</p>
-            <h2 id="editorial-customization-title">Your brand, specified down to the last detail.</h2>
-            <p className="editorial-customization__lede">
-              Start with proven device platforms, then coordinate the visible details, product information and
-              approval path around your market programme.
-            </p>
-            <div className="editorial-customization__list">
-              {customizationOptions.map(([number, title, copy]) => (
-                <div className="editorial-customization__item" key={number}>
-                  <span>{number}</span><div><strong>{title}</strong><small>{copy}</small></div>
-                </div>
-              ))}
-            </div>
-            <Link className="editorial-button editorial-button--dark" to="/contact">
-              Start a customization brief <ArrowRight size={17} />
+            <Link className="editorial-text-link editorial-text-link--dark" to="/about">
+              Discover Fahint <ArrowRight size={17} />
             </Link>
           </div>
         </div>
@@ -358,19 +274,43 @@ export default function EditorialHomepageFront() {
         </div>
       </section>
 
-      <section className="editorial-oem" aria-labelledby="editorial-oem-title">
-        <img className="editorial-oem__bg" src={asset('about-fahint-optimized.webp')} alt="Fahint automated manufacturing equipment" width="800" height="500" loading="lazy" decoding="async" />
-        <div className="editorial-oem__shade" />
-        <div className="container editorial-oem__content">
-          <div className="editorial-heading">
-            <div>
-              <p className="editorial-eyebrow">OEM & ODM</p>
-              <h2 id="editorial-oem-title">From market requirement to production-ready program.</h2>
+      <HomeCertifications />
+
+      <section className="editorial-customization homepage-oem-program" aria-labelledby="editorial-customization-title">
+        <div className="container editorial-customization__grid">
+          <Reveal className="editorial-customization__media reveal--media">
+            <img src={asset('product-receptacle-optimized.webp')} alt="Coordinated Fahint receptacle and switch range" width="1600" height="888" loading="lazy" decoding="async" />
+            <div className="editorial-customization__caption">
+              <span>Private-label program</span>
+              <strong>One product language across the wall.</strong>
             </div>
-            <p>
-              Share your market, target specification, forecast volume and branding needs. Our team will help define
-              the next practical step.
+          </Reveal>
+          <div className="editorial-customization__content">
+            <p className="editorial-eyebrow">OEM/ODM configuration</p>
+            <h2 id="editorial-customization-title">Configure a production-ready program around your market.</h2>
+            <p className="editorial-customization__lede">
+              Start with proven device platforms, then coordinate the visible details, product information,
+              documentation and approval path around your market program.
             </p>
+            <div className="editorial-customization__list">
+              {customizationOptions.map(([number, title, copy]) => (
+                <div className="editorial-customization__item" key={number}>
+                  <span>{number}</span><div><strong>{title}</strong><small>{copy}</small></div>
+                </div>
+              ))}
+            </div>
+            <Link className="editorial-button editorial-button--dark" to="/contact">
+              Start an OEM brief <ArrowRight size={17} />
+            </Link>
+          </div>
+        </div>
+        <div className="container homepage-oem-program__process">
+          <div className="editorial-heading homepage-oem-program__heading">
+            <div>
+              <p className="editorial-eyebrow">Program path</p>
+              <h3>Four steps from requirement to production.</h3>
+            </div>
+            <p>Share the market, target specification, forecast volume and branding needs. We will define the next practical step.</p>
           </div>
           <Reveal className="editorial-process reveal--group">
             {process.map(([number, title, copy]) => (
@@ -380,6 +320,34 @@ export default function EditorialHomepageFront() {
             ))}
           </Reveal>
         </div>
+      </section>
+
+      <section className="editorial-applications" aria-labelledby="editorial-applications-title">
+        <div className="container editorial-heading editorial-heading--applications">
+          <div>
+            <p className="editorial-eyebrow">Applications</p>
+            <h2 id="editorial-applications-title">Built for the places power matters most.</h2>
+          </div>
+          <p>Product programs for residential construction, hospitality, commercial projects and field installation.</p>
+        </div>
+        <Reveal className="editorial-application-grid reveal--group">
+          {applications.map((item) => (
+            <Link
+              className="editorial-application"
+              data-mobile-focal={item.mobileFocal}
+              key={item.title}
+              to={item.href}
+              aria-label={`View ${item.title} solution`}
+            >
+              <img src={item.image} alt={item.title} width="1600" height="900" loading="lazy" decoding="async" />
+              <div className="editorial-application__shade" />
+              <div className="editorial-application__copy">
+                <p>{item.label}</p><h3>{item.title}</h3><span>{item.copy}</span>
+              </div>
+              <span className="editorial-application__arrow" aria-hidden="true"><ArrowRight size={19} /></span>
+            </Link>
+          ))}
+        </Reveal>
       </section>
     </div>
   );

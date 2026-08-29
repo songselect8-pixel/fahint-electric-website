@@ -8,11 +8,11 @@ export default function HomeCertifications() {
       <div className="container">
         <div className="home-certificates__head">
           <div>
-            <p className="home-section-label">Compliance</p>
-            <h2 id="home-certificates-title">Certificates Your Compliance Team Can Verify.</h2>
+            <p className="home-section-label">Manufacturing &amp; compliance</p>
+            <h2 id="home-certificates-title">Manufacturing and compliance, documented for review.</h2>
           </div>
           <div>
-            <p>Product-family files and quality-system documentation are available for buyer review.</p>
+            <p>Review production evidence, selected product-family files and quality-system documentation before specifying a model.</p>
             <Link to="/about#certifications" className="home-arrow-link">
               View certification details <ArrowRight size={16} />
             </Link>

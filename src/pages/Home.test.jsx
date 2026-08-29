@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
@@ -27,9 +27,10 @@ describe('Home', () => {
     renderHome();
 
     expect(screen.getByText('North American wiring devices · OEM/ODM manufacturing')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Wiring-device programs built for your market.' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Browse certified models/i })).toHaveAttribute('href', '/products');
-    expect(screen.getByRole('link', { name: /Start an OEM brief/i })).toHaveAttribute('href', '/contact');
+    const hero = screen.getByRole('heading', { name: 'Wiring-device programs built for your market.' }).closest('section');
+    expect(hero).toBeInTheDocument();
+    expect(within(hero).getByRole('link', { name: /Browse certified models/i })).toHaveAttribute('href', '/products');
+    expect(within(hero).getByRole('link', { name: /Start an OEM brief/i })).toHaveAttribute('href', '/contact');
     expect(screen.getByText('Selected listed models')).toBeInTheDocument();
   });
 

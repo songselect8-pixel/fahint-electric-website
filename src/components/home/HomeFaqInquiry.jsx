@@ -11,7 +11,7 @@ export default function HomeFaqInquiry() {
           <div className="home-faq__intro">
             <p className="home-section-label">Before you write</p>
             <h2 id="home-faq-title">Buyer Questions, Answered.</h2>
-            <p>Quick answers on certification, customisation, logistics and private-label packaging.</p>
+            <p>Quick answers on certification, customization, logistics and private-label packaging.</p>
           </div>
           <Faq items={faqs} />
         </div>
