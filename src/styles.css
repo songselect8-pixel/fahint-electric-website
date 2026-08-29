@@ -8713,3 +8713,143 @@ ul {
     transition: none !important;
   }
 }
+
+/* Homepage structure distillation (2026-08-29). */
+.homepage-why-fahint,
+.homepage-oem-program {
+  padding: clamp(88px, 7vw, 128px) 0;
+}
+
+.homepage-why-fahint .editorial-brand__grid,
+.homepage-oem-program .editorial-customization__grid {
+  gap: clamp(56px, 6vw, 96px);
+}
+
+.homepage-why-fahint .editorial-brand__media {
+  min-height: 600px;
+}
+
+.homepage-why-fahint .editorial-feature-list--platform {
+  margin: 40px 0 36px;
+  background: #d3dce3;
+}
+
+.homepage-why-fahint .editorial-feature-list--platform li {
+  min-height: 132px;
+  background: #f7f9fa;
+}
+
+.homepage-why-fahint .editorial-feature-list--platform strong {
+  color: #0d274b;
+}
+
+.homepage-why-fahint .editorial-feature-list--platform small {
+  color: #657487;
+}
+
+.homepage-oem-program .editorial-customization__media {
+  min-height: 700px;
+}
+
+.homepage-oem-program .editorial-customization__item {
+  min-height: 132px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.homepage-oem-program__process {
+  margin-top: clamp(64px, 6vw, 96px);
+}
+
+.homepage-oem-program__heading {
+  margin-bottom: 40px;
+}
+
+.homepage-oem-program__heading h3 {
+  max-width: 760px;
+  margin: 0;
+  color: #07152c;
+  font-size: clamp(34px, 3.5vw, 54px);
+  font-weight: 720;
+  letter-spacing: -.045em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+.homepage-oem-program__heading > p {
+  color: #536477;
+}
+
+.homepage-oem-program .editorial-process {
+  margin-top: clamp(56px, 6vw, 88px);
+  border-color: #ccd5dc;
+  background: #edf2f5;
+  backdrop-filter: none;
+}
+
+.homepage-oem-program .editorial-process article,
+.homepage-oem-program .editorial-process article:first-child {
+  min-height: 220px;
+  border-color: #ccd5dc;
+}
+
+.homepage-oem-program .editorial-process h3 { color: #0d274b; }
+.homepage-oem-program .editorial-process p { color: #657487; }
+
+.editorial-factory {
+  min-height: 780px;
+}
+
+.editorial-factory__content {
+  padding-top: clamp(112px, 8vw, 148px);
+  padding-bottom: clamp(96px, 7vw, 128px);
+}
+
+@media (max-width: 1100px) {
+  .homepage-why-fahint .editorial-brand__media,
+  .homepage-oem-program .editorial-customization__media {
+    min-height: 560px;
+  }
+}
+
+@media (max-width: 760px) {
+  .editorial-hero { min-height: 660px; }
+  .editorial-hero__content { padding-top: 128px; padding-bottom: 64px; }
+  .editorial-hero h1 { max-width: 12ch; font-size: clamp(38px, 11vw, 52px); line-height: .98; }
+  .editorial-button { min-height: 44px; }
+
+  .editorial-product-mosaic { grid-auto-rows: auto; }
+  .editorial-application-grid { grid-auto-rows: auto; }
+
+  .editorial-product-panel > img {
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .homepage-why-fahint,
+  .homepage-oem-program { padding: 72px 0; }
+
+  .homepage-why-fahint .editorial-brand__media,
+  .homepage-oem-program .editorial-customization__media {
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+  }
+
+  .homepage-why-fahint .editorial-feature-list--platform li,
+  .homepage-oem-program .editorial-customization__item,
+  .homepage-oem-program .editorial-process article,
+  .homepage-oem-program .editorial-process article:first-child {
+    min-height: auto;
+  }
+
+  .homepage-oem-program__process {
+    margin-top: 56px;
+  }
+
+  .homepage-oem-program__heading h3 {
+    max-width: 13ch;
+    font-size: clamp(32px, 9vw, 40px);
+  }
+}

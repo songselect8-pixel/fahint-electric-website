@@ -229,6 +229,19 @@ describe('Home', () => {
     expect(styles).toMatch(/\.reveal--group\[data-motion='ready'\]/);
   });
 
+  it('uses the condensed homepage rhythm and accessible mobile controls', () => {
+    const styles = readFileSync('src/styles.css', 'utf8');
+
+    expect(styles).toMatch(/\.homepage-why-fahint[\s\S]*?padding:\s*clamp\(88px,\s*7vw,\s*128px\)/);
+    expect(styles).toMatch(/\.homepage-oem-program[\s\S]*?padding:\s*clamp\(88px,\s*7vw,\s*128px\)/);
+    expect(styles).toMatch(
+      /@media \(max-width:\s*760px\)[\s\S]*?\.editorial-button[\s\S]*?min-height:\s*44px/
+    );
+    expect(styles).toMatch(
+      /@media \(max-width:\s*760px\)[\s\S]*?\.editorial-hero h1[\s\S]*?font-size:\s*clamp\(38px,\s*11vw,\s*52px\)/
+    );
+  });
+
   it('keeps product-card hover zoom free of a flashing divider seam', () => {
     const styles = readFileSync('src/styles.css', 'utf8');
     const imageRule = styles.match(/\.editorial-product-panel\s*>\s*img,\s*\.editorial-application\s*>\s*img\s*\{([^}]*)\}/)?.[1] ?? '';
