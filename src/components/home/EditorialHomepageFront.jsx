@@ -37,8 +37,8 @@ const products = [
   {
     name: 'Switches & Dimmers',
     label: 'Lighting Control',
-    image: asset('category-switches-optimized.webp'),
-    imageSize: [300, 180],
+    image: asset('category-switches-scene.webp'),
+    imageSize: [1600, 900],
     href: '/products/dimmers',
     description: 'Decorator switches, dimmers and sensor controls for clean, consistent wall-device programs.',
     specs: 'Switch · Dimmer · Sensor'
@@ -55,8 +55,8 @@ const products = [
   {
     name: 'Wall Plates & Accessories',
     label: 'Finishing System',
-    image: asset('category-wallplates-optimized.webp'),
-    imageSize: [300, 180],
+    image: asset('category-wallplates-scene.webp'),
+    imageSize: [1600, 900],
     href: '/products/wallplates',
     description: 'Screwless, standard and metal wall plates developed to complete a coordinated device range.',
     specs: 'Glossy · Matte · Metal'

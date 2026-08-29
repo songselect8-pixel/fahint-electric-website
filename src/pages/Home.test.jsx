@@ -49,6 +49,24 @@ describe('Home', () => {
     });
   });
 
+  it('uses high-resolution category artwork for switches and wall plates', () => {
+    renderHome();
+
+    const switchesImage = screen.getByRole('heading', { name: 'Switches & Dimmers' })
+      .closest('a')
+      ?.querySelector('img');
+    const wallplatesImage = screen.getByRole('heading', { name: 'Wall Plates & Accessories' })
+      .closest('a')
+      ?.querySelector('img');
+
+    expect(switchesImage).toHaveAttribute('src', 'assets/images/editorial-home/category-switches-scene.webp');
+    expect(switchesImage).toHaveAttribute('width', '1600');
+    expect(switchesImage).toHaveAttribute('height', '900');
+    expect(wallplatesImage).toHaveAttribute('src', 'assets/images/editorial-home/category-wallplates-scene.webp');
+    expect(wallplatesImage).toHaveAttribute('width', '1600');
+    expect(wallplatesImage).toHaveAttribute('height', '900');
+  });
+
   it('makes each editorial product card a full-card link', () => {
     renderHome();
 
@@ -277,10 +295,16 @@ describe('Home', () => {
       /\.editorial-home-front \.editorial-hero__note\s*\{[^}]*bottom:\s*72px/
     );
     expect(styles).toMatch(
-      /\.homepage-product-portfolio\s*\{[^}]*padding-bottom:\s*clamp\(88px,\s*6vw,\s*112px\)[^}]*background:\s*#07152c/
+      /\.homepage-product-portfolio\s*\{[^}]*padding-top:\s*clamp\(96px,\s*7vw,\s*128px\)[^}]*padding-bottom:\s*clamp\(64px,\s*5vw,\s*80px\)[^}]*background:\s*#07152c/
     );
     expect(styles).toMatch(
-      /\.homepage-why-fahint\s*\{[^}]*margin-top:\s*-44px[^}]*border-radius:\s*clamp\(28px,\s*3vw,\s*48px\)\s+clamp\(28px,\s*3vw,\s*48px\)\s+0\s+0[^}]*box-shadow:/
+      /\.homepage-product-portfolio \.editorial-product-mosaic\s*\{[^}]*width:\s*min\(100%\s*-\s*clamp\(32px,\s*7vw,\s*128px\),\s*1680px\)[^}]*margin-inline:\s*auto[^}]*grid-auto-rows:\s*auto/
+    );
+    expect(styles).toMatch(
+      /@media \(min-width:\s*761px\)[\s\S]*?\.homepage-product-portfolio \.editorial-product-panel\s*\{[^}]*aspect-ratio:\s*16\s*\/\s*9[^}]*\}[\s\S]*?\.homepage-product-portfolio \.editorial-product-panel > img\s*\{[^}]*object-fit:\s*contain/
+    );
+    expect(styles).toMatch(
+      /\.homepage-why-fahint\s*\{[^}]*margin-top:\s*0[^}]*padding-top:\s*clamp\(64px,\s*5vw,\s*88px\)[^}]*border-radius:\s*0[^}]*box-shadow:\s*none/
     );
     expect(styles).toMatch(
       /@media \(max-width:\s*760px\)[\s\S]*?\.homepage-proof-bridge \.editorial-proof__grid\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/
