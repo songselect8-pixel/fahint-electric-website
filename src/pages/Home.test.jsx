@@ -23,15 +23,14 @@ describe('Home', () => {
     expect(imagesWithoutDimensions).toEqual([]);
   });
 
-  it('uses the selected image-led homepage story from hero through OEM', () => {
+  it('identifies the manufacturer and exposes both buyer routes in the first chapter', () => {
     renderHome();
 
-    expect(screen.getByRole('heading', { name: 'Safer Power. Smarter Control.' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'One platform. Six focused product systems.' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Engineering shared across every device platform.' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Built for the places power matters most.' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Quality is checked on the line, not promised after it.' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'From market requirement to production-ready program.' })).toBeInTheDocument();
+    expect(screen.getByText('North American wiring devices · OEM/ODM manufacturing')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Wiring-device programs built for your market.' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Browse certified models/i })).toHaveAttribute('href', '/products');
+    expect(screen.getByRole('link', { name: /Start an OEM brief/i })).toHaveAttribute('href', '/contact');
+    expect(screen.getByText('Selected listed models')).toBeInTheDocument();
   });
 
   it('shows all six product systems in the editorial product mosaic', () => {
@@ -65,15 +64,24 @@ describe('Home', () => {
     });
   });
 
-  it('balances brand, engineering and OEM customization in the editorial front half', () => {
+  it('orders the homepage as a concise B2B purchasing path', () => {
     renderHome();
 
-    expect(screen.getByRole('heading', { name: 'A wiring-device brand built as one system.' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Engineering shared across every device platform.' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Your brand, specified down to the last detail.' })).toBeInTheDocument();
-    expect(
-      screen.queryByRole('heading', { name: 'GFCI protection made easier to specify and install.' })
-    ).not.toBeInTheDocument();
+    const headings = [
+      'Wiring-device programs built for your market.',
+      'One platform. Six focused product systems.',
+      'One coordinated system—from product platform to program support.',
+      'Quality is checked on the line, not promised after it.',
+      'Manufacturing and compliance, documented for review.',
+      'Configure a production-ready program around your market.',
+      'Built for the places power matters most.',
+      'Buyer Questions, Answered.',
+      'Tell Us What You Want to Build.'
+    ].map((name) => screen.getByRole('heading', { name }));
+
+    headings.slice(1).forEach((heading, index) => {
+      expect(headings[index].compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
   });
 
   it('keeps the factory-area proof consistent with the company profile', () => {
@@ -98,13 +106,11 @@ describe('Home', () => {
     });
   });
 
-  it('keeps certificates, project CTA, blog, FAQ and the full inquiry form below the new front half', () => {
+  it('keeps compliance, FAQ and the full inquiry form in the shortened homepage', () => {
     renderHome();
 
     [
-      'Certificates Your Compliance Team Can Verify.',
-      'Build the Line Your Market Needs.',
-      'Latest From Fahint.',
+      'Manufacturing and compliance, documented for review.',
       'Buyer Questions, Answered.',
       'Tell Us What You Want to Build.',
       'Send a Project Brief'
@@ -116,26 +122,14 @@ describe('Home', () => {
     expect(screen.getByLabelText('Requirements *')).toBeInTheDocument();
   });
 
-  it('links the primary hero actions into the existing product and capability routes', () => {
+  it('removes repeated homepage sales chapters without removing their destination routes', () => {
     renderHome();
 
-    expect(screen.getByRole('link', { name: /Explore Products/i })).toHaveAttribute('href', '/products');
-    expect(screen.getByRole('link', { name: /See our manufacturing capability/i })).toHaveAttribute('href', '/capabilities');
-  });
-
-  it('keeps the lower homepage title rhythm after the editorial front half', () => {
-    renderHome();
-
-    [
-      ['Certificates Your Compliance Team Can Verify.', 'left'],
-      ['Build the Line Your Market Needs.', 'right'],
-      ['Latest From Fahint.', 'left'],
-      ['Buyer Questions, Answered.', 'right'],
-      ['Tell Us What You Want to Build.', 'left']
-    ].forEach(([name, alignment]) => {
-      const section = screen.getByRole('heading', { name }).closest('section');
-      expect(section).toHaveAttribute('data-title-align', alignment);
-    });
+    expect(screen.queryByRole('heading', { name: 'Engineering shared across every device platform.' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Build the Line Your Market Needs.' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Latest From Fahint.' })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Discover Fahint/i })).toHaveAttribute('href', '/about');
+    expect(screen.getByRole('link', { name: /View certification details/i })).toHaveAttribute('href', '/about#certifications');
   });
 
   it('keeps separate floating actions in a vertical mobile safe-area stack', () => {
@@ -151,16 +145,12 @@ describe('Home', () => {
     renderHome();
 
     [
-      'A wiring-device brand built as one system.',
       'One platform. Six focused product systems.',
-      'Engineering shared across every device platform.',
-      'Built for the places power matters most.',
-      'Your brand, specified down to the last detail.',
+      'One coordinated system—from product platform to program support.',
       'Quality is checked on the line, not promised after it.',
-      'From market requirement to production-ready program.',
-      'Certificates Your Compliance Team Can Verify.',
-      'Build the Line Your Market Needs.',
-      'Latest From Fahint.',
+      'Manufacturing and compliance, documented for review.',
+      'Configure a production-ready program around your market.',
+      'Built for the places power matters most.',
       'Buyer Questions, Answered.',
       'Tell Us What You Want to Build.'
     ].forEach((name) => {
