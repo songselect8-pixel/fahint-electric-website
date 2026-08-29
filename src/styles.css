@@ -325,6 +325,8 @@
 .editorial-application > img {
   height: 100%;
   object-fit: cover;
+  backface-visibility: hidden;
+  will-change: transform;
   transition: transform 700ms cubic-bezier(.2,.7,.2,1);
 }
 
@@ -393,7 +395,6 @@
   justify-content: space-between;
   gap: 20px;
   padding-top: 16px;
-  border-top: 1px solid rgba(255,255,255,.22);
   color: #b9c9da;
   font-size: 10px;
   font-weight: 700;

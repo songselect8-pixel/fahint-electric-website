@@ -238,4 +238,14 @@ describe('Home', () => {
     expect(styles).toMatch(/\.reveal--group\[data-motion='ready'\]/);
   });
 
+  it('keeps product-card hover zoom free of a flashing divider seam', () => {
+    const styles = readFileSync('src/styles.css', 'utf8');
+    const imageRule = styles.match(/\.editorial-product-panel\s*>\s*img,\s*\.editorial-application\s*>\s*img\s*\{([^}]*)\}/)?.[1] ?? '';
+    const metaRule = styles.match(/\.editorial-panel__meta\s*\{([^}]*)\}/)?.[1] ?? '';
+
+    expect(imageRule).toMatch(/backface-visibility:\s*hidden/);
+    expect(imageRule).toMatch(/will-change:\s*transform/);
+    expect(metaRule).not.toMatch(/border-top/);
+  });
+
 });
