@@ -1,10 +1,13 @@
 import { ArrowRight, FileCheck2, ShieldCheck } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { isVerifiedListing } from '../../data/products.js';
+import { colors, isVerifiedListing, productFinishImage } from '../../data/products.js';
 import ProductGallery from './ProductGallery.jsx';
 
 export default function ProductDetailHero({ product, anchorPath, anchorSearch }) {
   const listed = isVerifiedListing(product);
+  const [selectedImage, setSelectedImage] = useState(product.assets.hero);
+  const [selectedFinish, setSelectedFinish] = useState(null);
   const anchorTarget = (hash) => ({ pathname: anchorPath, search: anchorSearch, hash });
   const configuration = product.nema === 'Blank face' ? product.nema : `NEMA ${product.nema}`;
   const facts = [
@@ -14,24 +17,69 @@ export default function ProductDetailHero({ product, anchorPath, anchorSearch })
     ['Application', product.grade]
   ];
 
+  useEffect(() => {
+    setSelectedImage(product.assets.hero);
+    setSelectedFinish(null);
+  }, [product.sku, product.assets.hero]);
+
+  function selectGalleryImage(image) {
+    setSelectedImage(image);
+    setSelectedFinish(null);
+  }
+
+  function selectFinish(finish) {
+    setSelectedImage(productFinishImage(product.sku, finish.slug));
+    setSelectedFinish(finish.slug);
+  }
+
   return (
     <section className="product-detail-hero">
       <div className="container product-detail-hero__grid">
-        <ProductGallery product={product} />
+        <ProductGallery
+          product={product}
+          selectedImage={selectedImage}
+          selectedFinish={selectedFinish}
+          onSelectImage={selectGalleryImage}
+        />
 
         <div className="product-detail-hero__content">
           <span className="product-detail-hero__model">Model {product.sku}</span>
           <h1>{product.name}</h1>
           <p className="product-detail-hero__summary">{product.summary}</p>
 
-          <dl className="product-detail-hero__facts product-key-facts">
-            {facts.map(([term, description]) => (
-              <div key={term}>
-                <dt>{term}</dt>
-                <dd>{description}</dd>
-              </div>
-            ))}
-          </dl>
+          <fieldset className="product-detail-hero__finishes">
+            <legend>Available finishes</legend>
+            <div className="product-detail-hero__finish-options">
+              {colors.map((finish) => (
+                <button
+                  key={finish.slug}
+                  type="button"
+                  className="product-detail-hero__finish"
+                  aria-label={`Show ${product.sku} in ${finish.name}`}
+                  aria-pressed={selectedFinish === finish.slug}
+                  onClick={() => selectFinish(finish)}
+                >
+                  <span
+                    className="product-detail-hero__finish-dot"
+                    style={{ '--finish-color': finish.hex }}
+                    aria-hidden="true"
+                  />
+                </button>
+              ))}
+            </div>
+          </fieldset>
+
+          <div className="product-detail-hero__specifications">
+            <p>Key specifications</p>
+            <dl className="product-detail-hero__facts product-key-facts">
+              {facts.map(([term, description]) => (
+                <div key={term}>
+                  <dt>{term}</dt>
+                  <dd>{description}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
 
           <p className={`product-detail-hero__certification${listed ? ' is-verified' : ''}`}>
             {listed ? <ShieldCheck size={19} aria-hidden="true" /> : <FileCheck2 size={19} aria-hidden="true" />}

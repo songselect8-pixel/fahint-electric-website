@@ -32,14 +32,33 @@ describe('Header', () => {
     expect(screen.getByRole('link', { name: /Send Inquiry/i })).toHaveAttribute('href', '/contact');
   });
 
-  it('uses a rounded frosted inner surface instead of a full-width solid header', () => {
+  it('lets keyboard users skip the repeated navigation', () => {
+    renderHeader();
+
+    expect(screen.getByRole('link', { name: 'Skip to main content' }))
+      .toHaveAttribute('href', '#main-content');
+  });
+
+  it('uses a full-width sticky glass surface instead of a floating rounded card', () => {
     const styles = readFileSync('src/styles.css', 'utf8');
 
     expect(styles).toMatch(
-      /\.header__inner\s*\{[\s\S]*?border-radius:\s*24px;[\s\S]*?backdrop-filter:\s*blur\(22px\)\s+saturate\(145%\)/
+      /\.header\s*\{[\s\S]*?position:\s*sticky;[\s\S]*?top:\s*0;[\s\S]*?backdrop-filter:\s*blur\(20px\)\s+saturate\(145%\)/
     );
     expect(styles).toMatch(
-      /\.header--solid\s*\{[\s\S]*?background:\s*transparent;[\s\S]*?box-shadow:\s*none/
+      /\.header__inner\s*\{[\s\S]*?width:\s*min\(calc\(100%\s*-\s*48px\),\s*1480px\);[\s\S]*?border:\s*0;[\s\S]*?border-radius:\s*0;[\s\S]*?background:\s*transparent/
+    );
+    expect(styles).not.toMatch(/\.header\s*\{[^}]*inset:\s*16px\s+0\s+auto\s+0/);
+  });
+
+  it('uses the same full-width glass structure on phones', () => {
+    const styles = readFileSync('src/styles.css', 'utf8');
+    const mobile = styles.slice(styles.indexOf('@media (max-width: 900px)'));
+
+    expect(mobile).toMatch(/:root\s*\{[^}]*--header-h:\s*64px/);
+    expect(mobile).toMatch(/\.header__inner\s*\{[^}]*width:\s*min\(100%\s*-\s*28px,\s*1480px\)/);
+    expect(mobile).toMatch(
+      /\.mobile-menu\s*\{[^}]*background:\s*rgba\(247,\s*250,\s*252,\s*\.96\)[^}]*backdrop-filter:\s*blur\(20px\)/
     );
   });
 
@@ -57,7 +76,21 @@ describe('Header', () => {
     const styles = readFileSync('src/styles.css', 'utf8');
 
     expect(styles).toMatch(
-      /@media\s*\(max-width:\s*900px\)[\s\S]*?\.mobile-menu\s*\{[^}]*max-height:\s*calc\(100dvh\s*-\s*calc\(var\(--header-h\)\s*\+\s*22px\)\);[^}]*overflow-y:\s*auto/
+      /@media\s*\(max-width:\s*900px\)[\s\S]*?\.mobile-menu\s*\{[^}]*max-height:\s*calc\(100dvh\s*-\s*var\(--header-h\)\);[^}]*overflow-y:\s*auto/
     );
+  });
+
+  it('does not reserve a second header height in page-leading padding', () => {
+    const shared = readFileSync('src/styles.css', 'utf8');
+    const product = readFileSync('src/styles/product-experience.css', 'utf8');
+
+    expect(shared).not.toMatch(/padding(?:-top)?:[^;\n]*var\(--header-h\)/);
+    expect(product).not.toMatch(/padding(?:-top)?:[^;\n]*var\(--header-h\)/);
+  });
+
+  it('does not animate unrelated properties', () => {
+    const styles = readFileSync('src/styles.css', 'utf8');
+
+    expect(styles).not.toMatch(/transition:\s*all\b/);
   });
 });

@@ -17,6 +17,7 @@ const markets = [
     summary: 'Coordinated protection and wiring devices for kitchens, bathrooms and renovation programs.',
     visualKey: 'marketResidential',
     image: productOverviewVisuals.marketResidential,
+    mobileFocal: 'right',
     href: '/products/gfci'
   },
   {
@@ -25,6 +26,7 @@ const markets = [
     summary: 'Integrated charging platforms for guest rooms, shared spaces and multifamily developments.',
     visualKey: 'marketHospitality',
     image: productOverviewVisuals.marketHospitality,
+    mobileFocal: 'left',
     href: '/products/usb-outlets'
   },
   {
@@ -33,6 +35,7 @@ const markets = [
     summary: 'Specification and manufacturing support for coordinated commercial wiring-device programs.',
     visualKey: 'marketCommercial',
     image: productOverviewVisuals.marketCommercial,
+    mobileFocal: 'center',
     href: '/capabilities'
   }
 ];
@@ -187,7 +190,12 @@ export default function ProductsOverview() {
         <div className="container">
           <div className="product-market-grid">
             {markets.map((market) => (
-              <Link className="editorial-application" key={market.title} to={market.href}>
+              <Link
+                className="editorial-application"
+                data-mobile-focal={market.mobileFocal}
+                key={market.title}
+                to={market.href}
+              >
                 <SafeImage
                   src={market.image}
                   alt=""

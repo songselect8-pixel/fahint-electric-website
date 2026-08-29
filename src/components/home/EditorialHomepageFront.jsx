@@ -1,5 +1,6 @@
 import { ArrowRight, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { stats as companyStats } from '../../data/company.js';
 import Reveal from '../Reveal.jsx';
 
 const asset = (name) => `assets/images/editorial-home/${name}`;
@@ -9,6 +10,7 @@ const products = [
     name: 'GFCI Outlets',
     label: 'Safety Protection',
     image: asset('product-gfci-optimized.webp'),
+    imageSize: [1600, 888],
     href: '/products/gfci',
     description: 'Self-test protection devices for residential, commercial and demanding installation environments.',
     specs: '15A / 20A · TR / WR options'
@@ -17,6 +19,7 @@ const products = [
     name: 'USB & Type-C Outlets',
     label: 'In-Wall Charging',
     image: asset('product-usb-optimized.webp'),
+    imageSize: [1600, 888],
     href: '/products/usb-outlets',
     description: 'Integrated charging solutions designed for modern homes, hospitality and workplace projects.',
     specs: 'USB-A · Type-C · PD options'
@@ -25,6 +28,7 @@ const products = [
     name: 'Receptacles',
     label: 'Wiring Devices',
     image: asset('product-receptacle-optimized.webp'),
+    imageSize: [1600, 888],
     href: '/products/receptacles',
     description: 'Decorator, duplex and specialty receptacles with coordinated plates and finish options.',
     specs: 'Residential / Commercial grade'
@@ -33,6 +37,7 @@ const products = [
     name: 'Switches & Dimmers',
     label: 'Lighting Control',
     image: asset('category-switches-optimized.webp'),
+    imageSize: [300, 180],
     href: '/products/dimmers',
     description: 'Decorator switches, dimmers and sensor controls for clean, consistent wall-device programs.',
     specs: 'Switch · Dimmer · Sensor'
@@ -41,6 +46,7 @@ const products = [
     name: 'Smart Home Controls',
     label: 'Connected Living',
     image: asset('product-smart-optimized.webp'),
+    imageSize: [1600, 888],
     href: '/products/smart-switches',
     description: 'Wi-Fi and Zigbee lighting controls built for app, voice and shared-home experiences.',
     specs: 'Wi-Fi · Zigbee · Voice control'
@@ -49,6 +55,7 @@ const products = [
     name: 'Wall Plates & Accessories',
     label: 'Finishing System',
     image: asset('category-wallplates-optimized.webp'),
+    imageSize: [300, 180],
     href: '/products/wallplates',
     description: 'Screwless, standard and metal wall plates developed to complete a coordinated device range.',
     specs: 'Glossy · Matte · Metal'
@@ -60,6 +67,7 @@ const applications = [
     title: 'Kitchens & Wet Areas',
     label: 'Residential safety',
     image: asset('application-kitchen-v2-optimized.webp'),
+    mobileFocal: 'right',
     href: '/products/gfci',
     copy: 'Integrated GFCI protection for premium kitchens and water-adjacent locations.'
   },
@@ -67,6 +75,7 @@ const applications = [
     title: 'Hospitality & Multifamily',
     label: 'Connected convenience',
     image: asset('application-hotel-v2-optimized.webp'),
+    mobileFocal: 'left',
     href: '/products/usb-outlets',
     copy: 'USB and Type-C charging where guests and residents naturally need power.'
   },
@@ -74,6 +83,7 @@ const applications = [
     title: 'Commercial Fit-Out',
     label: 'Professional installation',
     image: asset('application-commercial-v2-optimized.webp'),
+    mobileFocal: 'center',
     href: '/capabilities',
     copy: 'Dependable wiring-device programs for contractors and project buyers.'
   },
@@ -81,6 +91,7 @@ const applications = [
     title: 'Bathrooms & Renovation',
     label: 'Protected spaces',
     image: asset('application-bathroom-v2-optimized.webp'),
+    mobileFocal: 'center',
     href: '/products/receptacles',
     copy: 'Clean, coordinated protection for modern bathroom and renovation projects.'
   }
@@ -102,10 +113,12 @@ const customizationOptions = [
   ['06', 'Samples & testing', 'Review appearance, fit, function and packaging before production handoff.']
 ];
 
+const factoryArea = companyStats.find((item) => item.label === 'Factory area (sq ft)');
+
 const proof = [
   ['UL / cUL', 'Listed product lines'],
   ['100%', 'Comprehensive testing'],
-  ['2,400m²', 'Manufacturing facility'],
+  [factoryArea?.value || '70,000', factoryArea?.label || 'Factory area (sq ft)'],
   ['OEM / ODM', 'Flexible program support']
 ];
 
@@ -124,6 +137,8 @@ export default function EditorialHomepageFront() {
           className="editorial-hero__image"
           src={asset('hero-1-optimized.webp')}
           alt="Fahint North American wiring devices"
+          width="1600"
+          height="458"
           fetchpriority="high"
           decoding="async"
         />
@@ -164,6 +179,8 @@ export default function EditorialHomepageFront() {
             <img
               src={asset('brand-system-family-final-optimized.webp')}
               alt="Fahint coordinated wiring-device product family"
+              width="1254"
+              height="1254"
               loading="lazy"
               decoding="async"
             />
@@ -210,6 +227,8 @@ export default function EditorialHomepageFront() {
               <img
                 src={product.image}
                 alt={product.name}
+                width={product.imageSize[0]}
+                height={product.imageSize[1]}
                 loading={index > 1 ? 'lazy' : 'eager'}
                 decoding="async"
               />
@@ -230,7 +249,7 @@ export default function EditorialHomepageFront() {
       </section>
 
       <section className="editorial-engineering" aria-labelledby="editorial-engineering-title">
-        <img className="editorial-engineering__bg" src={asset('product-gfci-optimized.webp')} alt="Fahint wiring-device engineering platform" loading="lazy" decoding="async" />
+        <img className="editorial-engineering__bg" src={asset('product-gfci-optimized.webp')} alt="Fahint wiring-device engineering platform" width="1600" height="888" loading="lazy" decoding="async" />
         <div className="editorial-engineering__shade" />
         <div className="container editorial-engineering__content">
           <div className="editorial-engineering__copy">
@@ -268,11 +287,12 @@ export default function EditorialHomepageFront() {
           {applications.map((item) => (
             <Link
               className="editorial-application"
+              data-mobile-focal={item.mobileFocal}
               key={item.title}
               to={item.href}
               aria-label={`View ${item.title} solution`}
             >
-              <img src={item.image} alt={item.title} loading="lazy" decoding="async" />
+              <img src={item.image} alt={item.title} width="1600" height="900" loading="lazy" decoding="async" />
               <div className="editorial-application__shade" />
               <div className="editorial-application__copy">
                 <p>{item.label}</p><h3>{item.title}</h3><span>{item.copy}</span>
@@ -286,7 +306,7 @@ export default function EditorialHomepageFront() {
       <section className="editorial-customization" aria-labelledby="editorial-customization-title">
         <div className="container editorial-customization__grid">
           <Reveal className="editorial-customization__media reveal--media">
-            <img src={asset('product-receptacle-optimized.webp')} alt="Coordinated Fahint receptacle and switch range" loading="lazy" decoding="async" />
+            <img src={asset('product-receptacle-optimized.webp')} alt="Coordinated Fahint receptacle and switch range" width="1600" height="888" loading="lazy" decoding="async" />
             <div className="editorial-customization__caption">
               <span>Private-label programme</span>
               <strong>One product language across the wall.</strong>
@@ -314,7 +334,7 @@ export default function EditorialHomepageFront() {
       </section>
 
       <section className="editorial-factory" aria-labelledby="editorial-factory-title">
-        <img className="editorial-factory__bg" src={asset('factory-optimized.webp')} alt="Fahint production and testing line" loading="lazy" decoding="async" />
+        <img className="editorial-factory__bg" src={asset('factory-optimized.webp')} alt="Fahint production and testing line" width="1600" height="900" loading="lazy" decoding="async" />
         <div className="editorial-factory__shade" />
         <div className="container editorial-factory__content">
           <div className="editorial-factory__copy">
@@ -339,7 +359,7 @@ export default function EditorialHomepageFront() {
       </section>
 
       <section className="editorial-oem" aria-labelledby="editorial-oem-title">
-        <img className="editorial-oem__bg" src={asset('about-fahint-optimized.webp')} alt="Fahint automated manufacturing equipment" loading="lazy" decoding="async" />
+        <img className="editorial-oem__bg" src={asset('about-fahint-optimized.webp')} alt="Fahint automated manufacturing equipment" width="800" height="500" loading="lazy" decoding="async" />
         <div className="editorial-oem__shade" />
         <div className="container editorial-oem__content">
           <div className="editorial-heading">

@@ -28,6 +28,71 @@ function renderDetail(sku, initialPath = `/products/gfci/${sku}`) {
 }
 
 describe('ProductDetail', () => {
+  it('reserves the correct aspect ratio for every product-page image', () => {
+    const { container } = renderDetail('gf15');
+
+    const imagesWithoutDimensions = [...container.querySelectorAll('img')]
+      .filter((image) => !image.hasAttribute('width') || !image.hasAttribute('height'))
+      .map((image) => image.getAttribute('src'));
+
+    expect(imagesWithoutDimensions).toEqual([]);
+  });
+
+  it('publishes model-specific browser metadata', () => {
+    document.title = 'Fahint Electric';
+    const description = document.createElement('meta');
+    description.name = 'description';
+    description.content = 'Default description';
+    const openGraphTitle = document.createElement('meta');
+    openGraphTitle.setAttribute('property', 'og:title');
+    openGraphTitle.content = 'Default title';
+    const openGraphDescription = document.createElement('meta');
+    openGraphDescription.setAttribute('property', 'og:description');
+    openGraphDescription.content = 'Default description';
+    document.head.append(description, openGraphTitle, openGraphDescription);
+
+    renderDetail('gt20');
+
+    expect(document.title).toBe('GT20 20A Tamper-Resistant GFCI | Fahint Electric');
+    expect(description).toHaveAttribute(
+      'content',
+      expect.stringMatching(/20A, 125V.*tamper-resistant.*GFCI/i)
+    );
+    expect(openGraphTitle).toHaveAttribute(
+      'content',
+      'GT20 20A Tamper-Resistant GFCI | Fahint Electric'
+    );
+    expect(openGraphDescription).toHaveAttribute(
+      'content',
+      expect.stringMatching(/20A, 125V.*tamper-resistant.*GFCI/i)
+    );
+  });
+
+  it('makes the verified certificate legible and directly accessible', () => {
+    const product = findProduct('gf15');
+    const { container } = render(
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <ProductCertification product={product} />
+      </MemoryRouter>
+    );
+
+    const section = screen.getByRole('region', { name: 'Certification your team can verify.' });
+    expect(section).toHaveAttribute('id', 'certification-evidence');
+    expect(section.querySelector('.product-certification__document-viewer')).toBeInTheDocument();
+    expect(section.querySelector('.product-certification__verification')).toBeInTheDocument();
+
+    const fullCertificate = within(section).getByRole('link', { name: /Open full UL certificate/i });
+    expect(fullCertificate.getAttribute('href')).toContain('assets/images/certs/ul-gfci.webp');
+    expect(fullCertificate).toHaveAttribute('target', '_blank');
+
+    const facts = within(section).getByRole('list', { name: 'Certificate verification details' });
+    expect(facts).toHaveTextContent(/Certificate number.*UL-US-2016865-1/i);
+    expect(facts).toHaveTextContent(/UL file.*E504391/i);
+    expect(facts).toHaveTextContent(/Report reference.*E504391-20210212/i);
+    expect(facts).toHaveTextContent(/Standard.*UL 943.*5th Edition/i);
+    expect(container.querySelector('.product-certification__grid')).not.toBeInTheDocument();
+  });
+
   it('exposes product documents as a keyboard-focusable disclosure with direct links', async () => {
     const user = userEvent.setup();
     const product = {
@@ -77,7 +142,7 @@ describe('ProductDetail', () => {
     );
 
     const headings = [
-      'Protection engineered for everyday installation.',
+      'Protection, clearly documented.',
       'Designed for the environments in the specification.',
       'Configure the product around your program.',
       'Technical specifications.',
@@ -97,6 +162,30 @@ describe('ProductDetail', () => {
     expect(sectionIndexes).toEqual([...sectionIndexes].sort((a, b) => a - b));
   });
 
+  it('uses unlabeled visual swatches in the right product information panel', async () => {
+    const user = userEvent.setup();
+    const { container } = renderDetail('gf15');
+    const content = container.querySelector('.product-detail-hero__content');
+    const gallery = container.querySelector('.product-gallery');
+    const finishes = within(content).getByRole('group', { name: 'Available finishes' });
+
+    expect(within(gallery).queryByRole('button', { name: 'Show GF15 in Black' })).toBeNull();
+    expect(within(finishes).queryByText('White')).toBeNull();
+    expect(within(finishes).queryByText('Light Almond')).toBeNull();
+
+    await user.click(within(finishes).getByRole('button', { name: 'Show GF15 in Black' }));
+
+    expect(within(finishes).queryByText('Selected: Black')).toBeNull();
+    expect(within(finishes).getByRole('button', { name: 'Show GF15 in Black' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
+    expect(within(gallery).getByRole('img', { name: 'GF15 selected product view' })).toHaveAttribute(
+      'src',
+      `${import.meta.env.BASE_URL}assets/images/products/gf15-black.webp`
+    );
+  });
+
   it('uses cool detail surfaces and six verified finish references', () => {
     renderDetail('gf15');
 
@@ -113,6 +202,92 @@ describe('ProductDetail', () => {
       expect(image).toHaveAttribute('loading', 'lazy');
     });
 
+  });
+
+  it('separates GF15 wall-plate choices from the packaging logistics matrix', () => {
+    const { container } = renderDetail('gf15');
+    const oem = container.querySelector('[data-testid="product-oem-story"]');
+    const packaging = oem.querySelector('.product-packaging');
+
+    expect(packaging).toBeInTheDocument();
+    expect(within(packaging).getByRole('heading', { level: 3, name: 'Packaging & program options.' }))
+      .toBeInTheDocument();
+    expect(within(packaging).getByRole('heading', { level: 4, name: 'Wall plate options' }))
+      .toBeInTheDocument();
+    expect(within(packaging).getByRole('img', { name: 'GF15 with standard screw wall plate and retail box' }))
+      .toHaveAttribute('src', expect.stringMatching(/gf15-package-standard-white-v1\.jpg$/));
+    expect(within(packaging).getByRole('img', { name: 'GF15 with screwless wall plate and retail box' }))
+      .toHaveAttribute('src', expect.stringMatching(/gf15-package-screwless-white-v1\.jpg$/));
+    expect(within(packaging).getByText('Standard screw plate')).toBeInTheDocument();
+    expect(within(packaging).getByText('Screwless plate')).toBeInTheDocument();
+    expect(packaging.querySelector('.product-packaging__media')).toBeNull();
+
+    const programs = within(packaging).getByRole('table', { name: 'GF15 packaging programs' });
+    ['Program', 'Retail presentation', 'Wall plate', 'Inner box', 'Carton'].forEach((heading) => {
+      expect(within(programs).getByRole('columnheader', { name: heading })).toBeInTheDocument();
+    });
+    const rows = within(programs).getAllByRole('row').slice(1);
+    expect(rows).toHaveLength(3);
+    expect(rows[0]).toHaveTextContent(/Package A.*Color retail box.*Included.*10 pcs.*50 pcs/i);
+    expect(rows[1]).toHaveTextContent(/Package B.*Blank white box.*Included.*10 pcs.*50 pcs/i);
+    expect(rows[2]).toHaveTextContent(/Package C.*Color retail box.*Not included.*10 pcs.*100 pcs/i);
+    expect(packaging).toHaveTextContent(/registered trademark.*brand authorization/i);
+    expect(packaging).not.toHaveTextContent(/registered patent/i);
+    expect(within(packaging).getByRole('link', { name: /Discuss GF15 configuration/i })).toBeInTheDocument();
+  });
+
+  it('prevents wall-plate images from inheriting their 1000px HTML height', () => {
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+    const wallPlateImageRules = styles.match(/\.product-wallplate-option img\s*\{[^}]+\}/)?.[0] || '';
+
+    expect(wallPlateImageRules).toMatch(/height:\s*auto/);
+    expect(wallPlateImageRules).toMatch(/aspect-ratio:\s*1\s*\/\s*1/);
+    expect(wallPlateImageRules).toMatch(/object-fit:\s*contain/);
+  });
+
+  it('presents GF15 engineering in a real application scene with the complete proof set', () => {
+    const { container } = renderDetail('gf15');
+    const featureStory = container.querySelector('.product-story--feature');
+    const editorial = featureStory.querySelector('.product-engineering-editorial');
+    const expectedProofs = [
+      'UL / cUL listed · UL 943 5th Edition',
+      'Patent protected · US / CN',
+      'Anti-interference',
+      'Self-test every 15 minutes',
+      'Reverse-wiring protection',
+      '20A feed-through',
+      'Dual-color LED indicator',
+      '3-year warranty',
+    ];
+
+    expect(editorial).not.toBeNull();
+    expect(editorial.querySelector('.product-engineering-editorial__head-main')).not.toBeNull();
+    expect(featureStory.querySelector('.product-feature-showcase')).toBeNull();
+    expect(featureStory.querySelector('.product-story__split')).toBeNull();
+    expect(within(editorial).getByRole('img', { name: 'GF15 installed in a bathroom vanity' }))
+      .toHaveAttribute('src', expect.stringMatching(/gf15-feature-application-v3\.jpg$/));
+    expect(within(editorial).getAllByRole('listitem')).toHaveLength(8);
+    expectedProofs.forEach((proof) => {
+      expect(within(editorial).getByText(proof)).toBeInTheDocument();
+    });
+  });
+
+  it('uses a dedicated GF15 application-review image instead of reusing the gallery lifestyle image', () => {
+    renderDetail('gf15');
+    const applicationStory = screen
+      .getByRole('heading', { level: 2, name: 'Designed for the environments in the specification.' })
+      .closest('section');
+    const applicationImage = within(applicationStory)
+      .getByRole('img', { name: 'GF15 representative application setting' });
+
+    expect(applicationImage).toHaveAttribute(
+      'src',
+      expect.stringMatching(/gf15-application-kitchen-v2\.jpg$/)
+    );
+    expect(applicationImage).not.toHaveAttribute(
+      'src',
+      expect.stringMatching(/gf15-lifestyle\.webp$/)
+    );
   });
 
   it('keeps related products as four lowercase full-card links', () => {
@@ -163,6 +338,16 @@ describe('ProductDetail', () => {
     expect(reducedMotion).toMatch(/transition:\s*none\s*!important/);
   });
 
+  it('uses source-aspect mobile story scenes so the product remains visible', () => {
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+    const phone = styles.slice(styles.indexOf('@media (max-width: 700px)'));
+
+    expect(phone).toMatch(
+      /\.product-engineering-editorial__scene\s*\{[^}]*aspect-ratio:\s*3\s*\/\s*2/
+    );
+    expect(phone).toMatch(/\.product-story__media--cover\s*\{[^}]*aspect-ratio:\s*3\s*\/\s*2/);
+  });
+
   it('uses one pure-white square product stage across catalogues, galleries, finishes, and related cards', () => {
     const styles = readFileSync('src/styles/product-experience.css', 'utf8');
     const productCardRules = styles.match(/\.pcard\s*\{[^}]+\}/)?.[0] || '';
@@ -203,21 +388,49 @@ describe('ProductDetail', () => {
     expect(reducedMotion).toContain('.product-inquiry button');
   });
 
-  it('renders one technical anchor with table and mobile disclosures generated from verified rows', () => {
+  it('renders a compact key-spec summary and grouped single-column disclosures', async () => {
+    const user = userEvent.setup();
     const { container } = renderDetail('gf15');
 
     expect(container.querySelectorAll('#technical-details')).toHaveLength(1);
     const technical = container.querySelector('#technical-details');
     expect(technical).not.toBeNull();
-    expect(within(technical).getByRole('table')).toBeInTheDocument();
-    expect(within(technical).getAllByText('Item code')).toHaveLength(2);
-    expect(within(technical).getAllByText('GF15')).toHaveLength(2);
-    expect(within(technical).getAllByText('Rating')).toHaveLength(2);
-    expect(within(technical).getAllByText('Certification')).toHaveLength(2);
-    expect(within(technical).getAllByText(/E504391/)).toHaveLength(2);
-    expect(within(technical).queryByText(/warranty/i)).not.toBeInTheDocument();
-    expect(technical.querySelector('.product-technical-table')).toBeInTheDocument();
-    expect(technical.querySelector('.product-spec-mobile')).toBeInTheDocument();
+
+    const summary = within(technical).getByRole('list', { name: 'Key specifications' });
+    expect(within(summary).getByText('15A, 125V')).toBeInTheDocument();
+    expect(within(summary).getByText('NEMA 5-15R')).toBeInTheDocument();
+    expect(within(summary).getByText('4–6 mA · <25 ms')).toBeInTheDocument();
+    expect(within(summary).getByText('Side wire & back wire')).toBeInTheDocument();
+    expect(within(summary).getByText(/E504391/)).toBeInTheDocument();
+
+    const headings = [
+      'Electrical performance',
+      'Installation & configuration',
+      'Compliance & application',
+      'Materials & construction',
+      'Quality & durability'
+    ];
+    headings.forEach((heading) => {
+      expect(within(technical).getByRole('heading', { level: 3, name: heading })).toBeInTheDocument();
+    });
+
+    const groups = [...technical.querySelectorAll('.product-specification-group')];
+    expect(groups).toHaveLength(5);
+    expect(groups[0]).toHaveAttribute('open');
+    groups.slice(1).forEach((group) => expect(group).not.toHaveAttribute('open'));
+
+    await user.click(within(technical).getByRole('button', { name: 'Expand all specifications' }));
+    groups.forEach((group) => expect(group).toHaveAttribute('open'));
+    await user.click(within(technical).getByRole('button', { name: 'Collapse all specifications' }));
+    groups.forEach((group) => expect(group).not.toHaveAttribute('open'));
+
+    expect(within(technical).getByText('0.8 mm high-precision phosphor bronze')).toBeInTheDocument();
+    expect(within(technical).getByText('100% automated inspection · stated qualified rate 99.99%'))
+      .toBeInTheDocument();
+    expect(within(technical).getByText('3 years')).toBeInTheDocument();
+    expect(technical.querySelector('.product-technical-table')).not.toBeInTheDocument();
+    expect(technical.querySelector('.product-spec-mobile')).not.toBeInTheDocument();
+    expect(technical.querySelector('.product-construction')).not.toBeInTheDocument();
     expect(container.querySelector('.product-key-facts')).toBeInTheDocument();
   });
 
@@ -238,17 +451,17 @@ describe('ProductDetail', () => {
     expect(screen.getByRole('heading', { level: 2, name: 'Documentation review for GL20.' })).toBeInTheDocument();
   });
 
-  it('limits product engineering points and removes unverified commercial promises', () => {
+  it('keeps the complete GF15 engineering proof set and removes unrelated commercial promises', () => {
     const { container } = renderDetail('gf15');
     const featureStory = screen
-      .getByRole('heading', { level: 2, name: 'Protection engineered for everyday installation.' })
+      .getByRole('heading', { level: 2, name: 'Protection, clearly documented.' })
       .closest('section');
 
     expect(featureStory).not.toBeNull();
     const engineeringPoints = within(featureStory).getAllByRole('listitem');
-    expect(engineeringPoints.length).toBeLessThanOrEqual(4);
+    expect(engineeringPoints).toHaveLength(8);
     expect(engineeringPoints.filter((point) => /self-test/i.test(point.textContent))).toHaveLength(1);
-    expect(container).not.toHaveTextContent(/3[ -]?year|400 cartons|within 6 hours|warehouse stock|MOQ from/i);
+    expect(container).not.toHaveTextContent(/400 cartons|within 6 hours|warehouse stock|MOQ from/i);
   });
 
   it('prefills the inquiry model and exposes one non-colliding mobile quote action', () => {
@@ -300,17 +513,28 @@ describe('ProductDetail', () => {
     expect(screen.getByLabelText('Your name *')).toHaveValue('Avery Chen');
   });
 
-  it('provides the wiring mappings, device markings, and dimensions as DOM text', () => {
+  it('presents installation data in one asymmetric technical canvas', () => {
     renderDetail('gf15');
 
-    expect(screen.getByText(/Neutral wire.*white conductor.*silver screw/i)).toBeInTheDocument();
-    expect(screen.getByText(/Hot wire.*black conductor.*brass screw/i)).toBeInTheDocument();
-    expect(screen.getByText(/Ground wire.*copper or green conductor.*green screw/i)).toBeInTheDocument();
-    expect(screen.getByText(/LINE and LOAD markings/i)).toBeInTheDocument();
-    expect(screen.getByText(/terminal holes.*tighten.*clockwise.*RESET.*green LED/i)).toBeInTheDocument();
-    expect(screen.getByText(/Face.*4\.53 in \(115 mm\)/i)).toBeInTheDocument();
-    expect(screen.getByText(/Width.*2\.75 in \(70 mm\)/i)).toBeInTheDocument();
-    expect(screen.getByText(/Depth.*1\.56 in \(39\.7 mm\)/i)).toBeInTheDocument();
+    const installation = screen.getByRole('region', { name: 'Wiring and dimensions.' });
+    expect(installation).toHaveAttribute('id', 'installation-reference');
+    expect(installation.querySelector('.product-installation__canvas')).toBeInTheDocument();
+    expect(installation.querySelector('.product-installation__grid')).not.toBeInTheDocument();
+
+    expect(within(installation).getByRole('heading', { name: 'Wire by terminal, not by position.' })).toBeInTheDocument();
+    expect(installation.querySelector('[data-wire="neutral"]')).toHaveTextContent(/Neutral.*white conductor.*silver screw/i);
+    expect(installation.querySelector('[data-wire="hot"]')).toHaveTextContent(/Hot.*black conductor.*brass screw/i);
+    expect(installation.querySelector('[data-wire="ground"]')).toHaveTextContent(/Ground.*copper or green conductor.*green screw/i);
+    expect(installation.querySelector('.product-installation__device-note')).toHaveTextContent(/LINE and LOAD markings/i);
+    expect(installation.querySelector('.product-installation__sequence')).toHaveTextContent(
+      /terminal holes.*tighten.*clockwise.*RESET.*green LED/i
+    );
+
+    expect(within(installation).getByRole('heading', { name: 'Three views. Three critical dimensions.' })).toBeInTheDocument();
+    const metrics = installation.querySelector('.product-installation__metrics');
+    expect(metrics).toHaveTextContent(/Overall height.*4\.53 in.*115 mm/i);
+    expect(metrics).toHaveTextContent(/Plate width.*2\.75 in.*70 mm/i);
+    expect(metrics).toHaveTextContent(/Body depth.*1\.56 in.*39\.7 mm/i);
   });
 
   it('redirects an unknown sku to the GFCI series route', () => {

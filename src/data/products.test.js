@@ -97,4 +97,85 @@ describe('verified GFCI product data', () => {
     const source = readFileSync('src/data/products.js', 'utf8');
     expect(source.match(/E504391-20210212/g)).toHaveLength(1);
   });
+
+  it('stores the archived model-specific specification differences for every published model', () => {
+    const expected = {
+      GF15: { amperage: '15A', nema: 'NEMA 5-15R', tamper: 'No', weather: 'No' },
+      GF20: { amperage: '20A', nema: 'NEMA 5-20R', tamper: 'No', weather: 'No' },
+      GT15: { amperage: '15A', nema: 'NEMA 5-15R', tamper: 'Yes', weather: 'No' },
+      GT20: { amperage: '20A', nema: 'NEMA 5-20R', tamper: 'Yes', weather: 'No' },
+      GW15: { amperage: '15A', nema: 'NEMA 5-15R', tamper: 'Yes', weather: 'Yes' },
+      GW20: { amperage: '20A', nema: 'NEMA 5-20R', tamper: 'Yes', weather: 'Yes' },
+      GL20: { amperage: '20A', nema: 'Blank Face (Dead Face)', tamper: 'No', weather: 'No' }
+    };
+
+    for (const [sku, model] of Object.entries(expected)) {
+      const product = products.find((item) => item.sku === sku);
+      const specifications = Object.fromEntries(product.technicalSpecifications || []);
+
+      expect(specifications).toMatchObject({
+        Standard: 'UL 943 / UL 498 / UL 1998',
+        Amperage: model.amperage,
+        'Rated voltage': '125V AC',
+        'Working voltage': '102–132V AC',
+        'Trip level': '4–6 mA · <25 ms',
+        'Operating temperature': '-35°C to 66°C (-30°F to 150°F)',
+        'Wiring method': 'Side wire & back wire',
+        'Wire gauge': '#12–#14 AWG copper wire',
+        'Application grade': 'Residential & Commercial Grade',
+        'NEMA configuration': model.nema,
+        'Pole & wire': '2-pole, 3-wire',
+        Grounding: 'Self-grounding',
+        'Tamper-resistant': model.tamper,
+        'Weather-resistant': model.weather,
+        Usage: 'Indoor only'
+      });
+    }
+  });
+
+  it('stores the archived construction and performance evidence for every published model', () => {
+    for (const product of products) {
+      expect(product.construction.materials).toEqual(expect.arrayContaining([
+        ['Face & body', 'Thermoplastic'],
+        ['Current-carrying components', '0.8 mm high-precision phosphor bronze'],
+        ['Mounting yoke', '1.2 mm galvanized steel'],
+        ['Flammability', 'UL 94 V-1']
+      ]));
+      expect(product.construction.materials).toHaveLength(6);
+      expect(product.construction.performance).toEqual(expect.arrayContaining([
+        ['Initial self-test', 'Within 3 seconds after power-up'],
+        ['Terminal screw torque', 'Over 2 N·m'],
+        ['Factory inspection', '100% automated inspection · stated qualified rate 99.99%'],
+        ['Warranty', '3 years']
+      ]));
+      expect(product.construction.performance).toHaveLength(8);
+    }
+  });
+
+  it('maps each model to its own packaging and wall-plate source images', () => {
+    for (const product of products) {
+      const key = product.sku.toLowerCase();
+      expect(product.assets.packaging).toEqual({
+        standard: `assets/images/products/${key}-package-standard-white-v1.jpg`,
+        screwless: `assets/images/products/${key}-package-screwless-white-v1.jpg`
+      });
+    }
+  });
+
+  it('uses two dedicated generated scenes for every product page after GF15', () => {
+    for (const sku of ['GF20', 'GT15', 'GT20', 'GW15', 'GW20', 'GL20']) {
+      const product = products.find((item) => item.sku === sku);
+      const key = sku.toLowerCase();
+
+      expect(product.assets.feature).toBe(
+        `assets/images/products/${key}-feature-application-v1.jpg`
+      );
+      expect(product.assets.application).toBe(
+        `assets/images/products/${key}-application-scene-v1.jpg`
+      );
+      expect(product.assets.feature).not.toBe(product.assets.gallery[4]);
+      expect(product.assets.application).not.toBe(product.assets.gallery[4]);
+      expect(product.assets.feature).not.toBe(product.assets.application);
+    }
+  });
 });

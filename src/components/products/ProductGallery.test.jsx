@@ -2,7 +2,7 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { findProduct } from '../../data/products.js';
+import { findProduct, productFinishImage } from '../../data/products.js';
 import ProductGallery from './ProductGallery.jsx';
 
 describe('ProductGallery', () => {
@@ -26,11 +26,16 @@ describe('ProductGallery', () => {
     HTMLDialogElement.prototype.close = originalClose;
   });
 
-  it('selects the base-safe GF15 Black finish image', async () => {
-    const user = userEvent.setup();
-    render(<ProductGallery product={findProduct('GF15')} />);
-
-    await user.click(screen.getByRole('button', { name: 'Show GF15 in Black' }));
+  it('renders the finish image selected by the product detail panel', () => {
+    const product = findProduct('GF15');
+    render(
+      <ProductGallery
+        product={product}
+        selectedImage={productFinishImage(product.sku, 'black')}
+        selectedFinish="black"
+        onSelectImage={vi.fn()}
+      />
+    );
 
     expect(screen.getByRole('img', { name: 'GF15 selected product view' })).toHaveAttribute(
       'src',
@@ -44,14 +49,18 @@ describe('ProductGallery', () => {
       'height',
       '620'
     );
-    expect(screen.getByRole('button', { name: 'Show GF15 in Black' })).toHaveAttribute(
-      'aria-pressed',
-      'true'
-    );
   });
 
-  it('renders five thumbnails and every available finish button', () => {
-    const { container } = render(<ProductGallery product={findProduct('GF15')} />);
+  it('renders five thumbnails without finish controls in the gallery', () => {
+    const product = findProduct('GF15');
+    const { container } = render(
+      <ProductGallery
+        product={product}
+        selectedImage={product.assets.hero}
+        selectedFinish={null}
+        onSelectImage={vi.fn()}
+      />
+    );
 
     const main = screen.getByTestId('product-gallery-main');
     const mainImage = within(main).getByRole('img', { name: 'GF15 selected product view' });
@@ -73,43 +82,38 @@ describe('ProductGallery', () => {
     });
     expect(container.querySelector('button button')).toBeNull();
 
-    ['White', 'Ivory', 'Light Almond', 'Black', 'Grey', 'Brown'].forEach((finish) => {
-      expect(screen.getByRole('button', { name: `Show GF15 in ${finish}` })).toBeInTheDocument();
-    });
+    expect(screen.queryByRole('button', { name: 'Show GF15 in Black' })).toBeNull();
   });
 
-  it('resets the selected image and finish when the sku or hero changes', async () => {
+  it('reports thumbnail selection to the product detail panel', async () => {
     const user = userEvent.setup();
-    const gf15 = findProduct('GF15');
-    const { rerender } = render(<ProductGallery product={gf15} />);
-
-    await user.click(screen.getByRole('button', { name: 'Show GF15 in Black' }));
-    rerender(<ProductGallery product={findProduct('GF20')} />);
-
-    expect(screen.getByRole('img', { name: 'GF20 selected product view' })).toHaveAttribute(
-      'src',
-      `${import.meta.env.BASE_URL}assets/images/products/gf20-main.webp`
-    );
-    expect(screen.getByRole('button', { name: 'Show GF20 in Black' })).toHaveAttribute(
-      'aria-pressed',
-      'false'
+    const product = findProduct('GF15');
+    const onSelectImage = vi.fn();
+    render(
+      <ProductGallery
+        product={product}
+        selectedImage={product.assets.hero}
+        selectedFinish={null}
+        onSelectImage={onSelectImage}
+      />
     );
 
-    const changedHero = {
-      ...gf15,
-      assets: { ...gf15.assets, hero: 'assets/images/products/gf15-detail.webp' }
-    };
-    rerender(<ProductGallery product={changedHero} />);
+    await user.click(screen.getByRole('button', { name: 'View GF15 image 2' }));
 
-    expect(screen.getByRole('img', { name: 'GF15 selected product view' })).toHaveAttribute(
-      'src',
-      `${import.meta.env.BASE_URL}assets/images/products/gf15-detail.webp`
-    );
+    expect(onSelectImage).toHaveBeenCalledWith(product.assets.gallery[1]);
   });
 
   it('opens an accessible native dialog and closes it by button, backdrop, or native cancel', async () => {
     const user = userEvent.setup();
-    render(<ProductGallery product={findProduct('GF15')} />);
+    const product = findProduct('GF15');
+    render(
+      <ProductGallery
+        product={product}
+        selectedImage={product.assets.hero}
+        selectedFinish={null}
+        onSelectImage={vi.fn()}
+      />
+    );
 
     const trigger = screen.getByRole('button', { name: /GF15 selected product view Enlarge/ });
     const dialog = screen.getByRole('dialog', { hidden: true });

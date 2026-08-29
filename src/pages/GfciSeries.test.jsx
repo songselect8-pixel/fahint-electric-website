@@ -15,6 +15,16 @@ function renderSeries() {
 }
 
 describe('GfciSeries', () => {
+  it('shows complete poster artwork above the copy on phones', () => {
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+    const phone = styles.slice(styles.lastIndexOf('@media (max-width: 520px)'));
+
+    expect(phone).toMatch(
+      /\.gfci-series__poster-image\s*\{[^}]*position:\s*relative[^}]*aspect-ratio:\s*3\s*\/\s*2[^}]*object-fit:\s*contain/
+    );
+    expect(phone).toMatch(/\.gfci-series__poster-copy[^}]*\{[^}]*position:\s*relative/);
+  });
+
   it('defines product-page-only scene layers backed by a verified GFCI product asset', async () => {
     const { gfciSeriesHeroVisual, gfciSeriesVisuals } = await import('../data/productPageVisuals.js');
 

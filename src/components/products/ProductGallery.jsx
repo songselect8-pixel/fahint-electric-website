@@ -1,32 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Expand, X } from 'lucide-react';
-import { colors, productFinishImage } from '../../data/products.js';
 import SafeImage from '../SafeImage.jsx';
 
 const GALLERY_IMAGE_SIZE = 800;
 const FINISH_IMAGE_SIZE = 620;
 
-export default function ProductGallery({ product }) {
-  const [selectedImage, setSelectedImage] = useState(product.assets.hero);
-  const [selectedFinish, setSelectedFinish] = useState(null);
+export default function ProductGallery({ product, selectedImage, selectedFinish, onSelectImage }) {
   const dialogRef = useRef(null);
   const triggerRef = useRef(null);
   const selectedImageSize = selectedFinish ? FINISH_IMAGE_SIZE : GALLERY_IMAGE_SIZE;
-
-  useEffect(() => {
-    setSelectedImage(product.assets.hero);
-    setSelectedFinish(null);
-  }, [product.sku, product.assets.hero]);
-
-  function selectGalleryImage(image) {
-    setSelectedImage(image);
-    setSelectedFinish(null);
-  }
-
-  function selectFinish(finish) {
-    setSelectedImage(productFinishImage(product.sku, finish.slug));
-    setSelectedFinish(finish.slug);
-  }
 
   function openDialog() {
     dialogRef.current?.showModal();
@@ -76,7 +58,7 @@ export default function ProductGallery({ product }) {
             data-testid="product-gallery-thumb"
             aria-label={`View ${product.sku} image ${index + 1}`}
             aria-pressed={selectedFinish === null && selectedImage === image}
-            onClick={() => selectGalleryImage(image)}
+            onClick={() => onSelectImage(image)}
           >
             <SafeImage
               src={image}
@@ -85,26 +67,6 @@ export default function ProductGallery({ product }) {
               height={GALLERY_IMAGE_SIZE}
               loading="lazy"
             />
-          </button>
-        ))}
-      </div>
-
-      <div className="product-gallery__finishes" aria-label={`${product.sku} available finishes`}>
-        {colors.map((finish) => (
-          <button
-            key={finish.slug}
-            type="button"
-            className="product-gallery__finish"
-            aria-label={`Show ${product.sku} in ${finish.name}`}
-            aria-pressed={selectedFinish === finish.slug}
-            onClick={() => selectFinish(finish)}
-          >
-            <span
-              className="product-gallery__finish-dot"
-              style={{ '--finish-color': finish.hex }}
-              aria-hidden="true"
-            />
-            <span>{finish.name}</span>
           </button>
         ))}
       </div>

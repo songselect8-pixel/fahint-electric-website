@@ -43,7 +43,13 @@ export default function CertCarousel() {
         {certificates.map((c) => (
           <figure className="certcard" key={c.slug}>
             <div className="certcard__media">
-              <img src={c.image} alt={`${c.name} certificate`} loading="lazy" />
+              <img
+                src={c.image}
+                alt={`${c.name} certificate`}
+                width="900"
+                height={c.slug === 'iso-9001' ? 1214 : 1165}
+                loading="lazy"
+              />
             </div>
             <figcaption>
               <strong>{c.name}</strong>

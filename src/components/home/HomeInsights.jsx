@@ -25,7 +25,7 @@ export default function HomeInsights() {
           {posts.slice(0, 3).map((post) => (
             <Link to={`/blog/${post.slug}`} className="home-insight" key={post.slug}>
               <div className="home-insight__media">
-                <img src={post.cover} alt="" loading="lazy" />
+                <img src={post.cover} alt="" width="800" height="800" loading="lazy" />
                 <span>{post.category}</span>
               </div>
               <div className="home-insight__body">

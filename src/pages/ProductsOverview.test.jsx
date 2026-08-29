@@ -14,6 +14,13 @@ function renderProductsOverview() {
 }
 
 describe('ProductsOverview', () => {
+  it('labels market scenes with mobile focal positions', () => {
+    const { container } = renderProductsOverview();
+    const scenes = [...container.querySelectorAll('.product-market-grid .editorial-application')];
+
+    expect(scenes.map((scene) => scene.dataset.mobileFocal)).toEqual(['right', 'left', 'center']);
+  });
+
   it('defines one dedicated installed scene for every approved family', async () => {
     const { productFamilyVisuals } = await import('../data/productPageVisuals.js');
 

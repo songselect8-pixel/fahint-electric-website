@@ -13,6 +13,16 @@ function renderHome() {
 }
 
 describe('Home', () => {
+  it('reserves the correct aspect ratio for every homepage image', () => {
+    const { container } = renderHome();
+
+    const imagesWithoutDimensions = [...container.querySelectorAll('img')]
+      .filter((image) => !image.hasAttribute('width') || !image.hasAttribute('height'))
+      .map((image) => image.getAttribute('src'));
+
+    expect(imagesWithoutDimensions).toEqual([]);
+  });
+
   it('uses the selected image-led homepage story from hero through OEM', () => {
     renderHome();
 
@@ -64,6 +74,14 @@ describe('Home', () => {
     expect(
       screen.queryByRole('heading', { name: 'GFCI protection made easier to specify and install.' })
     ).not.toBeInTheDocument();
+  });
+
+  it('keeps the factory-area proof consistent with the company profile', () => {
+    renderHome();
+
+    expect(screen.getByText('70,000')).toBeInTheDocument();
+    expect(screen.getByText('Factory area (sq ft)')).toBeInTheDocument();
+    expect(screen.queryByText('2,400m²')).not.toBeInTheDocument();
   });
 
   it('makes each application panel a full-card link', () => {
@@ -182,12 +200,28 @@ describe('Home', () => {
     );
   });
 
-  it('includes reduced-motion and compact mobile editorial cards', () => {
+  it('includes reduced-motion and complete-image mobile editorial cards', () => {
     const styles = readFileSync('src/styles.css', 'utf8');
+    const phone = styles.slice(styles.lastIndexOf('@media (max-width: 760px)'));
 
     expect(styles).toMatch(/prefers-reduced-motion:\s*reduce/);
-    expect(styles).toMatch(/\.editorial-product-mosaic\s*\{\s*grid-auto-rows:\s*(?:410|420|430)px;/);
-    expect(styles).toMatch(/\.editorial-application-grid\s*\{\s*grid-auto-rows:\s*(?:350|360|370|380)px;/);
+    expect(phone).toMatch(/\.editorial-product-mosaic\s*\{[^}]*grid-auto-rows:\s*auto/);
+    expect(phone).toMatch(
+      /\.editorial-product-panel\s*>\s*img\s*\{[^}]*aspect-ratio:\s*16\s*\/\s*9[^}]*object-fit:\s*contain/
+    );
+    expect(phone).toMatch(/\.editorial-application-grid\s*\{[^}]*grid-auto-rows:\s*auto/);
+  });
+
+  it('labels application scenes for phone focal positioning', () => {
+    const { container } = renderHome();
+    const scenes = [...container.querySelectorAll('.editorial-application')];
+
+    expect(scenes.map((scene) => scene.dataset.mobileFocal)).toEqual([
+      'right',
+      'left',
+      'center',
+      'center'
+    ]);
   });
 
   it('uses one short hero sequence and restrained interaction timings', () => {
@@ -203,4 +237,5 @@ describe('Home', () => {
     expect(styles).toMatch(/\.reveal--media\[data-motion='ready'\]/);
     expect(styles).toMatch(/\.reveal--group\[data-motion='ready'\]/);
   });
+
 });

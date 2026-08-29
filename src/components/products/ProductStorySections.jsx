@@ -1,4 +1,4 @@
-import { ArrowRight, Check } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { colors, productFinishImage } from '../../data/products.js';
 import SafeImage from '../SafeImage.jsx';
@@ -28,24 +28,71 @@ function productEngineeringPoints(product) {
   }).slice(0, 4);
 }
 
+const GF15_ENGINEERING_PROOFS = [
+  'UL / cUL listed · UL 943 5th Edition',
+  'Patent protected · US / CN',
+  'Anti-interference',
+  'Self-test every 15 minutes',
+  'Reverse-wiring protection',
+  '20A feed-through',
+  'Dual-color LED indicator',
+  '3-year warranty'
+];
+
+function productEngineeringProofs(product) {
+  return product.sku === 'GF15' ? GF15_ENGINEERING_PROOFS : productEngineeringPoints(product);
+}
+
 export function ProductFeatureStory({ product }) {
-  const points = productEngineeringPoints(product);
+  const points = productEngineeringProofs(product);
+  const imageAlt = product.sku === 'GF15'
+    ? 'GF15 installed in a bathroom vanity'
+    : `${product.sku} installed application`;
 
   return (
     <section className="product-story product-story--feature">
-      <div className="container product-story__split">
-        <figure className="product-story__media">
-          <SafeImage src={product.assets.feature} alt={`${product.sku} product engineering details`} loading="lazy" />
-        </figure>
-        <div className="product-story__content">
-          <p className="product-section-label">Product engineering</p>
-          <h2>Protection engineered for everyday installation.</h2>
-          <p className="product-story__summary">{product.summary}</p>
-          <ul className="product-story__points">
-            {points.map((point) => (
-              <li key={point}><Check size={18} aria-hidden="true" /><span>{point}</span></li>
-            ))}
-          </ul>
+      <div className="container">
+        <div className="product-engineering-editorial">
+          <header className="product-engineering-editorial__head">
+            <p className="product-section-label">Product engineering</p>
+            <div className="product-engineering-editorial__head-main">
+              <h2>
+                Protection,
+                <span>clearly documented.</span>
+              </h2>
+              <p className="product-story__summary">{product.summary}</p>
+            </div>
+          </header>
+          <div className="product-engineering-editorial__body">
+            <figure
+              className="product-engineering-editorial__scene"
+              data-product-media="engineering"
+              data-sku={product.sku.toLowerCase()}
+            >
+              <span>Representative installation</span>
+              <SafeImage
+                src={product.assets.feature}
+                alt={imageAlt}
+                width={1536}
+                height={1024}
+                loading="lazy"
+              />
+            </figure>
+            <div className="product-engineering-editorial__details">
+              <div className="product-engineering-editorial__details-head">
+                <p>Product features</p>
+                <span>{String(points.length).padStart(2, '0')} documented details</span>
+              </div>
+              <ol className="product-engineering-editorial__proofs">
+                {points.map((point, index) => (
+                  <li key={point}>
+                    <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                    <strong>{point}</strong>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -53,7 +100,10 @@ export function ProductFeatureStory({ product }) {
 }
 
 export function ProductApplicationStory({ product }) {
-  const lifestyleImage = product.assets.gallery?.[4] || product.assets.gallery?.at(-1) || product.assets.hero;
+  const lifestyleImage = product.assets.application
+    || product.assets.gallery?.[4]
+    || product.assets.gallery?.at(-1)
+    || product.assets.hero;
 
   return (
     <section className="product-story product-story--application">
@@ -70,34 +120,71 @@ export function ProductApplicationStory({ product }) {
             Review your application <ArrowRight size={15} aria-hidden="true" />
           </Link>
         </div>
-        <figure className="product-story__media product-story__media--cover">
-          <SafeImage src={lifestyleImage} alt={`${product.sku} representative application setting`} loading="lazy" />
+        <figure
+          className="product-story__media product-story__media--cover"
+          data-product-media="application"
+          data-sku={product.sku.toLowerCase()}
+        >
+          <SafeImage
+            src={lifestyleImage}
+            alt={`${product.sku} representative application setting`}
+            width={1536}
+            height={1024}
+            loading="lazy"
+          />
         </figure>
       </div>
     </section>
   );
 }
 
-const OEM_CAPABILITIES = [
-  'Finish coordination',
-  'Approved brand marking',
-  'Packaging coordination',
-  'Documentation support'
+const PACKAGING_PROGRAMS = [
+  {
+    code: 'Package A',
+    label: 'Color retail box',
+    wallPlate: 'Included',
+    inner: '10 pcs',
+    carton: '50 pcs'
+  },
+  {
+    code: 'Package B',
+    label: 'Blank white box',
+    wallPlate: 'Included',
+    inner: '10 pcs',
+    carton: '50 pcs'
+  },
+  {
+    code: 'Package C',
+    label: 'Color retail box',
+    wallPlate: 'Not included',
+    inner: '10 pcs',
+    carton: '100 pcs'
+  }
 ];
 
 export function ProductOemStory({ product }) {
+  const packagingTitleId = `packaging-${product.sku.toLowerCase()}`;
+  const wallPlateTitleId = `wall-plates-${product.sku.toLowerCase()}`;
+  const programTitleId = `packaging-programs-${product.sku.toLowerCase()}`;
+
   return (
     <section
+      id="program-configuration"
       className="product-story product-story--oem product-story--cool"
+      aria-labelledby="program-configuration-title"
       data-testid="product-oem-story"
     >
       <div className="container">
         <div className="product-story__oem-head">
           <div>
             <p className="product-section-label">Program configuration</p>
-            <h2>Configure the product around your program.</h2>
+            <h2 id="program-configuration-title">Configure the product around your program.</h2>
           </div>
           <p>Align the visible finish and approved program materials around a reviewed product specification.</p>
+        </div>
+        <div className="product-finish-heading">
+          <p>Finish options</p>
+          <span>{colors.length} standard finishes</span>
         </div>
         <div className="product-finish-strip" aria-label={`${product.sku} finish references`}>
           {colors.map((finish) => (
@@ -113,16 +200,100 @@ export function ProductOemStory({ product }) {
             </figure>
           ))}
         </div>
-        <div className="product-oem__footer">
-          <ul className="product-oem__capabilities">
-            {OEM_CAPABILITIES.map((capability) => (
-              <li key={capability}><Check size={17} aria-hidden="true" /> {capability}</li>
-            ))}
-          </ul>
-          <Link className="btn btn--primary" to={`/contact?model=${encodeURIComponent(product.sku)}`}>
-            Discuss {product.sku} configuration <ArrowRight size={16} aria-hidden="true" />
-          </Link>
-        </div>
+        {product.assets.packaging && (
+          <section className="product-packaging" aria-labelledby={packagingTitleId}>
+            <header className="product-packaging__header">
+              <div>
+                <p className="product-packaging__eyebrow">Packaging &amp; presentation</p>
+                <h3 id={packagingTitleId}>Packaging &amp; program options.</h3>
+              </div>
+              <p className="product-packaging__intro">
+                Review the visible wall-plate style separately from box format and shipment quantity.
+              </p>
+            </header>
+            <div className="product-packaging__workspace">
+              <section className="product-wallplate-options" aria-labelledby={wallPlateTitleId}>
+                <header className="product-packaging__subhead">
+                  <div>
+                    <span aria-hidden="true">01</span>
+                    <h4 id={wallPlateTitleId}>Wall plate options</h4>
+                  </div>
+                  <p>Coordinate the plate style with the selected finish.</p>
+                </header>
+                <div className="product-wallplate-options__grid">
+                  <figure className="product-wallplate-option">
+                    <SafeImage
+                      src={product.assets.packaging.standard}
+                      alt={`${product.sku} with standard screw wall plate and retail box`}
+                      width={1000}
+                      height={1000}
+                      loading="lazy"
+                    />
+                    <figcaption>
+                      <strong>Standard screw plate</strong>
+                      <span>Visible fastening · classic presentation</span>
+                    </figcaption>
+                  </figure>
+                  <figure className="product-wallplate-option">
+                    <SafeImage
+                      src={product.assets.packaging.screwless}
+                      alt={`${product.sku} with screwless wall plate and retail box`}
+                      width={1000}
+                      height={1000}
+                      loading="lazy"
+                    />
+                    <figcaption>
+                      <strong>Screwless plate</strong>
+                      <span>Clean face · concealed fastening</span>
+                    </figcaption>
+                  </figure>
+                </div>
+              </section>
+              <section className="product-packaging__program-panel" aria-labelledby={programTitleId}>
+                <header className="product-packaging__subhead">
+                  <div>
+                    <span aria-hidden="true">02</span>
+                    <h4 id={programTitleId}>Packaging programs</h4>
+                  </div>
+                  <p>{PACKAGING_PROGRAMS.length} approved configurations</p>
+                </header>
+                <div className="product-packaging__table-wrap">
+                  <table aria-label={`${product.sku} packaging programs`}>
+                    <thead>
+                      <tr>
+                        <th scope="col">Program</th>
+                        <th scope="col">Retail presentation</th>
+                        <th scope="col">Wall plate</th>
+                        <th scope="col">Inner box</th>
+                        <th scope="col">Carton</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {PACKAGING_PROGRAMS.map((program) => (
+                        <tr key={program.code}>
+                          <th scope="row">{program.code}</th>
+                          <td data-label="Retail presentation">{program.label}</td>
+                          <td data-label="Wall plate">{program.wallPlate}</td>
+                          <td data-label="Inner box">{program.inner}</td>
+                          <td data-label="Carton">{program.carton}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+            <footer className="product-packaging__footer">
+              <p className="product-packaging__authorization">
+                Customer-branded packaging is available after the registered trademark and brand authorization
+                documents are reviewed.
+              </p>
+              <Link className="btn btn--primary" to={`/contact?model=${encodeURIComponent(product.sku)}`}>
+                Discuss {product.sku} configuration <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            </footer>
+          </section>
+        )}
       </div>
     </section>
   );

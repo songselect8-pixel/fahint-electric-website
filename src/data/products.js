@@ -45,6 +45,12 @@ function buildAssets(sku) {
     hero: assetPath(sku, 'main'),
     card: assetPath(sku, 'plate'),
     gallery: GALLERY_ROLES.map((role) => assetPath(sku, role)),
+    technicalViews: {
+      plate: assetPath(sku, 'plate'),
+      front: assetPath(sku, 'main'),
+      side: assetPath(sku, 'sides'),
+      back: assetPath(sku, 'back')
+    },
     feature: assetPath(sku, 'features'),
     installation: assetPath(sku, 'install'),
     dimensions: assetPath(sku, 'dimensions'),
@@ -77,6 +83,80 @@ function verifiedFeatures(variantFeatures = []) {
   return [CERTIFICATION_FEATURE, ...variantFeatures, ...SHARED_FEATURES];
 }
 
+function archivedTechnicalSpecifications({ amperage, nema, tamperResistant, weatherResistant }) {
+  return [
+    ['Standard', 'UL 943 / UL 498 / UL 1998'],
+    ['Amperage', amperage],
+    ['Rated voltage', '125V AC'],
+    ['Working voltage', '102–132V AC'],
+    ['Trip level', '4–6 mA · <25 ms'],
+    ['Operating temperature', '-35°C to 66°C (-30°F to 150°F)'],
+    ['Wiring method', 'Side wire & back wire'],
+    ['Wire gauge', '#12–#14 AWG copper wire'],
+    ['Application grade', 'Residential & Commercial Grade'],
+    ['NEMA configuration', nema],
+    ['Pole & wire', '2-pole, 3-wire'],
+    ['Grounding', 'Self-grounding'],
+    ['Tamper-resistant', tamperResistant ? 'Yes' : 'No'],
+    ['Weather-resistant', weatherResistant ? 'Yes' : 'No'],
+    ['Usage', 'Indoor only']
+  ];
+}
+
+function archivedConstruction() {
+  return {
+    materials: [
+      ['Face & body', 'Thermoplastic'],
+      ['Current-carrying components', '0.8 mm high-precision phosphor bronze'],
+      ['Mounting yoke', '1.2 mm galvanized steel'],
+      ['Contacts', 'Silver-alloy contacts'],
+      ['Circuit protection', 'Coated PCB with MCU protection for critical components'],
+      ['Flammability', 'UL 94 V-1']
+    ],
+    performance: [
+      ['Initial self-test', 'Within 3 seconds after power-up'],
+      ['Full-load temperature rise', 'Below 20K / 33K'],
+      ['Terminal screw torque', 'Over 2 N·m'],
+      ['Indicator system', 'Green / red dual LED · stated service life >5 years'],
+      ['Factory inspection', '100% automated inspection · stated qualified rate 99.99%'],
+      ['Trip response', '4–6 mA · <25 ms'],
+      ['Patent protection', 'China & USA'],
+      ['Warranty', '3 years']
+    ]
+  };
+}
+
+function archivedProductDetails(specification) {
+  return {
+    technicalSpecifications: archivedTechnicalSpecifications(specification),
+    construction: archivedConstruction()
+  };
+}
+
+function buildPackagingAssets(sku) {
+  const key = String(sku).toLowerCase();
+  return {
+    standard: `assets/images/products/${key}-package-standard-white-v1.jpg`,
+    screwless: `assets/images/products/${key}-package-screwless-white-v1.jpg`
+  };
+}
+
+function buildCompleteAssets(sku) {
+  return {
+    ...buildAssets(sku),
+    packaging: buildPackagingAssets(sku)
+  };
+}
+
+function buildEditorialAssets(sku) {
+  const key = String(sku).toLowerCase();
+  return {
+    ...buildCompleteAssets(sku),
+    feature: `assets/images/products/${key}-feature-application-v1.jpg`,
+    application: `assets/images/products/${key}-application-scene-v1.jpg`
+  };
+}
+
 export const products = [
   {
     sku: 'GF15',
@@ -92,7 +172,17 @@ export const products = [
     highlights: ['Self-test every 15 min', '20A feed-through', 'Reverse-wiring lockout'],
     features: verifiedFeatures(),
     dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
-    assets: buildAssets('GF15')
+    ...archivedProductDetails({
+      amperage: '15A',
+      nema: 'NEMA 5-15R',
+      tamperResistant: false,
+      weatherResistant: false
+    }),
+    assets: {
+      ...buildCompleteAssets('GF15'),
+      feature: 'assets/images/products/gf15-feature-application-v3.jpg',
+      application: 'assets/images/products/gf15-application-kitchen-v2.jpg'
+    }
   },
   {
     sku: 'GF20',
@@ -108,7 +198,13 @@ export const products = [
     highlights: ['20A T-slot face', 'Self-test every 15 min', 'Reverse-wiring lockout'],
     features: verifiedFeatures(),
     dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
-    assets: buildAssets('GF20')
+    ...archivedProductDetails({
+      amperage: '20A',
+      nema: 'NEMA 5-20R',
+      tamperResistant: false,
+      weatherResistant: false
+    }),
+    assets: buildEditorialAssets('GF20')
   },
   {
     sku: 'GT15',
@@ -124,7 +220,13 @@ export const products = [
     highlights: ['Tamper-resistant', 'Self-test every 15 min', '20A feed-through'],
     features: verifiedFeatures(['Tamper-resistant receptacle face']),
     dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
-    assets: buildAssets('GT15')
+    ...archivedProductDetails({
+      amperage: '15A',
+      nema: 'NEMA 5-15R',
+      tamperResistant: true,
+      weatherResistant: false
+    }),
+    assets: buildEditorialAssets('GT15')
   },
   {
     sku: 'GT20',
@@ -140,7 +242,13 @@ export const products = [
     highlights: ['Tamper-resistant', '20A T-slot face', 'Self-test every 15 min'],
     features: verifiedFeatures(['Tamper-resistant receptacle face']),
     dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
-    assets: buildAssets('GT20')
+    ...archivedProductDetails({
+      amperage: '20A',
+      nema: 'NEMA 5-20R',
+      tamperResistant: true,
+      weatherResistant: false
+    }),
+    assets: buildEditorialAssets('GT20')
   },
   {
     sku: 'GW15',
@@ -159,7 +267,13 @@ export const products = [
       'Coated circuit board protects critical components from moisture'
     ]),
     dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
-    assets: buildAssets('GW15')
+    ...archivedProductDetails({
+      amperage: '15A',
+      nema: 'NEMA 5-15R',
+      tamperResistant: true,
+      weatherResistant: true
+    }),
+    assets: buildEditorialAssets('GW15')
   },
   {
     sku: 'GW20',
@@ -178,7 +292,13 @@ export const products = [
       'Coated circuit board protects critical components from moisture'
     ]),
     dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
-    assets: buildAssets('GW20')
+    ...archivedProductDetails({
+      amperage: '20A',
+      nema: 'NEMA 5-20R',
+      tamperResistant: true,
+      weatherResistant: true
+    }),
+    assets: buildEditorialAssets('GW20')
   },
   {
     sku: 'GL20',
@@ -194,7 +314,13 @@ export const products = [
     highlights: ['Blank face', 'Self-test every 15 min', 'Reverse-wiring lockout'],
     features: ['Blank-face GFCI configuration', ...SHARED_FEATURES],
     dimensions: { face: '4.53 in (115 mm)', width: '2.75 in (70 mm)', depth: '1.56 in (39.7 mm)' },
-    assets: buildAssets('GL20')
+    ...archivedProductDetails({
+      amperage: '20A',
+      nema: 'Blank Face (Dead Face)',
+      tamperResistant: false,
+      weatherResistant: false
+    }),
+    assets: buildEditorialAssets('GL20')
   }
 ];
 

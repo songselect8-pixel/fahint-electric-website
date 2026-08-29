@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
 import { findProduct, products } from '../data/products.js';
 import ProductCard from '../components/ProductCard.jsx';
@@ -55,6 +56,34 @@ export default function ProductDetail() {
   const { sku } = useParams();
   const { pathname, search } = useLocation();
   const product = findProduct(sku);
+
+  useEffect(() => {
+    if (!product) return undefined;
+
+    const previousTitle = document.title;
+    const pageTitle = `${product.sku} ${product.name} | Fahint Electric`;
+    const metadata = [
+      [document.querySelector('meta[name="description"]'), product.summary],
+      [document.querySelector('meta[property="og:title"]'), pageTitle],
+      [document.querySelector('meta[property="og:description"]'), product.summary]
+    ].map(([element, value]) => ({
+      element,
+      previousValue: element?.getAttribute('content') ?? null,
+      value
+    }));
+
+    document.title = pageTitle;
+    metadata.forEach(({ element, value }) => element?.setAttribute('content', value));
+
+    return () => {
+      document.title = previousTitle;
+      metadata.forEach(({ element, previousValue }) => {
+        if (!element) return;
+        if (previousValue === null) element.removeAttribute('content');
+        else element.setAttribute('content', previousValue);
+      });
+    };
+  }, [product]);
 
   if (!product) return <Navigate to="/products/gfci" replace />;
 

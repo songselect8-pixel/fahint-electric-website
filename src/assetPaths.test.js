@@ -68,6 +68,19 @@ function flattenProductAssets(product) {
     })));
   }
 
+  ['application', 'packaging', 'technicalViews'].forEach((group) => {
+    const value = assets[group];
+    if (typeof value === 'string') {
+      entries.push({ sku, field: group, asset: value });
+    } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+      entries.push(...Object.entries(value).map(([name, asset]) => ({
+        sku,
+        field: `${group}.${name}`,
+        asset
+      })));
+    }
+  });
+
   return entries;
 }
 
@@ -175,6 +188,9 @@ describe('public asset paths', () => {
     fixture.assets.installation = '   ';
     fixture.assets.dimensions = false;
     fixture.assets.finishes.white = '';
+    fixture.assets.application = '';
+    fixture.assets.packaging.standard = '';
+    fixture.assets.technicalViews.back = '';
 
     expect(flattenProductAssets(fixture)).toContainEqual({
       sku: 'GF15',
@@ -188,7 +204,10 @@ describe('public asset paths', () => {
       'GF15: feature must be a non-empty string.',
       'GF15: installation must be a non-empty string.',
       'GF15: dimensions must be a non-empty string.',
-      'GF15: finishes.white must be a non-empty string.'
+      'GF15: finishes.white must be a non-empty string.',
+      'GF15: application must be a non-empty string.',
+      'GF15: packaging.standard must be a non-empty string.',
+      'GF15: technicalViews.back must be a non-empty string.'
     ]));
   });
 

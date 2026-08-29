@@ -39,6 +39,7 @@ export default function Header() {
 
   return (
     <>
+      <a className="skip-link" href="#main-content">Skip to main content</a>
       <header className={`header ${solid ? 'header--solid' : 'header--transparent'}`}>
         <div className="header__inner">
           <Link to="/" className="logo" aria-label={company.shortName}>

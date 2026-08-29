@@ -1,12 +1,29 @@
-import { ArrowRight, FileCheck2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ArrowRight, ExternalLink, FileCheck2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { isVerifiedListing } from '../../data/products.js';
+import { publicAsset } from '../../utils/publicAsset.js';
 import SafeImage from '../SafeImage.jsx';
 
 export function productSpecificationRows(product) {
   const verified = isVerifiedListing(product);
   const configuration = product.nema === 'Blank face' ? product.nema : `NEMA ${product.nema}`;
   const faceDimensions = [product.dimensions?.face, product.dimensions?.width].filter(Boolean).join(' × ');
+  const certification = verified
+    ? `UL/cUL listed · file ${product.listing.file}`
+    : 'Documentation review required';
+
+  if (Array.isArray(product.technicalSpecifications) && product.technicalSpecifications.length > 0) {
+    return [
+      ['Item code', product.sku],
+      ['Rating', product.rating],
+      ['Certification', certification],
+      ...product.technicalSpecifications,
+      ['Face dimensions', faceDimensions],
+      ['Body depth', product.dimensions?.depth]
+    ].filter(([, value]) => value);
+  }
+
   return [
     ['Item code', product.sku],
     ['Rating', product.rating],
@@ -14,74 +31,257 @@ export function productSpecificationRows(product) {
     ['Variant', product.feature],
     ['Application grade', product.grade],
     ['Standard', verified ? 'UL 943' : null],
-    ['Certification', verified ? `UL/cUL listed · file ${product.listing.file}` : 'Documentation review required'],
+    ['Certification', certification],
     ['Face dimensions', faceDimensions],
     ['Body depth', product.dimensions?.depth]
   ].filter(([, value]) => value);
 }
 
-export function ProductSpecifications({ product }) {
+const SPECIFICATION_GROUPS = [
+  {
+    title: 'Electrical performance',
+    labels: ['Amperage', 'Rated voltage', 'Working voltage', 'Trip level', 'Operating temperature']
+  },
+  {
+    title: 'Installation & configuration',
+    labels: ['NEMA configuration', 'Wiring method', 'Wire gauge', 'Pole & wire', 'Grounding', 'Face dimensions', 'Body depth']
+  },
+  {
+    title: 'Compliance & application',
+    labels: ['Item code', 'Certification', 'Standard', 'Application grade', 'Tamper-resistant', 'Weather-resistant', 'Usage']
+  }
+];
+
+function selectRows(rows, labels) {
+  const rowMap = new Map(rows);
+  return labels.map((label) => [label, rowMap.get(label)]).filter(([, value]) => value);
+}
+
+export function productSpecificationGroups(product) {
   const rows = productSpecificationRows(product);
+
+  if (!Array.isArray(product.technicalSpecifications) || product.technicalSpecifications.length === 0) {
+    return [{ title: 'Product information', rows }];
+  }
+
+  return [
+    ...SPECIFICATION_GROUPS.map((group) => ({
+      title: group.title,
+      rows: selectRows(rows, group.labels)
+    })),
+    { title: 'Materials & construction', rows: product.construction?.materials || [] },
+    { title: 'Quality & durability', rows: product.construction?.performance || [] }
+  ].filter((group) => group.rows.length > 0);
+}
+
+export function productSpecificationSummaryRows(product) {
+  const rows = new Map(productSpecificationRows(product));
+  return [
+    ['Rating', product.rating],
+    ['Configuration', rows.get('NEMA configuration')],
+    ['Trip level', rows.get('Trip level')],
+    ['Wiring', rows.get('Wiring method')],
+    ['Certification', rows.get('Certification')]
+  ].filter(([, value]) => value);
+}
+
+function SpecificationGroup({ group, index, isOpen, onToggle }) {
+  if (!Array.isArray(group.rows) || group.rows.length === 0) return null;
+
+  return (
+    <details
+      className="product-specification-group"
+      open={isOpen}
+      onToggle={(event) => onToggle(group.title, event.currentTarget.open)}
+    >
+      <summary>
+        <span className="product-specification-group__title">
+          <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+          <h3>{group.title}</h3>
+        </span>
+        <span className="product-specification-group__meta">{group.rows.length} details</span>
+      </summary>
+      <dl className="product-specification-group__rows">
+        {group.rows.map(([label, value]) => (
+          <div key={label}>
+            <dt>{label}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+      </dl>
+    </details>
+  );
+}
+
+export function ProductSpecifications({ product }) {
+  const summaryRows = productSpecificationSummaryRows(product);
+  const groups = productSpecificationGroups(product);
+  const [expandedGroups, setExpandedGroups] = useState(() => new Set(groups[0] ? [groups[0].title] : []));
+
+  useEffect(() => {
+    setExpandedGroups(new Set(groups[0] ? [groups[0].title] : []));
+  }, [product.sku]);
+
+  const allExpanded = groups.length > 0 && groups.every((group) => expandedGroups.has(group.title));
+  const handleGroupToggle = (title, isOpen) => {
+    setExpandedGroups((current) => {
+      if (current.has(title) === isOpen) return current;
+      const next = new Set(current);
+      if (isOpen) next.add(title);
+      else next.delete(title);
+      return next;
+    });
+  };
+
+  const handleToggleAll = () => {
+    setExpandedGroups(allExpanded ? new Set() : new Set(groups.map((group) => group.title)));
+  };
+
   return (
     <section className="product-technical product-specifications" id="technical-details">
       <div className="container product-technical__narrow">
-        <p className="product-section-label">Model data</p>
-        <h2>Technical specifications.</h2>
-        <div className="product-specifications__desktop product-technical-table">
-          <table>
-            <caption className="sr-only">{product.sku} technical specifications</caption>
-            <tbody>
-              {rows.map(([label, value]) => <tr key={label}><th scope="row">{label}</th><td>{value}</td></tr>)}
-            </tbody>
-          </table>
+        <div className="product-specifications__heading">
+          <div>
+            <p className="product-section-label">Model data</p>
+            <h2>Technical specifications.</h2>
+          </div>
+          <p>Key values first, with the complete specification grouped below for faster review.</p>
         </div>
-        <div className="product-specifications__mobile product-spec-mobile">
-          {rows.map(([label, value]) => (
-            <details key={label}><summary>{label}</summary><p>{value}</p></details>
+        <dl className="product-specification-summary" role="list" aria-label="Key specifications">
+          {summaryRows.map(([label, value]) => (
+            <div role="listitem" key={label}>
+              <dt>{label}</dt>
+              <dd>{value}</dd>
+            </div>
           ))}
+        </dl>
+        <div className="product-specifications__controls">
+          <p>Complete model specification</p>
+          <button type="button" aria-expanded={allExpanded} onClick={handleToggleAll}>
+            {allExpanded ? 'Collapse all specifications' : 'Expand all specifications'}
+          </button>
         </div>
+        <div className="product-specification-groups">
+          {groups.map((group, index) => (
+            <SpecificationGroup
+              key={group.title}
+              group={group}
+              index={index}
+              isOpen={expandedGroups.has(group.title)}
+              onToggle={handleGroupToggle}
+            />
+          ))}
+          </div>
       </div>
     </section>
   );
 }
 
 export function ProductInstallation({ product }) {
+  const views = product.assets.technicalViews || {
+    plate: product.assets.card,
+    front: product.assets.hero,
+    side: product.assets.dimensions,
+    back: product.assets.installation
+  };
+
   return (
-    <section className="product-technical product-installation">
+    <section
+      id="installation-reference"
+      className="product-technical product-installation"
+      aria-labelledby="installation-reference-title"
+    >
       <div className="container">
-        <div className="product-technical__head">
-          <p className="product-section-label">Installation reference</p>
-          <h2>Wiring and dimensions.</h2>
-          <p>Use the model drawings as a review aid and follow the approved installation instructions and applicable codes.</p>
+        <div className="product-installation__head">
+          <div>
+            <p className="product-section-label">Installation reference</p>
+            <h2 id="installation-reference-title">Wiring and dimensions.</h2>
+          </div>
+          <p>
+            A clear field reference for terminal identification, installation sequence and the three dimensions that
+            matter before specification.
+          </p>
         </div>
-        <div className="product-installation__grid">
-          <figure>
-            <SafeImage src={product.assets.installation} alt={`${product.sku} wiring reference`} loading="lazy" />
-            <figcaption className="product-installation__caption">
-              <strong>Wiring reference</strong>
-              <ul>
-                <li>Neutral wire — white conductor to the silver screw.</li>
-                <li>Hot wire — black conductor to the brass screw.</li>
-                <li>Ground wire — copper or green conductor to the green screw.</li>
-              </ul>
-              <p>Use the device’s LINE and LOAD markings to identify the corresponding terminals.</p>
-              <p>
-                Insert wires through the terminal holes beneath the screws, tighten the terminal screws clockwise,
-                then press RESET; the green LED indicator turns on.
-              </p>
-            </figcaption>
-          </figure>
-          <figure>
-            <SafeImage src={product.assets.dimensions} alt={`${product.sku} dimension drawing`} loading="lazy" />
-            <figcaption className="product-installation__caption">
-              <strong>Dimension drawing</strong>
-              <ul>
-                {product.dimensions?.face && <li>Face: {product.dimensions.face}</li>}
-                {product.dimensions?.width && <li>Width: {product.dimensions.width}</li>}
-                {product.dimensions?.depth && <li>Depth: {product.dimensions.depth}</li>}
-              </ul>
-            </figcaption>
-          </figure>
+
+        <div className="product-installation__canvas">
+          <article className="product-installation__wiring" aria-labelledby="wiring-reference-title">
+            <header className="product-installation__panel-head">
+              <span aria-hidden="true">01</span>
+              <div>
+                <p>Connection guide</p>
+                <h3 id="wiring-reference-title">Wire by terminal, not by position.</h3>
+              </div>
+            </header>
+
+            <div className="product-installation__wiring-body">
+              <figure className="product-installation__wiring-view">
+                <SafeImage src={views.back} alt={`${product.sku} rear terminal view`} width={800} height={800} loading="lazy" />
+                <figcaption>Rear terminal view · confirm molded LINE and LOAD markings on the device.</figcaption>
+              </figure>
+
+              <div className="product-installation__wiring-copy">
+                <dl className="product-installation__wire-map">
+                  <div data-wire="neutral">
+                    <dt>Neutral <span>White conductor</span></dt>
+                    <dd>Silver screw</dd>
+                  </div>
+                  <div data-wire="hot">
+                    <dt>Hot <span>Black conductor</span></dt>
+                    <dd>Brass screw</dd>
+                  </div>
+                  <div data-wire="ground">
+                    <dt>Ground <span>Copper or green conductor</span></dt>
+                    <dd>Green screw</dd>
+                  </div>
+                </dl>
+                <p className="product-installation__device-note">
+                  Use the device’s LINE and LOAD markings to identify the corresponding terminals before inserting any
+                  conductor.
+                </p>
+              </div>
+            </div>
+
+            <ol className="product-installation__sequence" aria-label="Installation sequence">
+              <li><span>01</span><strong>Identify</strong><small>Confirm supply, load and ground conductors.</small></li>
+              <li><span>02</span><strong>Secure</strong><small>Insert wires through the terminal holes and tighten clockwise.</small></li>
+              <li><span>03</span><strong>Verify</strong><small>Press RESET and confirm the green LED indicator turns on.</small></li>
+            </ol>
+          </article>
+
+          <article className="product-installation__dimensions" aria-labelledby="dimension-reference-title">
+            <header className="product-installation__panel-head product-installation__panel-head--inverse">
+              <span aria-hidden="true">02</span>
+              <div>
+                <p>Dimensional profile</p>
+                <h3 id="dimension-reference-title">Three views. Three critical dimensions.</h3>
+              </div>
+            </header>
+
+            <div className="product-installation__view-stack" aria-label={`${product.sku} product views`}>
+              <figure>
+                <SafeImage src={views.plate} alt={`${product.sku} installed front view`} width={800} height={800} loading="lazy" />
+                <figcaption>Plate</figcaption>
+              </figure>
+              <figure>
+                <SafeImage src={views.front} alt={`${product.sku} device front view`} width={800} height={800} loading="lazy" />
+                <figcaption>Front</figcaption>
+              </figure>
+              <figure>
+                <SafeImage src={views.side} alt={`${product.sku} device side views`} width={800} height={800} loading="lazy" />
+                <figcaption>Side</figcaption>
+              </figure>
+            </div>
+
+            <dl className="product-installation__metrics">
+              {product.dimensions?.face && <div><dt>Overall height</dt><dd>{product.dimensions.face}</dd></div>}
+              {product.dimensions?.width && <div><dt>Plate width</dt><dd>{product.dimensions.width}</dd></div>}
+              {product.dimensions?.depth && <div><dt>Body depth</dt><dd>{product.dimensions.depth}</dd></div>}
+            </dl>
+
+            <p className="product-installation__reference-note">
+              Reference dimensions only. Verify enclosure depth and applicable installation requirements before release.
+            </p>
+          </article>
         </div>
       </div>
     </section>
@@ -124,22 +324,80 @@ export function ProductCertification({ product }) {
     );
   }
 
+  const certificatePath = 'assets/images/certs/ul-gfci.webp';
+  const certificateHref = publicAsset(certificatePath);
+
   return (
-    <section className="product-technical product-certification">
-      <div className="container product-certification__grid">
-        <figure className="product-certification__media">
-          <SafeImage src="assets/images/certs/ul-gfci.webp" alt={`${product.sku} UL/cUL certification reference`} loading="lazy" />
+    <section
+      id="certification-evidence"
+      className="product-technical product-certification"
+      aria-labelledby="certification-evidence-title"
+    >
+      <div className="container product-certification__layout">
+        <figure className="product-certification__document-viewer">
+          <div className="product-certification__document-bar" aria-hidden="true">
+            <span>UL certificate of compliance</span>
+            <span>Original document</span>
+          </div>
+          <a
+            className="product-certification__document"
+            href={certificateHref}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`Open full UL certificate for ${product.sku}`}
+          >
+            <SafeImage
+              src={certificatePath}
+              alt={`${product.sku} UL certification certificate`}
+              width={900}
+              height={1165}
+              loading="lazy"
+            />
+            <span>Open full certificate <ExternalLink size={15} aria-hidden="true" /></span>
+          </a>
+          <figcaption>
+            Certificate of Compliance · UL-US-2016865-1 · issued to Wenzhou Fahint Electric Co Ltd
+          </figcaption>
         </figure>
-        <div>
+
+        <div className="product-certification__verification">
           <p className="product-section-label">Model verification</p>
-          <h2>Certification your team can verify.</h2>
-          <p className="product-certification__reference">
-            UL/cUL — GFCI Receptacles · file {product.listing.file}
+          <h2 id="certification-evidence-title">Certification your team can verify.</h2>
+          <p className="product-certification__intro">
+            Review the listing identifiers here, then open the original certificate when your technical or sourcing
+            team needs the complete document.
           </p>
-          <p>Confirm the listing and model scope as part of your normal technical review.</p>
-          <Link className="textlink" to="/capabilities">
-            Review quality capabilities <ArrowRight size={15} aria-hidden="true" />
-          </Link>
+
+          <div className="product-certification__status">
+            <FileCheck2 size={20} aria-hidden="true" />
+            <span>Verified listing reference</span>
+          </div>
+
+          <dl
+            className="product-certification__facts"
+            aria-label="Certificate verification details"
+            role="list"
+          >
+            <div role="listitem"><dt>Certificate number</dt><dd>UL-US-2016865-1</dd></div>
+            <div role="listitem"><dt>UL file</dt><dd>{product.listing.file}</dd></div>
+            <div role="listitem"><dt>Report reference</dt><dd>{product.listing.reportReference}</dd></div>
+            <div role="listitem"><dt>Standard</dt><dd>UL 943 · 5th Edition</dd></div>
+          </dl>
+
+          <div className="product-certification__scope">
+            <span>Document scope</span>
+            <strong>KCXS · Ground-fault circuit interrupters</strong>
+            <p>Confirm the model designation in the applicable addendum before final specification or purchase.</p>
+          </div>
+
+          <div className="product-certification__actions">
+            <a className="product-certification__open" href={certificateHref} target="_blank" rel="noreferrer">
+              Open full certificate <ExternalLink size={15} aria-hidden="true" />
+            </a>
+            <Link className="textlink" to="/capabilities">
+              Review quality capabilities <ArrowRight size={15} aria-hidden="true" />
+            </Link>
+          </div>
           <ProductDownloads documents={product.documents} />
         </div>
       </div>
@@ -148,9 +406,9 @@ export function ProductCertification({ product }) {
 }
 
 const MANUFACTURING_EVIDENCE = [
-  ['assets/images/company/facility-workshop.webp', 'Production', 'Production facility'],
-  ['assets/images/company/facility-lab.webp', 'Testing', 'Testing facility'],
-  ['assets/images/company/facility-sampleroom.webp', 'Sample review', 'Sample review facility']
+  ['assets/images/company/facility-workshop.webp', 'Production', 'Production facility', 383, 175],
+  ['assets/images/company/facility-lab.webp', 'Testing', 'Testing facility', 390, 172],
+  ['assets/images/company/facility-sampleroom.webp', 'Sample review', 'Sample review facility', 390, 175]
 ];
 
 export function ProductManufacturingProof() {
@@ -162,8 +420,8 @@ export function ProductManufacturingProof() {
           <h2>Manufacturing evidence.</h2>
         </div>
         <div className="product-manufacturing__grid">
-          {MANUFACTURING_EVIDENCE.map(([src, caption, alt]) => (
-            <figure key={src}><SafeImage src={src} alt={alt} loading="lazy" /><figcaption>{caption}</figcaption></figure>
+          {MANUFACTURING_EVIDENCE.map(([src, caption, alt, width, height]) => (
+            <figure key={src}><SafeImage src={src} alt={alt} width={width} height={height} loading="lazy" /><figcaption>{caption}</figcaption></figure>
           ))}
         </div>
       </div>
