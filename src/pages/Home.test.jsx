@@ -277,7 +277,10 @@ describe('Home', () => {
       /\.editorial-home-front \.editorial-hero__note\s*\{[^}]*bottom:\s*72px/
     );
     expect(styles).toMatch(
-      /\.homepage-product-portfolio\s*\{[^}]*background:\s*linear-gradient\([\s\S]*?#eef3f6/
+      /\.homepage-product-portfolio\s*\{[^}]*padding-bottom:\s*clamp\(88px,\s*6vw,\s*112px\)[^}]*background:\s*#07152c/
+    );
+    expect(styles).toMatch(
+      /\.homepage-why-fahint\s*\{[^}]*margin-top:\s*-44px[^}]*border-radius:\s*clamp\(28px,\s*3vw,\s*48px\)\s+clamp\(28px,\s*3vw,\s*48px\)\s+0\s+0[^}]*box-shadow:/
     );
     expect(styles).toMatch(
       /@media \(max-width:\s*760px\)[\s\S]*?\.homepage-proof-bridge \.editorial-proof__grid\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/
