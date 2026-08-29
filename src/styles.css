@@ -8805,6 +8805,10 @@ ul {
   padding-bottom: clamp(96px, 7vw, 128px);
 }
 
+.editorial-hero__actions .editorial-text-link {
+  min-height: 44px;
+}
+
 @media (max-width: 1100px) {
   .homepage-why-fahint .editorial-brand__media,
   .homepage-oem-program .editorial-customization__media {

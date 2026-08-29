@@ -237,6 +237,7 @@ describe('Home', () => {
     expect(styles).toMatch(
       /@media \(max-width:\s*760px\)[\s\S]*?\.editorial-button[\s\S]*?min-height:\s*44px/
     );
+    expect(styles).toMatch(/\.editorial-hero__actions \.editorial-text-link\s*\{[^}]*min-height:\s*44px/);
     expect(styles).toMatch(
       /@media \(max-width:\s*760px\)[\s\S]*?\.editorial-hero h1[\s\S]*?font-size:\s*clamp\(38px,\s*11vw,\s*52px\)/
     );
