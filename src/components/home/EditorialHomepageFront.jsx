@@ -166,7 +166,7 @@ export default function EditorialHomepageFront() {
         </div>
       </section>
 
-      <section className="editorial-proof" aria-label="Fahint manufacturing highlights">
+      <section className="editorial-proof homepage-proof-bridge" aria-label="Fahint manufacturing highlights">
         <div className="container editorial-proof__grid">
           {proof.map(([value, label]) => (
             <div key={value}><strong>{value}</strong><span>{label}</span></div>
@@ -174,7 +174,7 @@ export default function EditorialHomepageFront() {
         </div>
       </section>
 
-      <section className="editorial-products" aria-labelledby="editorial-products-title">
+      <section className="editorial-products homepage-product-portfolio" aria-labelledby="editorial-products-title">
         <div className="container editorial-heading">
           <div>
             <p className="editorial-eyebrow">Product portfolio</p>

@@ -93,6 +93,14 @@ describe('Home', () => {
     expect(screen.queryByText('2,400m²')).not.toBeInTheDocument();
   });
 
+  it('uses homepage-specific hooks for the proof bridge and portfolio transition', () => {
+    renderHome();
+
+    expect(screen.getByLabelText('Fahint manufacturing highlights')).toHaveClass('homepage-proof-bridge');
+    expect(screen.getByRole('heading', { name: 'One platform. Six focused product systems.' }).closest('section'))
+      .toHaveClass('homepage-product-portfolio');
+  });
+
   it('makes each application panel a full-card link', () => {
     renderHome();
 
@@ -193,14 +201,17 @@ describe('Home', () => {
 
   it('includes reduced-motion and complete-image mobile editorial cards', () => {
     const styles = readFileSync('src/styles.css', 'utf8');
-    const phone = styles.slice(styles.lastIndexOf('@media (max-width: 760px)'));
 
     expect(styles).toMatch(/prefers-reduced-motion:\s*reduce/);
-    expect(phone).toMatch(/\.editorial-product-mosaic\s*\{[^}]*grid-auto-rows:\s*auto/);
-    expect(phone).toMatch(
-      /\.editorial-product-panel\s*>\s*img\s*\{[^}]*aspect-ratio:\s*16\s*\/\s*9[^}]*object-fit:\s*contain/
+    expect(styles).toMatch(
+      /@media \(max-width:\s*760px\)[\s\S]*?\.editorial-product-mosaic\s*\{[^}]*grid-auto-rows:\s*auto/
     );
-    expect(phone).toMatch(/\.editorial-application-grid\s*\{[^}]*grid-auto-rows:\s*auto/);
+    expect(styles).toMatch(
+      /@media \(max-width:\s*760px\)[\s\S]*?\.editorial-product-panel\s*>\s*img\s*\{[^}]*aspect-ratio:\s*16\s*\/\s*9[^}]*object-fit:\s*contain/
+    );
+    expect(styles).toMatch(
+      /@media \(max-width:\s*760px\)[\s\S]*?\.editorial-application-grid\s*\{[^}]*grid-auto-rows:\s*auto/
+    );
   });
 
   it('labels application scenes for phone focal positioning', () => {
@@ -251,6 +262,26 @@ describe('Home', () => {
     expect(imageRule).toMatch(/backface-visibility:\s*hidden/);
     expect(imageRule).toMatch(/will-change:\s*transform/);
     expect(metaRule).not.toMatch(/border-top/);
+  });
+
+  it('bridges the hero, proof rail and light content without abrupt white bands', () => {
+    const styles = readFileSync('src/styles.css', 'utf8');
+
+    expect(styles).toMatch(
+      /\.homepage-proof-bridge\s*\{[^}]*margin-top:\s*-42px[^}]*background:\s*linear-gradient/
+    );
+    expect(styles).toMatch(
+      /\.homepage-proof-bridge \.editorial-proof__grid\s*\{[^}]*backdrop-filter:\s*blur\(14px\)/
+    );
+    expect(styles).toMatch(
+      /\.editorial-home-front \.editorial-hero__note\s*\{[^}]*bottom:\s*72px/
+    );
+    expect(styles).toMatch(
+      /\.homepage-product-portfolio\s*\{[^}]*background:\s*linear-gradient\([\s\S]*?#eef3f6/
+    );
+    expect(styles).toMatch(
+      /@media \(max-width:\s*760px\)[\s\S]*?\.homepage-proof-bridge \.editorial-proof__grid\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/
+    );
   });
 
 });
