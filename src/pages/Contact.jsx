@@ -3,11 +3,16 @@ import { Mail, Phone, MapPin, Clock, MessageCircle, Globe } from 'lucide-react';
 import { company, faqs } from '../data/company.js';
 import InquiryForm from '../components/InquiryForm.jsx';
 import Faq from '../components/Faq.jsx';
-import { findProduct } from '../data/products.js';
+import { findProduct, products } from '../data/products.js';
+import { catalogProducts, modelKey } from '../data/catalogProducts.js';
+
+const inquiryModels = [...products, ...catalogProducts.filter((product) => !product.draft)];
 
 export default function Contact() {
   const [searchParams] = useSearchParams();
-  const requestedProduct = findProduct(searchParams.get('model'));
+  const requestedModel = searchParams.get('model');
+  const requestedProduct = findProduct(requestedModel)
+    || inquiryModels.find((product) => modelKey(product.sku) === modelKey(requestedModel));
   const defaultModel = requestedProduct?.sku || '';
 
   return (
@@ -17,7 +22,7 @@ export default function Contact() {
           <div className="crumbs">
             <Link to="/">Home</Link> <span>/</span> <span>Contact</span>
           </div>
-          <h1>Talk to Our GFCI Team</h1>
+          <h1>Talk to Our Product Team</h1>
           <p>
             Send your model mix, target finishes, packaging requirements and project context. Our team will review the brief and
             follow up through the contact method you provide.
@@ -92,7 +97,7 @@ export default function Contact() {
             </ul>
           </div>
 
-          <InquiryForm defaultModel={defaultModel} />
+          <InquiryForm defaultModel={defaultModel} modelOptions={inquiryModels} />
         </div>
       </section>
 

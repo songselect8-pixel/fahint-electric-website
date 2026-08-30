@@ -8,9 +8,10 @@ export default function ProductDetailHero({ product, anchorPath, anchorSearch })
   const listed = isVerifiedListing(product);
   const [selectedImage, setSelectedImage] = useState(product.assets.hero);
   const [selectedFinish, setSelectedFinish] = useState(null);
+  const availableFinishes = product.finishes ?? colors;
   const anchorTarget = (hash) => ({ pathname: anchorPath, search: anchorSearch, hash });
   const configuration = product.nema === 'Blank face' ? product.nema : `NEMA ${product.nema}`;
-  const facts = [
+  const facts = product.keyFacts || [
     ['Rating', product.rating],
     ['Configuration', configuration],
     ['Variant', product.feature],
@@ -28,7 +29,7 @@ export default function ProductDetailHero({ product, anchorPath, anchorSearch })
   }
 
   function selectFinish(finish) {
-    setSelectedImage(productFinishImage(product.sku, finish.slug));
+    setSelectedImage(product.assets.finishes?.[finish.slug] || productFinishImage(product.sku, finish.slug));
     setSelectedFinish(finish.slug);
   }
 
@@ -46,11 +47,12 @@ export default function ProductDetailHero({ product, anchorPath, anchorSearch })
           <span className="product-detail-hero__model">Model {product.sku}</span>
           <h1>{product.name}</h1>
           <p className="product-detail-hero__summary">{product.summary}</p>
+          {product.reviewNotice && <p className="catalog-model-notice" role="note">{product.reviewNotice}</p>}
 
-          <fieldset className="product-detail-hero__finishes">
+          {availableFinishes.length > 0 && <fieldset className="product-detail-hero__finishes">
             <legend>Available finishes</legend>
             <div className="product-detail-hero__finish-options">
-              {colors.map((finish) => (
+              {availableFinishes.map((finish) => (
                 <button
                   key={finish.slug}
                   type="button"
@@ -67,7 +69,7 @@ export default function ProductDetailHero({ product, anchorPath, anchorSearch })
                 </button>
               ))}
             </div>
-          </fieldset>
+          </fieldset>}
 
           <div className="product-detail-hero__specifications">
             <p>Key specifications</p>
@@ -83,14 +85,14 @@ export default function ProductDetailHero({ product, anchorPath, anchorSearch })
 
           <p className={`product-detail-hero__certification${listed ? ' is-verified' : ''}`}>
             {listed ? <ShieldCheck size={19} aria-hidden="true" /> : <FileCheck2 size={19} aria-hidden="true" />}
-            {listed
+            {product.certificationLabel || (listed
               ? `UL / cUL listed · file ${product.listing.file}`
-              : 'Model-specific certification documentation review required'}
+              : 'Model-specific certification documentation review required')}
           </p>
 
           <div className="product-detail-hero__actions">
             <Link to={anchorTarget('#inquiry')} className="btn btn--primary">
-              Request a quote <ArrowRight size={16} aria-hidden="true" />
+              {product.draft ? 'Request documentation' : 'Request a quote'} <ArrowRight size={16} aria-hidden="true" />
             </Link>
             <Link
               to={anchorTarget('#technical-details')}

@@ -9,10 +9,10 @@ export const productLines = [
     cover: 'assets/images/products/gf15-plate.webp',
     tagline: 'Class A self-test ground fault protection',
     summary:
-      'UL/cUL listed Class A GFCI receptacles in 15A and 20A, covering standard, tamper-resistant, weather-resistant, blank face and industrial grade.',
+      '15A and 20A GFCI devices with standard, tamper-resistant, TR/WR and blank-face configurations, plus separately documented industrial models. Review certification coverage for the exact model.',
     ulFile: 'E504391',
     standard: 'UL 943 5th Edition 2018',
-    highlights: ['Self-test every 15 minutes', 'Reverse-wiring lockout', 'Seven finishes'],
+    highlights: ['Self-test protection', 'Model-specific listing review', 'Coordinated finishes'],
     models: ['GF15', 'GF20', 'GT15', 'GT20', 'GW15', 'GW20', 'GL20', 'GTN15', 'GTN20'],
     detailed: true
   },
@@ -26,7 +26,7 @@ export const productLines = [
       'Combination receptacles with integrated USB charging, from 3100 mA Type-A pairs up to 65 W GaN Power Delivery, in 15A and 20A NEMA faces.',
     ulFile: 'E498095',
     standard: 'UL listed',
-    highlights: ['3100 - 5000 mA Type-A', 'PD 20W / 36W / 65W GaN', '15A and 20A faces'],
+    highlights: ['3.1A / 3.6A / 4.2A / 5A USB', 'PD 20W / 36W / 65W', '15A and 20A faces'],
     groups: [
       { name: '3100 mA', items: ['FTR15-3100', 'FTR15C-3100', 'FTR15DC-3100', 'FTR20-3100', 'FTR20C-3100', 'FTR20DC-3100'] },
       { name: '3600 mA', items: ['FTR15-3600', 'FTR20-3600'] },
@@ -43,13 +43,13 @@ export const productLines = [
     cover: 'assets/images/lines/recep-decora-plate.webp',
     tagline: 'Duplex, Decora, commercial and industrial grade',
     summary:
-      'The full American standard receptacle range covers R series duplex, D series Decora, and C series commercial and industrial grade. Each is available in TR and WR variants.',
-    standard: 'UL listed',
+      'Compare duplex and decorator receptacles by current, voltage, TR/WR protection and wiring method. Specialty 250V models and source discrepancies are documented separately from the standard 125V range.',
+    standard: 'Model-specific certification',
     highlights: ['R / D / C series', 'TR and WR variants', '15A and 20A'],
     groups: [
       { name: 'R series duplex', items: ['R15', 'R15Q', 'R20', 'RT15', 'RT15Q', 'RT20', 'RW15', 'RW15Q', 'RW20'] },
       { name: 'D series Decora', items: ['D15', 'D15Q', 'D20', 'DT15', 'DT15Q', 'DT20', 'DW15', 'DW15Q', 'DW20'] },
-      { name: 'C series commercial', items: ['C15', 'C20', 'CR15', 'CR20', 'CD20'] }
+      { name: 'C series and specialty', items: ['R15-C', 'R15Q-C', 'R20-C', 'RT15-C', 'RT20-C', 'RW15-C', 'RW20-C', 'CR15', 'CR20', 'CD20'] }
     ],
     gallery: ['assets/images/lines/recep-decora-plate.webp', 'assets/images/lines/recep-decora.webp', 'assets/images/lines/recep-duplex.webp', 'assets/images/lines/recep-duplex-plate.webp']
   },
@@ -62,7 +62,7 @@ export const productLines = [
     summary:
       'Digital dimmer light switches for LED, CFL, halogen and incandescent loads, including a 0-10V variant for commercial lighting control.',
     standard: 'UL listed',
-    highlights: ['DM2010 digital slide', 'DM2010S 0-10V', 'Seven finishes'],
+    highlights: ['DM2010 digital slide', 'DM2010S 0-10V', 'Load-specific ratings'],
     groups: [{ name: 'Digital dimmers', items: ['DM2010 - Digital Dimmer Light Switch', 'DM2010S - 0-10V Dimmer Light Switch'] }],
     gallery: ['assets/images/lines/dimmer-plate.webp', 'assets/images/lines/dimmer.webp']
   },
@@ -73,9 +73,9 @@ export const productLines = [
     cover: 'assets/images/lines/smart-switch.webp',
     tagline: 'Wi-Fi, Zigbee and touch glass panels',
     summary:
-      'Tempered glass touch switches with Wi-Fi and Zigbee connectivity, in both neutral-required and single-live-wire configurations, for US and EU standards.',
-    standard: 'UL listed',
-    highlights: ['Wi-Fi and Zigbee', 'Neutral or single live wire', 'Tempered glass touch panel'],
+      'US- and EU-format glass controls for Wi-Fi, Zigbee and touch-only operation. Compare neutral-required, single-live and dual-wiring versions, with separate switching, dimming, curtain, fan and heater controls.',
+    standard: 'Confirm model-specific approvals',
+    highlights: ['Wi-Fi / Zigbee / touch only', 'Model-specific wiring', 'US and EU formats'],
     groups: [
       { name: 'Wi-Fi neutral required', items: ['USW8811', 'USW8821', 'USW8831', 'USW8832', 'USW8833', 'USW8841'] },
       { name: 'Wi-Fi single live wire', items: ['1 gang', '2 gang', '3 gang'] },
@@ -91,11 +91,11 @@ export const productLines = [
     cover: 'assets/images/lines/switch-paddle.webp',
     tagline: 'Paddle rocker and toggle wall switches',
     summary:
-      'Decorator paddle rocker and classic toggle switches in single pole, three-way and four-way configurations, matched to the same seven-finish palette.',
-    standard: 'UL listed',
-    highlights: ['1 / 2 / 3 gang', 'Single pole and 3-way', 'Paddle and toggle'],
+      'Single-pole and 3-way paddle and toggle switches, plus double- and triple-rocker combination controls. Compare the 125V and 120/277V ratings and each model’s stated UL or ETL certification.',
+    standard: 'UL / ETL — varies by model',
+    highlights: ['Single pole and 3-way', 'Combination rockers', 'Paddle and toggle'],
     groups: [
-      { name: 'Paddle rocker', items: ['DS15 single pole', 'DS15.3 three-way', '2 gang', '3 gang'] },
+      { name: 'Paddle rocker', items: ['DS15', 'DS15.3', 'DS1502', 'DS1503'] },
       { name: 'Toggle', items: ['T15', 'T15.3 three-way'] }
     ],
     gallery: ['assets/images/lines/switch-paddle.webp', 'assets/images/lines/switch-paddle-alt.webp']
@@ -113,7 +113,7 @@ export const productLines = [
     groups: [
       { name: 'Decorator plates', items: ['BS1801', 'BS1802', 'BS18012', 'BS18013', 'BS18014'] },
       { name: 'Screwless plates', items: ['BS1803', 'BS18032', 'BS18033', 'BS18034'] },
-      { name: 'Specialty', items: ['BS1804 / BS1804M', 'BS1805 extension', 'BS1806', 'BS1807 blank'] }
+      { name: 'Specialty', items: ['BS1804 duplex', 'BS1805 extension', 'BS1806 toggle', 'BS1807 blank'] }
     ],
     gallery: ['assets/images/lines/wallplate.webp', 'assets/images/lines/wallplate-matte.webp']
   }

@@ -189,7 +189,10 @@ describe('GfciSeries', () => {
     const { container } = renderSeries();
     const productLinks = [...container.querySelectorAll('a[href^="/products/gfci/"]')];
 
-    expect(productLinks).toHaveLength(14);
+    expect(productLinks).toHaveLength(18);
+    ['gtn15', 'gtn20'].forEach((sku) => {
+      expect(screen.getByRole('link', { name: `View ${sku.toUpperCase()} details` })).toHaveAttribute('href', `/products/gfci/${sku}`);
+    });
     productLinks.forEach((link) => {
       expect(link.getAttribute('href')).toMatch(/^\/products\/gfci\/[a-z0-9]+$/);
     });
@@ -283,7 +286,8 @@ describe('GfciSeries', () => {
     expect(seriesRoute).toBeLessThan(productRoute);
     expect(productRoute).toBeLessThan(familyRoute);
     expect(lineDetail).not.toContain('GfciBody');
-    expect(lineDetail).toContain('<GenericBody line={line} />');
+    expect(lineDetail).toContain('<ModelCatalogue key={line.slug} line={line} />');
+    expect(lineDetail).toContain('getCatalogProducts(line.slug)');
   });
 
   it('defines visible keyboard focus for the search field and comparison region', () => {

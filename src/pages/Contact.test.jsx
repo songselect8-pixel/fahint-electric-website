@@ -15,6 +15,10 @@ function renderContact(entry) {
 }
 
 describe('Contact model query', () => {
+  it.each(['FTR20QC-DC65W', 'DM2010S', 'EUW8811C', 'DS15.3', 'BS1803-M'])('retains the exact non-GFCI inquiry model %s', (sku) => {
+    renderContact(`/contact?model=${encodeURIComponent(sku)}`);
+    expect(screen.getByLabelText('Model of interest')).toHaveValue(sku);
+  });
   it('prefills a validated public product from the query without unsafe response promises', () => {
     renderContact('/contact?model=gw15');
 

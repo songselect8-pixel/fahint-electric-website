@@ -9,6 +9,7 @@ export default function ProductGallery({ product, selectedImage, selectedFinish,
   const dialogRef = useRef(null);
   const triggerRef = useRef(null);
   const selectedImageSize = selectedFinish ? FINISH_IMAGE_SIZE : GALLERY_IMAGE_SIZE;
+  const [selectedWidth, selectedHeight] = product.assets.imageSizes?.[selectedImage] || [selectedImageSize, selectedImageSize];
 
   function openDialog() {
     dialogRef.current?.showModal();
@@ -39,8 +40,8 @@ export default function ProductGallery({ product, selectedImage, selectedFinish,
         <SafeImage
           src={selectedImage}
           alt={`${product.sku} selected product view`}
-          width={selectedImageSize}
-          height={selectedImageSize}
+          width={selectedWidth}
+          height={selectedHeight}
           loading="eager"
           fetchpriority="high"
         />
@@ -63,8 +64,8 @@ export default function ProductGallery({ product, selectedImage, selectedFinish,
             <SafeImage
               src={image}
               alt=""
-              width={GALLERY_IMAGE_SIZE}
-              height={GALLERY_IMAGE_SIZE}
+              width={product.assets.imageSizes?.[image]?.[0] || GALLERY_IMAGE_SIZE}
+              height={product.assets.imageSizes?.[image]?.[1] || GALLERY_IMAGE_SIZE}
               loading="lazy"
             />
           </button>
@@ -92,8 +93,8 @@ export default function ProductGallery({ product, selectedImage, selectedFinish,
           <SafeImage
             src={selectedImage}
             alt={`${product.sku} enlarged product view`}
-            width={selectedImageSize}
-            height={selectedImageSize}
+            width={selectedWidth}
+            height={selectedHeight}
           />
         </div>
       </dialog>

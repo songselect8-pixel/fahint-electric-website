@@ -58,6 +58,7 @@ function selectRows(rows, labels) {
 }
 
 export function productSpecificationGroups(product) {
+  if (Array.isArray(product.specificationGroups)) return product.specificationGroups;
   const rows = productSpecificationRows(product);
 
   if (!Array.isArray(product.technicalSpecifications) || product.technicalSpecifications.length === 0) {
@@ -75,6 +76,7 @@ export function productSpecificationGroups(product) {
 }
 
 export function productSpecificationSummaryRows(product) {
+  if (Array.isArray(product.specificationSummary)) return product.specificationSummary;
   const rows = new Map(productSpecificationRows(product));
   return [
     ['Rating', product.rating],

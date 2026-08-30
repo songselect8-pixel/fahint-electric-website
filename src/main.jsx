@@ -17,6 +17,7 @@ import About from './pages/About.jsx';
 import Contact from './pages/Contact.jsx';
 import './styles.css';
 import './styles/product-experience.css';
+import './styles/catalog.css';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/products/gfci" element={<GfciSeries />} />
           <Route path="/products/gfci/:sku" element={<ProductDetail />} />
           <Route path="/products/:line" element={<LineDetail />} />
+          <Route path="/products/:line/:sku" element={<ProductDetail />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/capabilities" element={<Capabilities />} />

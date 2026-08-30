@@ -70,6 +70,7 @@ const defaultClipboardWriter = (text) => {
 export default function InquiryForm({
   defaultModel = '',
   title = 'Send a message',
+  modelOptions = products,
   delivery = defaultDelivery,
   clipboardWriter = defaultClipboardWriter
 }) {
@@ -324,7 +325,10 @@ export default function InquiryForm({
           <label htmlFor={ids.model}>Model of interest</label>
           <select id={ids.model} name="model" value={form.model} onChange={update('model')}>
             <option value="">Select a model</option>
-            {products.map((product) => (
+            {form.model && form.model !== 'Mixed / multiple' && !modelOptions.some((product) => product.sku === form.model) && (
+              <option value={form.model}>{form.model}</option>
+            )}
+            {modelOptions.map((product) => (
               <option key={product.sku} value={product.sku}>
                 {product.sku} — {product.name}
               </option>

@@ -5,6 +5,8 @@ import ProductCard from '../components/ProductCard.jsx';
 import SafeImage from '../components/SafeImage.jsx';
 import { filterGfciProducts, isVerifiedListing, products } from '../data/products.js';
 import { gfciSeriesVisuals } from '../data/productPageVisuals.js';
+import { getCatalogProducts } from '../data/catalogProducts.js';
+import CatalogModelCard from '../components/products/CatalogModelCard.jsx';
 
 const GFCI_HERO_VIDEO = `${import.meta.env.BASE_URL}assets/videos/gfci-product-video-optimized.mp4`;
 const GFCI_HERO_POSTER = `${import.meta.env.BASE_URL}assets/videos/gfci-product-video-poster.webp`;
@@ -31,6 +33,7 @@ const APPLICATIONS = [
 
 const verifiedListings = products.filter(isVerifiedListing);
 const reviewListings = products.filter((product) => !isVerifiedListing(product));
+const industrialModels = getCatalogProducts('gfci');
 const verifiedListingFile = verifiedListings[0]?.listing.file;
 const ENGINEERING_PROOF = [
   {
@@ -223,6 +226,16 @@ export default function GfciSeries() {
               </tbody>
             </table>
           </div>
+        </div>
+      </section>
+
+      <section className="catalog-series__models" id="industrial-models" aria-labelledby="gfci-industrial-heading">
+        <div className="container">
+          <header className="catalog-section-heading">
+            <div><p className="product-section-label">Industrial model references</p><h2 id="gfci-industrial-heading">A different industrial configuration.</h2></div>
+            <p>Nylon construction and no feed-through terminals. Review the GTN model-specific documents; the residential-series certificate is not a substitute.</p>
+          </header>
+          <div className="catalog-model-grid">{industrialModels.map((product) => <CatalogModelCard key={product.sku} product={product} />)}</div>
         </div>
       </section>
 

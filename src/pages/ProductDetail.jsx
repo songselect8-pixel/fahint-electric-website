@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
 import { findProduct, products } from '../data/products.js';
+import { findCatalogProduct } from '../data/catalogProducts.js';
+import { findLine } from '../data/lines.js';
+import CatalogProductDetail from './CatalogProductDetail.jsx';
 import ProductCard from '../components/ProductCard.jsx';
 import InquiryForm from '../components/InquiryForm.jsx';
 import ProductDetailHero from '../components/products/ProductDetailHero.jsx';
@@ -53,9 +56,10 @@ function ProductInquiry({ product }) {
 }
 
 export default function ProductDetail() {
-  const { sku } = useParams();
+  const { sku, line = 'gfci' } = useParams();
   const { pathname, search } = useLocation();
-  const product = findProduct(sku);
+  const product = line === 'gfci' ? findProduct(sku) : null;
+  const catalogProduct = findCatalogProduct(line, sku);
 
   useEffect(() => {
     if (!product) return undefined;
@@ -85,7 +89,8 @@ export default function ProductDetail() {
     };
   }, [product]);
 
-  if (!product) return <Navigate to="/products/gfci" replace />;
+  if (!product && catalogProduct) return <CatalogProductDetail key={`${line}-${catalogProduct.slug}`} product={catalogProduct} />;
+  if (!product) return <Navigate to={findLine(line) ? `/products/${line}` : '/products'} replace />;
 
   const related = products.filter((candidate) => candidate.sku !== product.sku).slice(0, 4);
 
