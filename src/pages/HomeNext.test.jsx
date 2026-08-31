@@ -3,6 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
 import { productLines } from '../data/lines.js';
+import { publicAssetFile } from '../test/publicAssetFile.js';
 
 async function renderNext() {
   expect(existsSync('src/pages/HomeNext.jsx'), 'New homepage must be its own implementation').toBe(true);
@@ -55,7 +56,7 @@ describe('new homepage preview', () => {
     await renderNext();
     const pdfs = screen.getAllByRole('link').filter((link) => link.getAttribute('href')?.endsWith('.pdf'));
     expect(pdfs.length).toBeGreaterThanOrEqual(3);
-    for (const link of pdfs) expect(existsSync(`public${link.getAttribute('href')}`)).toBe(true);
+    for (const link of pdfs) expect(existsSync(publicAssetFile(link.getAttribute('href')))).toBe(true);
     expect(screen.getByText(/Certification applies to the models named in each document/)).toBeInTheDocument();
     expect(screen.queryByText(/6.hour|10.day|ALDI|zero complaints/i)).not.toBeInTheDocument();
   });

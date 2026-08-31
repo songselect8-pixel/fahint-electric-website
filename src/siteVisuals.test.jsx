@@ -8,6 +8,7 @@ import Capabilities from './pages/Capabilities.jsx';
 import { ProductManufacturingProof } from './components/products/ProductTechnicalSections.jsx';
 import ProductDetailHero from './components/products/ProductDetailHero.jsx';
 import { getCatalogProducts } from './data/catalogProducts.js';
+import { publicAssetFile } from './test/publicAssetFile.js';
 
 const show = (Component) => render(<MemoryRouter future={{ v7_startTransition:true,v7_relativeSplatPath:true }}><Component /></MemoryRouter>);
 
@@ -31,7 +32,7 @@ describe('Shared visual finish and original company imagery', () => {
     for(const image of images) {
       expect(image.getAttribute('src')).not.toContain('/facility-');
       expect(Number(image.getAttribute('width'))).toBeGreaterThan(700);
-      expect(existsSync('public/'+image.getAttribute('src').replace(/^\//,''))).toBe(true);
+      expect(existsSync(publicAssetFile(image.getAttribute('src')))).toBe(true);
     }
     expect(screen.getByText('Tooling')).toBeInTheDocument();
   });

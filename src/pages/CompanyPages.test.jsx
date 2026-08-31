@@ -37,7 +37,7 @@ describe('Manufacturing and company information', () => {
     const library = document.getElementById('certifications');
     expect(library).toBeInTheDocument();
     for (const certificate of certificates) {
-      expect(within(library).getByRole('link', { name: `Open ${certificate.name} PDF` })).toHaveAttribute('href', `/${certificate.document}`);
+      expect(within(library).getByRole('link', { name: `Open ${certificate.name} PDF` })).toHaveAttribute('href', publicAsset(certificate.document));
       expect(within(library).getByRole('link', { name: `Download ${certificate.name} PDF` })).toHaveAttribute('download');
       expect(within(library).getByText(certificate.scope)).toBeInTheDocument();
     }

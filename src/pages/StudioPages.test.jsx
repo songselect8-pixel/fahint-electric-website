@@ -13,6 +13,7 @@ import { company, faqs } from '../data/company.js';
 import { publicAsset } from '../utils/publicAsset.js';
 import { studioRanges } from '../data/studioCatalog.js';
 import userEvent from '@testing-library/user-event';
+import { publicAssetFile } from '../test/publicAssetFile.js';
 
 function show(Component, path = '/home-studio') {
   return render(<MemoryRouter initialEntries={[path]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><Component /></MemoryRouter>);
@@ -136,8 +137,8 @@ describe('studio homepage and catalog', () => {
 
   it('has real local images/documents and explicit certification scope', () => {
     const { container } = show(HomeStudio);
-    for (const img of container.querySelectorAll('img')) expect(existsSync(`public/${img.getAttribute('src').replace(/^\//, '')}`)).toBe(true);
-    for (const link of container.querySelectorAll('a[href$=".pdf"]')) expect(existsSync(`public/${link.getAttribute('href').replace(/^\//, '')}`)).toBe(true);
+    for (const img of container.querySelectorAll('img')) expect(existsSync(publicAssetFile(img.getAttribute('src')))).toBe(true);
+    for (const link of container.querySelectorAll('a[href$=".pdf"]')) expect(existsSync(publicAssetFile(link.getAttribute('href')))).toBe(true);
     expect(screen.getByText(/Certification coverage is model-specific/)).toBeInTheDocument();
   });
 
