@@ -80,6 +80,15 @@ describe('Header', () => {
     expect(styles).toMatch(/\.logo__image\s*\{[\s\S]*?width:\s*170px/);
   });
 
+  it('preserves grid centering for both mobile navigation icons in the shared stylesheet', () => {
+    const base = readFileSync('src/styles.css', 'utf8');
+    const shared = readFileSync('src/styles/site-system.css', 'utf8');
+    const mobile = shared.slice(shared.indexOf('@media (max-width: 960px)'));
+
+    expect(base).toMatch(/\.burger\s*\{[^}]*place-items:\s*center/);
+    expect(mobile).toMatch(/\.header\s+\.burger\s*\{[^}]*display:\s*grid/);
+  });
+
   it('keeps an expanded mobile product menu scrollable inside the viewport', () => {
     const styles = readFileSync('src/styles.css', 'utf8');
 

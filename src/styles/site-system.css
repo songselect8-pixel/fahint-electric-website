@@ -244,7 +244,7 @@
   .header .header__inner { display: flex; justify-content: space-between; }
   .header .header__cta { margin-left: auto; }
   .header .nav { display: none; }
-  .header .burger { display: flex; }
+  .header .burger { display: grid; }
 }
 @media (max-width: 760px) {
   :root { --site-space: 64px; }
