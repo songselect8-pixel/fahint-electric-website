@@ -204,7 +204,6 @@ export function ProductOemStory({ product }) {
           <section className="product-packaging" aria-labelledby={packagingTitleId}>
             <header className="product-packaging__header">
               <div>
-                <p className="product-packaging__eyebrow">Packaging &amp; presentation</p>
                 <h3 id={packagingTitleId}>Packaging &amp; program options.</h3>
               </div>
               <p className="product-packaging__intro">
@@ -215,7 +214,6 @@ export function ProductOemStory({ product }) {
               <section className="product-wallplate-options" aria-labelledby={wallPlateTitleId}>
                 <header className="product-packaging__subhead">
                   <div>
-                    <span aria-hidden="true">01</span>
                     <h4 id={wallPlateTitleId}>Wall plate options</h4>
                   </div>
                   <p>Coordinate the plate style with the selected finish.</p>
@@ -252,7 +250,6 @@ export function ProductOemStory({ product }) {
               <section className="product-packaging__program-panel" aria-labelledby={programTitleId}>
                 <header className="product-packaging__subhead">
                   <div>
-                    <span aria-hidden="true">02</span>
                     <h4 id={programTitleId}>Packaging programs</h4>
                   </div>
                   <p>{PACKAGING_PROGRAMS.length} approved configurations</p>

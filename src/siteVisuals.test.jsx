@@ -53,4 +53,22 @@ describe('Shared visual finish and original company imagery', () => {
     expect(heading).toHaveTextContent(product.name);
     expect([...heading.querySelectorAll('.product-name-token')].map(node=>node.textContent)).toEqual(['USB-A','USB-C']);
   });
+  it('owns the foreground of dark product sections instead of inheriting page ink', () => {
+    const styles = readFileSync('src/styles/site-system.css', 'utf8');
+    expect(styles).toMatch(/:is\(\.product-story--application,\.product-certification\)\s*\{[^}]*color:\s*#fff/);
+    expect(styles).toMatch(/:is\(\.product-story--application,\.product-certification\) h2\s*\{[^}]*color:\s*#fff/);
+    expect(styles).not.toMatch(/\.product-story--application h2\s*\{[^}]*color:\s*inherit/);
+  });
+  it('keeps packaging comparison text readable and certificate previews bounded', () => {
+    const styles = readFileSync('src/styles/product-experience.css', 'utf8');
+    expect(styles).toMatch(/\.product-packaging__program-panel thead th\s*\{[^}]*font-size:\s*14px/);
+    expect(styles).toMatch(/\.product-packaging__program-panel tbody td\s*\{[^}]*font-size:\s*16px/);
+    expect(styles).toMatch(/\.product-certification__document-viewer\s*\{[^}]*max-width:\s*480px/);
+    expect(styles).toMatch(/\.product-certification__verification h2\s*\{[^}]*max-width:\s*24ch/);
+  });
+  it('lets long catalogue configuration actions wrap instead of widening a phone viewport', () => {
+    const styles = readFileSync('src/styles/site-system.css', 'utf8');
+    expect(styles).toMatch(/\.catalog-presentation__body > \*\s*\{[^}]*min-width:\s*0/);
+    expect(styles).toMatch(/\.catalog-presentation__copy \.btn\s*\{[^}]*max-width:\s*100%[^}]*white-space:\s*normal/);
+  });
 });

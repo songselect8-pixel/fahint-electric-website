@@ -1,5 +1,4 @@
 import { render, screen, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
@@ -75,73 +74,23 @@ describe('GfciSeries', () => {
     expect(screen.queryByText('FLB20')).not.toBeInTheDocument();
   });
 
-  it('combines 20A and WR filters without returning the 15A WR model', async () => {
-    const user = userEvent.setup();
+  it('shows the short range directly without search, dropdown filters or a mobile filter drawer', () => {
     const { container } = renderSeries();
 
-    await user.selectOptions(screen.getByLabelText('Amperage'), '20A');
-    await user.selectOptions(screen.getByLabelText('Variant'), 'wr');
-
-    const grid = container.querySelector('.gfci-series__product-grid');
-    expect(within(grid).getByRole('link', { name: /^GW20 / })).toBeInTheDocument();
-    expect(within(grid).queryByRole('link', { name: /^GW15 / })).not.toBeInTheDocument();
-    expect(within(grid).getAllByRole('link')).toHaveLength(1);
-    expect(screen.getByText('1 published model')).toHaveAttribute('aria-live', 'polite');
-  });
-
-  it('offers recovery actions when no model matches and clears every filter', async () => {
-    const user = userEvent.setup();
-    renderSeries();
-
-    await user.selectOptions(screen.getByLabelText('Amperage'), '20A');
-    await user.type(screen.getByRole('searchbox', { name: 'Search GFCI models' }), 'not-a-model');
-
-    const emptyState = screen.getByRole('status', { name: 'No published models match these filters.' });
-    expect(within(emptyState).getByRole('heading', { name: 'No published models match these filters.' })).toBeInTheDocument();
-    expect(within(emptyState).getByText(/clear the current filters/i)).toBeInTheDocument();
-    expect(within(emptyState).getByRole('link', { name: 'Contact sales' })).toHaveAttribute('href', '/contact');
-
-    await user.click(within(emptyState).getByRole('button', { name: 'Clear filters' }));
-
-    expect(screen.getByRole('searchbox', { name: 'Search GFCI models' })).toHaveValue('');
-    expect(screen.getByLabelText('Amperage')).toHaveValue('');
-    expect(screen.getByText('7 published models')).toHaveAttribute('aria-live', 'polite');
-  });
-
-  it('toggles the mobile filter drawer while preserving the desktop filter bar structure', async () => {
-    const user = userEvent.setup();
-    const { container } = renderSeries();
-    const toggle = screen.getByRole('button', { name: 'Filter GFCI models' });
-    const filters = container.querySelector('#gfci-filters');
-
-    expect(toggle).toHaveAttribute('aria-expanded', 'false');
-    expect(toggle).toHaveAttribute('aria-controls', 'gfci-filters');
-    expect(filters).toHaveClass('gfci-series__filters');
-    expect(filters).not.toHaveClass('is-open');
-
-    await user.click(toggle);
-
-    expect(toggle).toHaveAttribute('aria-expanded', 'true');
-    expect(filters).toHaveClass('is-open');
-  });
-
-  it('uses the approved controls and omits an outdoor application option', () => {
-    renderSeries();
-
-    expect(screen.getByText('Search models')).toBeInTheDocument();
-    expect(screen.getByRole('searchbox', { name: 'Search GFCI models' })).toBeInTheDocument();
-    expect(screen.getByLabelText('Amperage')).toHaveDisplayValue('All');
-    expect(screen.getByLabelText('Variant')).toHaveDisplayValue('All');
-    expect(screen.getByLabelText('Application')).toHaveDisplayValue('All');
-    expect(screen.queryByRole('option', { name: /outdoor|damp/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('search')).not.toBeInTheDocument();
+    expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Filter GFCI models/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Explore GFCI models' })).toBeInTheDocument();
+    expect(screen.getByText('7 published models')).toBeInTheDocument();
+    expect(container.querySelector('.gfci-series__filters')).toBeNull();
+    expect(container.querySelector('.gfci-series__empty')).toBeNull();
   });
 
   it('keeps the approved series evidence and program language intact', () => {
     const { container } = renderSeries();
 
     expect(container.querySelector('.gfci-series-hero')).toBeInTheDocument();
-    expect(container.querySelector('.gfci-filter-toggle')).toBeInTheDocument();
-    expect(container.querySelector('.gfci-filter-bar')).toBeInTheDocument();
     expect(container.querySelector('.gfci-product-grid')).toBeInTheDocument();
     expect(container.querySelector('.gfci-comparison')).toBeInTheDocument();
     expect(container.querySelector('.gfci-proof-grid')).toBeInTheDocument();
@@ -154,13 +103,10 @@ describe('GfciSeries', () => {
     })).toBeInTheDocument();
     const styles = readFileSync('src/styles/product-experience.css', 'utf8');
     expect(styles).not.toMatch(/\.gfci-series-hero h1\s*\{[^}]*max-width:\s*15ch/);
-    const filterRule = styles.match(/\.gfci-filter-bar\s*\{([^}]*)\}/)?.[1] || '';
-    expect(filterRule).toMatch(/top:\s*calc\(var\(--header-h\)\s*\+\s*26px\)/);
     expect(screen.getByText(
       'Compare seven published models, then confirm the finish and program requirements for your market.'
     )).toBeInTheDocument();
     expect(screen.queryByText(/seven verified models/i)).not.toBeInTheDocument();
-    expect(screen.getByRole('search', { name: 'GFCI model filters' })).toBeInTheDocument();
 
     const comparison = screen.getByRole('region', { name: 'GFCI model comparison' });
     ['Model', 'Rating', 'NEMA', 'Variant', 'Application'].forEach((heading) => {
@@ -295,10 +241,9 @@ describe('GfciSeries', () => {
     expect(lineDetail).toContain('getCatalogProducts(line.slug)');
   });
 
-  it('defines visible keyboard focus for the search field and comparison region', () => {
+  it('defines visible keyboard focus for the comparison region', () => {
     const styles = readFileSync('src/styles.css', 'utf8');
 
-    expect(styles).toMatch(/\.gfci-series__search-field:focus-within\s*\{[\s\S]*?outline:/);
     expect(styles).toMatch(/\.gfci-series__table-wrap:focus-visible\s*\{[\s\S]*?outline:/);
   });
 

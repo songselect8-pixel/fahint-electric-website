@@ -1,35 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Filter, Search } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import ProductCard from '../components/ProductCard.jsx';
 import SafeImage from '../components/SafeImage.jsx';
-import { filterGfciProducts, isVerifiedListing, products } from '../data/products.js';
+import { isVerifiedListing, products } from '../data/products.js';
 import { gfciSeriesVisuals } from '../data/productPageVisuals.js';
 import { getCatalogProducts } from '../data/catalogProducts.js';
 import CatalogModelCard from '../components/products/CatalogModelCard.jsx';
 
 const GFCI_HERO_VIDEO = `${import.meta.env.BASE_URL}assets/videos/gfci-product-video-optimized.mp4`;
 const GFCI_HERO_POSTER = `${import.meta.env.BASE_URL}assets/videos/gfci-product-video-poster.webp`;
-
-const AMPERAGES = [
-  { value: '', label: 'All' },
-  { value: '15A', label: '15A' },
-  { value: '20A', label: '20A' }
-];
-
-const VARIANTS = [
-  { value: '', label: 'All' },
-  { value: 'standard', label: 'Standard' },
-  { value: 'tr', label: 'TR' },
-  { value: 'wr', label: 'WR' },
-  { value: 'blank', label: 'Blank face' }
-];
-
-const APPLICATIONS = [
-  { value: '', label: 'All' },
-  { value: 'residential', label: 'Residential' },
-  { value: 'commercial', label: 'Commercial' }
-];
 
 const verifiedListings = products.filter(isVerifiedListing);
 const reviewListings = products.filter((product) => !isVerifiedListing(product));
@@ -57,46 +37,12 @@ const OEM_OPTIONS = [
   'Documentation support'
 ];
 
-function SelectControl({ label, value, options, onChange }) {
-  const id = `gfci-${label.toLowerCase()}`;
-
-  return (
-    <label className="gfci-series__control" htmlFor={id}>
-      <span>{label}</span>
-      <select id={id} value={value} onChange={(event) => onChange(event.target.value)}>
-        {options.map((option) => (
-          <option key={option.value || 'all'} value={option.value}>{option.label}</option>
-        ))}
-      </select>
-    </label>
-  );
-}
-
 export default function GfciSeries() {
   useEffect(() => {
     const previous = document.title;
     document.title = 'GFCI Outlets · Models & Specifications | FAHINT';
     return () => { document.title = previous; };
   }, []);
-  const [query, setQuery] = useState('');
-  const [amperage, setAmperage] = useState('');
-  const [variant, setVariant] = useState('');
-  const [application, setApplication] = useState('');
-  const [filtersOpen, setFiltersOpen] = useState(false);
-  const filteredProducts = filterGfciProducts(products, {
-    query,
-    amperage,
-    variant,
-    application
-  });
-
-  function clearFilters() {
-    setQuery('');
-    setAmperage('');
-    setVariant('');
-    setApplication('');
-  }
-
   return (
     <div className="gfci-series">
       <section className="gfci-series__hero gfci-series-hero">
@@ -127,72 +73,12 @@ export default function GfciSeries() {
       <section className="gfci-series__catalog section" aria-labelledby="gfci-models-heading">
         <div className="container">
           <div className="gfci-series__catalog-head">
-            <div>
-              <h2 id="gfci-models-heading">Find a published GFCI model</h2>
-            </div>
-            <button
-              type="button"
-              className="gfci-series__filter-toggle gfci-filter-toggle"
-              aria-label="Filter GFCI models"
-              aria-expanded={filtersOpen}
-              aria-controls="gfci-filters"
-              onClick={() => setFiltersOpen((open) => !open)}
-            >
-              <Filter size={17} aria-hidden="true" /> Filters
-            </button>
+            <h2 id="gfci-models-heading">Explore GFCI models</h2>
+            <p>{products.length} published models</p>
           </div>
-
-          <div
-            id="gfci-filters"
-            className={`gfci-series__filters gfci-filter-bar${filtersOpen ? ' is-open gfci-filter-bar--open' : ''}`}
-            role="search"
-            aria-label="GFCI model filters"
-          >
-            <label className="gfci-series__control gfci-series__search" htmlFor="gfci-search">
-              <span>Search models</span>
-              <span className="gfci-series__search-field">
-                <Search size={17} aria-hidden="true" />
-                <input
-                  id="gfci-search"
-                  type="search"
-                  aria-label="Search GFCI models"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Model or feature"
-                />
-              </span>
-            </label>
-            <SelectControl label="Amperage" value={amperage} options={AMPERAGES} onChange={setAmperage} />
-            <SelectControl label="Variant" value={variant} options={VARIANTS} onChange={setVariant} />
-            <SelectControl label="Application" value={application} options={APPLICATIONS} onChange={setApplication} />
+          <div className="prod-grid gfci-series__product-grid gfci-product-grid">
+            {products.map((product) => <ProductCard key={product.sku} product={product} />)}
           </div>
-
-          <div className="gfci-series__results-head">
-            <span aria-live="polite">
-              {filteredProducts.length} published {filteredProducts.length === 1 ? 'model' : 'models'}
-            </span>
-          </div>
-
-          {filteredProducts.length > 0 ? (
-            <div className="prod-grid gfci-series__product-grid gfci-product-grid">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.sku} product={product} />
-              ))}
-            </div>
-          ) : (
-            <div
-              className="gfci-series__empty"
-              role="status"
-              aria-label="No published models match these filters."
-            >
-              <h2>No published models match these filters.</h2>
-              <p>Try a different model number or clear the current filters to restore the published range.</p>
-              <div className="gfci-series__empty-actions">
-                <button type="button" className="btn btn--primary" onClick={clearFilters}>Clear filters</button>
-                <Link to="/contact" className="btn btn--outline">Contact sales</Link>
-              </div>
-            </div>
-          )}
         </div>
       </section>
 
