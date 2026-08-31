@@ -328,7 +328,7 @@ export const productReviewQueue = [
   {
     sku: 'FLB20',
     publish: false,
-    reason: 'Archived website model has no verified matching local image folder or complete specification set.'
+    reason: 'Genuine archive photos located; voltage, working range and NEMA entries conflict. Local reference only until approved model specifications are supplied.'
   }
 ];
 

@@ -3,6 +3,7 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { posts } from '../src/data/posts.js';
 import { products } from '../src/data/products.js';
+import { catalogProducts, productHref } from '../src/data/catalogProducts.js';
 
 const STATIC_ROUTES = [
   'products',
@@ -22,6 +23,7 @@ const STATIC_ROUTES = [
 export const PUBLIC_ROUTES = [
   ...STATIC_ROUTES,
   ...products.map((product) => `products/gfci/${product.sku.toLowerCase()}`),
+  ...catalogProducts.filter((product) => !product.draft).map((product) => productHref(product).slice(1)),
   ...posts.map((post) => `blog/${post.slug}`)
 ];
 

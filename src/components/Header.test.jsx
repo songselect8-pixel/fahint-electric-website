@@ -29,7 +29,15 @@ describe('Header', () => {
     renderHeader();
 
     expect(screen.getByRole('navigation')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Send Inquiry/i })).toHaveAttribute('href', '/contact');
+    expect(screen.getByRole('link', { name: /Send Inquiry/i })).toHaveAttribute('href', '/#studio-inquiry');
+  });
+
+  it('keeps Home navigation within the independent homepage preview', () => {
+    renderHeader('/home-next');
+
+    expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/home-next');
+    expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByRole('link', { name: 'Fahint Electric' })).toHaveAttribute('href', '/home-next');
   });
 
   it('lets keyboard users skip the repeated navigation', () => {

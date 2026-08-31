@@ -1,35 +1,51 @@
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { company } from '../data/company.js';
 import { productLines } from '../data/lines.js';
 import { findProduct, isVerifiedListing } from '../data/products.js';
+import { publicAsset } from '../utils/publicAsset.js';
 
 export default function Footer() {
   const { pathname } = useLocation();
-  const productDetailMatch = pathname.match(/^\/products\/gfci\/([^/]+)\/?$/i);
-  const detailProduct = productDetailMatch ? findProduct(productDetailMatch[1]) : null;
-  const requiresModelReview = detailProduct && !isVerifiedListing(detailProduct);
+  const productDetailMatch = pathname.match(/^\/products\/([^/]+)\/([^/]+)\/?$/i);
+  const detailProduct = productDetailMatch?.[1].toLowerCase() === 'gfci' ? findProduct(productDetailMatch[2]) : null;
+  const cataloguePath = productDetailMatch && !detailProduct ? pathname : null;
+  const [catalogueReference, setCatalogueReference] = useState(null);
+  const reviewLabel = 'Model-specific certification review required';
+
+  // Keep the full catalogue off the homepage's initial download. A changed route
+  // must never display the previous model's certification while its data loads.
+  useEffect(() => {
+    if (!cataloguePath) return undefined;
+    let cancelled = false;
+    const [, line, sku] = cataloguePath.match(/^\/products\/([^/]+)\/([^/]+)\/?$/i);
+    import('../data/catalogProducts.js').then(({ findCatalogProduct }) => {
+      if (!cancelled) setCatalogueReference({ pathname: cataloguePath, label: findCatalogProduct(line.toLowerCase(), sku)?.certificationLabel });
+    }).catch(() => {
+      if (!cancelled) setCatalogueReference({ pathname: cataloguePath, label: null });
+    });
+    return () => { cancelled = true; };
+  }, [cataloguePath]);
+
+  const certificationReference = detailProduct
+    ? isVerifiedListing(detailProduct) ? `UL File ${detailProduct.listing.file}` : reviewLabel
+    : productDetailMatch
+      ? (catalogueReference?.pathname === pathname && catalogueReference.label) || reviewLabel
+      : `UL File ${company.ulFile}`;
 
   return (
-    <footer className={`footer${detailProduct ? ' footer--product-detail' : ''}`}>
+    <footer className={`footer${productDetailMatch ? ' footer--product-detail' : ''}`}>
       <div className="container">
         <div className="footer__grid">
           <div className="footer__about">
-            <div className="logo" style={{ marginBottom: 18 }}>
-              <span className="logo__mark">F</span>
-              <span className="logo__text">
-                <span className="logo__name">{company.brand}</span>
-                <span className="logo__sub">Electric</span>
-              </span>
-            </div>
+            <img className="footer__wordmark" src={publicAsset('assets/images/brand/fahint-logo-navy.png')} alt="FAHINT" width="204" height="34" loading="lazy" />
             <p>
               {company.name} develops coordinated North American wiring-device platforms for brands, distributors and
               private-label programs.
             </p>
-            <p style={{ marginTop: 14, fontSize: 13.5, color: 'rgba(255,255,255,0.5)' }}>
-              {requiresModelReview
-                ? 'Model-specific certification review required | ISO 9001 Certified | US & CN Patented'
-                : <>UL File {detailProduct?.listing.file || company.ulFile} | ISO 9001 Certified | US &amp; CN Patented</>}
+            <p className="footer__reference">
+              {certificationReference} | ISO 9001 Certified | US &amp; CN Patented
             </p>
           </div>
 

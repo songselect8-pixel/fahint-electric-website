@@ -58,6 +58,7 @@ function selectRows(rows, labels) {
 }
 
 export function productSpecificationGroups(product) {
+  if (Array.isArray(product.specificationGroups)) return product.specificationGroups;
   const rows = productSpecificationRows(product);
 
   if (!Array.isArray(product.technicalSpecifications) || product.technicalSpecifications.length === 0) {
@@ -75,6 +76,7 @@ export function productSpecificationGroups(product) {
 }
 
 export function productSpecificationSummaryRows(product) {
+  if (Array.isArray(product.specificationSummary)) return product.specificationSummary;
   const rows = new Map(productSpecificationRows(product));
   return [
     ['Rating', product.rating],
@@ -406,9 +408,9 @@ export function ProductCertification({ product }) {
 }
 
 const MANUFACTURING_EVIDENCE = [
-  ['assets/images/company/facility-workshop.webp', 'Production', 'Production facility', 383, 175],
-  ['assets/images/company/facility-lab.webp', 'Testing', 'Testing facility', 390, 172],
-  ['assets/images/company/facility-sampleroom.webp', 'Sample review', 'Sample review facility', 390, 175]
+  ['assets/images/company/catalog-production.jpg', 'Production', 'GFCI production line photographed for the FAHINT catalog', 1417, 547],
+  ['assets/images/company/fahint-laboratory-catalog.webp', 'Testing', 'Laboratory equipment photographed for the FAHINT catalog', 1417, 422],
+  ['assets/images/company/catalog-tooling.jpg', 'Tooling', 'Metal tooling photographed for the FAHINT catalog', 786, 248]
 ];
 
 export function ProductManufacturingProof() {

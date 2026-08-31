@@ -15,6 +15,10 @@ function renderSeries() {
 }
 
 describe('GfciSeries', () => {
+  it('sets a category-specific page title', () => {
+    renderSeries();
+    expect(document.title).toBe('GFCI Outlets · Models & Specifications | FAHINT');
+  });
   it('shows complete poster artwork above the copy on phones', () => {
     const styles = readFileSync('src/styles/product-experience.css', 'utf8');
     const phone = styles.slice(styles.lastIndexOf('@media (max-width: 520px)'));
@@ -37,7 +41,7 @@ describe('GfciSeries', () => {
       'assets/images/editorial-products/gfci-application-installed-poster-v2-optimized.webp'
     );
     expect(gfciSeriesVisuals.oemPoster).toBe(
-      'assets/images/editorial-products/gfci-oem-program-poster-v3-optimized.webp'
+      'assets/images/products/gf15-package-standard-white-v1.jpg'
     );
     [
       gfciSeriesHeroVisual.scene,
@@ -143,7 +147,7 @@ describe('GfciSeries', () => {
     expect(container.querySelector('.gfci-proof-grid')).toBeInTheDocument();
     expect(container.querySelector('.gfci-series__oem-rail')).toBeInTheDocument();
 
-    expect(screen.getByText('GFCI product family')).toBeInTheDocument();
+    expect(screen.queryByText('GFCI product family')).not.toBeInTheDocument();
     expect(screen.getByRole('heading', {
       level: 1,
       name: 'GFCI Product Range'
@@ -189,7 +193,10 @@ describe('GfciSeries', () => {
     const { container } = renderSeries();
     const productLinks = [...container.querySelectorAll('a[href^="/products/gfci/"]')];
 
-    expect(productLinks).toHaveLength(14);
+    expect(productLinks).toHaveLength(18);
+    ['gtn15', 'gtn20'].forEach((sku) => {
+      expect(screen.getByRole('link', { name: `View ${sku.toUpperCase()} details` })).toHaveAttribute('href', `/products/gfci/${sku}`);
+    });
     productLinks.forEach((link) => {
       expect(link.getAttribute('href')).toMatch(/^\/products\/gfci\/[a-z0-9]+$/);
     });
@@ -231,8 +238,9 @@ describe('GfciSeries', () => {
       'src',
       publicAsset(gfciSeriesVisuals.oemPoster)
     );
-    expect(screen.getByTestId('gfci-oem-poster')).toHaveAttribute('width', '1536');
-    expect(screen.getByTestId('gfci-oem-poster')).toHaveAttribute('height', '1024');
+    expect(screen.getByTestId('gfci-oem-poster')).toHaveAttribute('width', '1000');
+    expect(screen.getByTestId('gfci-oem-poster')).toHaveAttribute('height', '1000');
+    expect(screen.getByTestId('gfci-oem-poster')).toHaveAccessibleName('FAHINT GF15 retail box and white wall plate');
     expect(container.querySelector('.gfci-series__poster--application')).toBeInTheDocument();
     expect(container.querySelector('.gfci-series__poster-copy--left')).toBeInTheDocument();
     expect(container.querySelector('.gfci-series__poster--oem')).toBeInTheDocument();
@@ -283,7 +291,8 @@ describe('GfciSeries', () => {
     expect(seriesRoute).toBeLessThan(productRoute);
     expect(productRoute).toBeLessThan(familyRoute);
     expect(lineDetail).not.toContain('GfciBody');
-    expect(lineDetail).toContain('<GenericBody line={line} />');
+    expect(lineDetail).toContain('<ModelCatalogue key={line.slug} line={line} />');
+    expect(lineDetail).toContain('getCatalogProducts(line.slug)');
   });
 
   it('defines visible keyboard focus for the search field and comparison region', () => {

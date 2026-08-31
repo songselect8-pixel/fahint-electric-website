@@ -111,7 +111,7 @@ describe('InquiryForm', () => {
   it('clears validation feedback when defaultModel changes', async () => {
     const user = userEvent.setup();
     const { rerender } = render(<InquiryForm defaultModel="GF15" delivery={vi.fn()} />);
-    await user.click(screen.getByRole('button', { name: 'Send inquiry' }));
+    await user.click(screen.getByRole('button', { name: 'Open email app' }));
     expect(screen.getByText('Please correct the highlighted fields.')).toHaveAttribute('role', 'alert');
 
     rerender(<InquiryForm defaultModel="GT20" delivery={vi.fn()} />);
@@ -130,7 +130,7 @@ describe('InquiryForm', () => {
     fireEvent.change(screen.getByLabelText('Your name *'), { target: { value: validForm.name } });
     fireEvent.change(screen.getByLabelText('Business email *'), { target: { value: validForm.email } });
     fireEvent.change(screen.getByLabelText('Requirements *'), { target: { value: validForm.message } });
-    fireEvent.submit(screen.getByRole('button', { name: 'Send inquiry' }).closest('form'));
+    fireEvent.submit(screen.getByRole('button', { name: 'Open email app' }).closest('form'));
     expect(await screen.findByText('Your email app should now be open with the inquiry pre-filled.')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Copy inquiry details' }));
     expect(await screen.findByText('Inquiry details copied.')).toBeInTheDocument();
@@ -145,10 +145,10 @@ describe('InquiryForm', () => {
     const user = userEvent.setup();
     render(<InquiryForm delivery={vi.fn()} />);
 
-    const form = screen.getByRole('button', { name: 'Send inquiry' }).closest('form');
+    const form = screen.getByRole('button', { name: 'Open email app' }).closest('form');
     expect(form).toHaveAttribute('novalidate');
 
-    await user.click(screen.getByRole('button', { name: 'Send inquiry' }));
+    await user.click(screen.getByRole('button', { name: 'Open email app' }));
 
     expect(screen.getByRole('alert')).toHaveTextContent('Please correct the highlighted fields.');
     const name = screen.getByLabelText('Your name *');
@@ -182,7 +182,7 @@ describe('InquiryForm', () => {
     render(<InquiryForm delivery={delivery} />);
     await completeRequiredFields(user);
 
-    const button = screen.getByRole('button', { name: 'Send inquiry' });
+    const button = screen.getByRole('button', { name: 'Open email app' });
     const form = button.closest('form');
     await user.click(button);
 
@@ -209,7 +209,7 @@ describe('InquiryForm', () => {
       fireEvent.change(screen.getByLabelText('Business email *'), { target: { value: validForm.email } });
       fireEvent.change(screen.getByLabelText('Requirements *'), { target: { value: validForm.message } });
 
-      const button = screen.getByRole('button', { name: /Send inquiry|Opening email app/ });
+      const button = screen.getByRole('button', { name: /Open email app|Opening email app/ });
       const form = button.closest('form');
       fireEvent.submit(form);
       await act(async () => {});
@@ -234,7 +234,7 @@ describe('InquiryForm', () => {
     render(<InquiryForm delivery={delivery} clipboardWriter={clipboardWriter} />);
     await completeRequiredFields(user);
 
-    await user.click(screen.getByRole('button', { name: 'Send inquiry' }));
+    await user.click(screen.getByRole('button', { name: 'Open email app' }));
 
     expect(await screen.findByRole('status')).toHaveTextContent(
       'Your email app should now be open with the inquiry pre-filled.'
@@ -260,7 +260,7 @@ describe('InquiryForm', () => {
     fireEvent.change(screen.getByLabelText('Business email *'), { target: { value: validForm.email } });
     fireEvent.change(screen.getByLabelText('Requirements *'), { target: { value: 'x'.repeat(2_000) } });
 
-    fireEvent.submit(screen.getByRole('button', { name: 'Send inquiry' }).closest('form'));
+    fireEvent.submit(screen.getByRole('button', { name: 'Open email app' }).closest('form'));
 
     expect(delivery).not.toHaveBeenCalled();
     expect(await screen.findByRole('alert')).toHaveTextContent(
@@ -276,7 +276,7 @@ describe('InquiryForm', () => {
     render(<InquiryForm delivery={delivery} />);
     await completeRequiredFields(user);
 
-    await user.click(screen.getByRole('button', { name: 'Send inquiry' }));
+    await user.click(screen.getByRole('button', { name: 'Open email app' }));
 
     const failure = await screen.findByRole('alert');
     expect(failure).toHaveTextContent('We could not open your email app.');
@@ -284,7 +284,7 @@ describe('InquiryForm', () => {
     expect(screen.getByRole('link', { name: 'Email us directly' })).toHaveAttribute('href', 'mailto:louis@fahint.com');
     expect(screen.getByRole('button', { name: 'Copy inquiry details' })).toBeEnabled();
 
-    const retryButton = await screen.findByRole('button', { name: 'Send inquiry' }, { timeout: 2_000 });
+    const retryButton = await screen.findByRole('button', { name: 'Open email app' }, { timeout: 2_000 });
     await user.click(retryButton);
 
     await waitFor(() => expect(delivery).toHaveBeenCalledTimes(2));
@@ -317,7 +317,7 @@ describe('InquiryForm', () => {
     expect(emails[0]).toHaveAttribute('spellcheck', 'false');
     expect(emails[1]).toHaveAttribute('spellcheck', 'false');
 
-    screen.getAllByRole('button', { name: 'Send inquiry' }).forEach((button) => fireEvent.submit(button.closest('form')));
+    screen.getAllByRole('button', { name: 'Open email app' }).forEach((button) => fireEvent.submit(button.closest('form')));
     await waitFor(() => expect(names[0]).toHaveAttribute('aria-describedby'));
     expect(names[0].getAttribute('aria-describedby')).not.toBe(names[1].getAttribute('aria-describedby'));
     expect(document.getElementById(names[0].getAttribute('aria-describedby'))).toHaveTextContent('Enter your name.');
@@ -328,5 +328,119 @@ describe('InquiryForm', () => {
     render(<InquiryForm />);
 
     expect(screen.getByText(/You can review and send the message from there\./)).toBeInTheDocument();
+  });
+
+  it('sends to a configured HTTPS service only after validation and confirms its receipt', async () => {
+    const request = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) });
+    const delivery = vi.fn();
+    render(<InquiryForm endpoint="https://forms.example.com/inquiry" request={request} delivery={delivery} />);
+    const button = screen.getByRole('button', { name: 'Send inquiry' });
+    fireEvent.submit(button.closest('form'));
+    expect(request).not.toHaveBeenCalled();
+    fireEvent.change(screen.getByLabelText('Your name *'), { target: { value: ' Avery Chen ' } });
+    fireEvent.change(screen.getByLabelText('Business email *'), { target: { value: validForm.email } });
+    fireEvent.change(screen.getByLabelText('Requirements *'), { target: { value: 'x'.repeat(2000) } });
+    fireEvent.submit(button.closest('form'));
+    fireEvent.submit(button.closest('form'));
+    expect(request).toHaveBeenCalledTimes(1);
+    const [url, options] = request.mock.calls[0];
+    expect(url).toBe('https://forms.example.com/inquiry');
+    expect(options.method).toBe('POST');
+    expect(JSON.parse(options.body)).toMatchObject({ name: 'Avery Chen', email: validForm.email, message: 'x'.repeat(2000) });
+    expect(await screen.findByRole('status')).toHaveTextContent('Your inquiry has been received.');
+    expect(delivery).not.toHaveBeenCalled();
+    expect(screen.getByLabelText('Your name *')).toHaveValue(' Avery Chen ');
+  });
+
+  it.each([
+    ['server failure', { ok: false, json: async () => ({ error: 'unavailable' }) }],
+    ['unconfirmed response', { ok: true, json: async () => ({}) }],
+    ['HTML fallback', { ok: true, json: async () => { throw new Error('not JSON'); } }]
+  ])('keeps the message and offers recovery after %s', async (_, response) => {
+    const request = vi.fn().mockResolvedValue(response);
+    render(<InquiryForm endpoint="https://forms.example.com/inquiry" request={request} />);
+    fireEvent.change(screen.getByLabelText('Your name *'), { target: { value: validForm.name } });
+    fireEvent.change(screen.getByLabelText('Business email *'), { target: { value: validForm.email } });
+    fireEvent.change(screen.getByLabelText('Requirements *'), { target: { value: validForm.message } });
+    fireEvent.submit(screen.getByRole('button', { name: 'Send inquiry' }).closest('form'));
+    expect(await screen.findByRole('alert')).toHaveTextContent('We could not confirm delivery.');
+    expect(screen.getByRole('button', { name: 'Copy inquiry details' })).toBeEnabled();
+    expect(screen.getByLabelText('Requirements *')).toHaveValue(validForm.message);
+    expect(screen.queryByText('Your inquiry has been received.')).not.toBeInTheDocument();
+  });
+
+  it('does not expose buyer information to an insecure or malformed service URL', () => {
+    const request = vi.fn();
+    const { rerender } = render(<InquiryForm endpoint="http://forms.example.com/inquiry" request={request} />);
+    expect(screen.getByRole('button', { name: 'Open email app' })).toBeEnabled();
+    rerender(<InquiryForm endpoint="not-a-url" request={request} />);
+    expect(screen.getByRole('button', { name: 'Open email app' })).toBeEnabled();
+    expect(request).not.toHaveBeenCalled();
+  });
+
+  it('times out a stalled request, preserves the form and enables retry', async () => {
+    vi.useFakeTimers();
+    const request = vi.fn((_, { signal }) => new Promise((resolve, reject) => {
+      signal.addEventListener('abort', () => reject(new Error('aborted')), { once: true });
+    }));
+    try {
+      render(<InquiryForm endpoint="https://forms.example.com/inquiry" request={request} />);
+      fireEvent.change(screen.getByLabelText('Your name *'), { target: { value: validForm.name } });
+      fireEvent.change(screen.getByLabelText('Business email *'), { target: { value: validForm.email } });
+      fireEvent.change(screen.getByLabelText('Requirements *'), { target: { value: validForm.message } });
+      fireEvent.submit(screen.getByRole('button', { name: 'Send inquiry' }).closest('form'));
+      expect(screen.getByRole('button', { name: 'Sending inquiry…' })).toBeDisabled();
+      await act(async () => vi.advanceTimersByTime(12_000));
+      expect(request.mock.calls[0][1].signal.aborted).toBe(true);
+      expect(screen.getByRole('alert')).toHaveTextContent('We could not confirm delivery.');
+      expect(screen.getByRole('button', { name: 'Send inquiry' })).toBeEnabled();
+      expect(screen.getByLabelText('Requirements *')).toHaveValue(validForm.message);
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('aborts the request when the form is unmounted', async () => {
+    const request = vi.fn((_, { signal }) => new Promise((resolve, reject) => {
+      signal.addEventListener('abort', () => reject(new Error('aborted')), { once: true });
+    }));
+    const { unmount } = render(<InquiryForm endpoint="https://forms.example.com/inquiry" request={request} />);
+    fireEvent.change(screen.getByLabelText('Your name *'), { target: { value: validForm.name } });
+    fireEvent.change(screen.getByLabelText('Business email *'), { target: { value: validForm.email } });
+    fireEvent.change(screen.getByLabelText('Requirements *'), { target: { value: validForm.message } });
+    fireEvent.submit(screen.getByRole('button', { name: 'Send inquiry' }).closest('form'));
+    unmount();
+    await act(async () => {});
+    expect(request.mock.calls[0][1].signal.aborted).toBe(true);
+  });
+
+  it.each(['Requirements *', 'Model of interest'])('does not confirm an unsent draft after editing %s during submission', async (label) => {
+    let resolveRequest;
+    const request = vi.fn(() => new Promise((resolve) => { resolveRequest = resolve; }));
+    render(<InquiryForm endpoint="https://forms.example.com/inquiry" request={request} />);
+    fireEvent.change(screen.getByLabelText('Your name *'), { target: { value: validForm.name } });
+    fireEvent.change(screen.getByLabelText('Business email *'), { target: { value: validForm.email } });
+    fireEvent.change(screen.getByLabelText('Requirements *'), { target: { value: validForm.message } });
+    fireEvent.submit(screen.getByRole('button', { name: 'Send inquiry' }).closest('form'));
+    const changedValue = label === 'Requirements *' ? 'Different, unsent requirements' : 'GT20';
+    fireEvent.change(screen.getByLabelText(label), { target: { value: changedValue } });
+    await act(async () => resolveRequest({ ok: true, json: async () => ({ ok: true }) }));
+    expect(JSON.parse(request.mock.calls[0][1].body).message).toBe(validForm.message);
+    expect(screen.getByLabelText(label)).toHaveValue(changedValue);
+    expect(screen.queryByText(/Your inquiry has been received/)).not.toBeInTheDocument();
+  });
+
+  it('does not show a stale clipboard confirmation after the draft changes', async () => {
+    let finishCopy;
+    const clipboardWriter = vi.fn(() => new Promise((resolve) => { finishCopy = resolve; }));
+    render(<InquiryForm delivery={vi.fn()} clipboardWriter={clipboardWriter} />);
+    fireEvent.change(screen.getByLabelText('Your name *'), { target: { value: validForm.name } });
+    fireEvent.change(screen.getByLabelText('Business email *'), { target: { value: validForm.email } });
+    fireEvent.change(screen.getByLabelText('Requirements *'), { target: { value: validForm.message } });
+    fireEvent.submit(screen.getByRole('button', { name: 'Open email app' }).closest('form'));
+    await screen.findByRole('button', { name: 'Copy inquiry details' });
+    fireEvent.click(screen.getByRole('button', { name: 'Copy inquiry details' }));
+    fireEvent.change(screen.getByLabelText('Requirements *'), { target: { value: 'New unsent draft' } });
+    await act(async () => finishCopy());
+    expect(clipboardWriter).toHaveBeenCalledWith(expect.stringContaining(validForm.message));
+    expect(screen.queryByText('Inquiry details copied.')).not.toBeInTheDocument();
   });
 });

@@ -1,0 +1,34 @@
+// Sources: original FAHINT catalog, pp. 2–3; archived fahint.com/?company/;
+// 公司资料&产品/详情页/详情页_12.png (process), _14.png (markets), _15.png (exhibitions).
+// Area, headcount, delivery promises and patent counts differ across documents
+// and are deliberately not turned into public claims here.
+export const companyProfile = {
+  established: '2015',
+  location: 'Yueqing, Wenzhou, Zhejiang, China',
+  disciplines: 'Research, development, manufacturing and sales',
+};
+
+export const companyPhotos = {
+  electronics: {
+    src: 'assets/images/company/catalog-electronics.jpg', width: 498, height: 506,
+    alt: 'Electronic assembly equipment shown in the FAHINT product catalog',
+  },
+  tooling: {
+    src: 'assets/images/company/catalog-tooling.jpg', width: 786, height: 248,
+    alt: 'Metal tooling shown in the FAHINT product catalog',
+  },
+  assembly: {
+    src: 'assets/images/company/catalog-assembly.jpg', width: 393, height: 248,
+    alt: 'Staff assembling electronic components in the FAHINT catalog',
+  },
+  discussion: {
+    src: 'assets/images/company/exhibition-source.webp', width: 1200, height: 1500,
+    region: { left: 315, top: 120, width: 570, height: 380 },
+    alt: 'A product discussion at the FAHINT exhibition display',
+  },
+  display: {
+    src: 'assets/images/company/exhibition-source.webp', width: 1200, height: 1500,
+    region: { left: 319, top: 947, width: 557, height: 271 },
+    alt: 'Different GFCI colors and wall plates on the FAHINT exhibition display',
+  },
+};

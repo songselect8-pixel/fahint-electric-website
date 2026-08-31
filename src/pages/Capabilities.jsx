@@ -1,153 +1,60 @@
-import { Link } from 'react-router-dom';
-import { ArrowRight, Check, Package, Palette, Tag, Boxes, Timer, Ship } from 'lucide-react';
-import { company, capabilities } from '../data/company.js';
-import { productImage } from '../data/products.js';
-import Reveal from '../components/Reveal.jsx';
+import { CompanyBreadcrumb, CompanyClosing, CompanyImage, CompanyLink, usePageMeta } from '../components/company/CompanyShared.jsx';
+import EditorialPhoto from '../components/company/EditorialPhoto.jsx';
+import { companyPhotos } from '../data/companyProfile.js';
 
-const oemOptions = [
-  { icon: Package, title: 'Individual colour box', body: 'Fully printed retail packaging designed to your artwork and barcode system.' },
-  { icon: Tag, title: 'Logo on wall plate', body: 'Your brand mark applied to the visible faceplate for shelf and jobsite recognition.' },
-  { icon: Tag, title: 'Logo on body', body: 'Moulded or printed branding on the top and bottom body of the device.' },
-  { icon: Palette, title: 'Colour customisation', body: 'Custom colour matching for wall plates, covers and bases beyond the standard seven finishes.' },
-  { icon: Boxes, title: 'Bracket customisation', body: 'Modified yokes and mounting brackets for specific enclosure or box requirements.' },
-  { icon: Ship, title: 'Neutral packaging', body: 'Unbranded cartons and inner boxes for distributors who apply their own labelling.' }
+const steps = [
+  ['Define the brief', 'Share your market, model mix, target quantities and installation requirements.'],
+  ['Configure the range', 'Review available finishes, wall plates, authorized branding and packaging.'],
+  ['Approve the sample', 'Confirm appearance, function, model documentation and artwork before the order.'],
+  ['Plan production', 'Agree on quantities, lead times, packing and delivery requirements for the selected models.']
 ];
 
 export default function Capabilities() {
-  return (
-    <>
-      <section className="page-banner">
-        <div className="container">
-          <div className="crumbs">
-            <Link to="/">Home</Link> <span>/</span> <span>Capabilities</span>
-          </div>
-          <h1>Manufacturing, OEM &amp; ODM Capabilities</h1>
-          <p>
-            In-house tooling, injection, assembly and full electrical test — plus a customisation programme designed around
-            private-label and distributor requirements.
-          </p>
+  usePageMeta('Manufacturing & OEM / ODM', 'Explore FAHINT manufacturing, functional testing and private-label support for wiring devices. Review products, samples and model-specific documentation.');
+  return <div className="company-page">
+    <header className="company-masthead company-masthead--dark">
+      <div className="company-wrap">
+        <CompanyBreadcrumb current="Manufacturing & OEM / ODM" />
+        <div className="company-heading company-heading--hero">
+          <h1>Your product.<br /><span>Our production.</span></h1>
+          <div><p>Wiring-device manufacturing in Wenzhou, China. From product selection and sample review to assembly, testing and packaging, bring your next range together with FAHINT.</p><div className="company-actions"><CompanyLink to="/contact?topic=oem" light>Discuss your OEM / ODM project</CompanyLink><CompanyLink to="#production" secondary light>Inside production</CompanyLink></div></div>
         </div>
-      </section>
-
-      <section className="section">
-        <div className="container">
-          <div className="section-head">
-            <div className="eyebrow">/ Production /</div>
-            <h2>Every Unit Is Tested Before It Is Packed</h2>
-            <p>
-              Twelve automated inspection lines run dielectric, trip-threshold and continuity checks on 100% of production. Our
-              first pass yield exceeds 98%.
-            </p>
-          </div>
-          <div className="cap-grid">
-            {capabilities.map((c) => (
-              <div className="cap" key={c.title}>
-                <img src={c.image} alt={c.title} loading="lazy" />
-                <div className="cap__overlay">
-                  <h4>{c.title}</h4>
-                  <p>{c.body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+        <figure className="company-panorama"><CompanyImage src="assets/images/editorial-home/factory-optimized.webp" alt="GFCI assembly and functional testing at FAHINT" priority /><figcaption><span>Inside FAHINT</span><span>GFCI assembly & functional testing · Wenzhou, China</span></figcaption></figure>
+      </div>
+    </header>
+    <section className="company-section" id="production" aria-labelledby="production-title">
+      <div className="company-wrap">
+        <div className="company-heading"><h2 id="production-title">Built on the line.<br /><span>Checked along the way.</span></h2><p>Product development, manufacturing and quality control work together. The checks and documentation follow the device family and its intended application.</p></div>
+        <div className="company-columns company-columns--photographic">
+          <div><EditorialPhoto {...companyPhotos.assembly} /><h3>Assembly & production</h3><p>Coordinate the device components, assembly and product identification around the selected model.</p></div>
+          <div><EditorialPhoto src="assets/images/editorial-home/factory-optimized.webp" alt="GFCI functional test stations at FAHINT" width={1600} height={900} position="76% center" /><h3>Functional inspection</h3><p>GFCI test stations support functional checks during production. Review the relevant inspection requirements for your range with our team.</p></div>
+          <div><EditorialPhoto src="assets/images/company/fahint-laboratory-catalog.webp" alt="Product verification equipment in the FAHINT laboratory" width={1417} height={422} position="85% center" /><h3>Laboratory support</h3><p>Review product verification needs and the supporting test documentation before confirming a specification.</p></div>
         </div>
-      </section>
-
-      <section className="section section--gray" id="oem">
-        <div className="container">
-          <div className="section-head">
-            <div className="eyebrow">/ OEM &amp; ODM /</div>
-            <h2>Six Ways We Customise Your Programme</h2>
-            <p>Standard customisation MOQ is 400 cartons. Engineering returns a design solution within 6 hours.</p>
-          </div>
-          <div className="info-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
-            {oemOptions.map((o, i) => (
-              <Reveal className="info-card" key={o.title} delay={i * 60}>
-                <span className="cert__icon" style={{ marginBottom: 14 }}>
-                  <o.icon size={20} />
-                </span>
-                <h4>{o.title}</h4>
-                <p>{o.body}</p>
-              </Reveal>
-            ))}
+        <figure className="company-laboratory company-laboratory--tooling"><CompanyImage src="assets/images/company/catalog-tooling.jpg" alt="Metal tooling photographed for the FAHINT product catalog" width={786} height={248} /><figcaption>Metal tooling · Original FAHINT catalog photograph.</figcaption></figure>
+      </div>
+    </section>
+    <section className="company-section company-section--paper" id="oem" aria-labelledby="oem-title">
+      <div className="company-wrap">
+        <div className="company-heading"><h2 id="oem-title">Your range.<br /><span>Down to the details.</span></h2><p>Start with FAHINT product platforms. Then discuss the product, finish and presentation your market needs. Availability and customization requirements are confirmed per model.</p></div>
+        <div className="company-oem-layout">
+          <figure className="company-packaging"><CompanyImage src="assets/images/products/gf15-package-standard-white-v1.jpg" alt="FAHINT GF15 retail packaging and white wall plate" width={1000} height={1000} /><figcaption>FAHINT packaging example. Private-label artwork requires authorization and approval.</figcaption></figure>
+          <div className="company-options">
+            <div><h3>Products & finishes</h3><p>Select device families, electrical ratings, available colors and matching wall plates. Confirm combinations with actual samples.</p></div>
+            <div><h3>Branding & identification</h3><p>Review authorized logos, product markings and artwork placement together with model-specific identification requirements.</p></div>
+            <div><h3>Packaging & instructions</h3><p>Coordinate retail or neutral packaging, carton information and product literature around your distribution needs.</p></div>
+            <div><h3>Product development</h3><p>Have a requirement beyond the existing range? Share the brief so our team can assess technical feasibility, tooling and verification needs.</p></div>
+            <CompanyLink to="/contact?topic=oem" secondary>Send your requirements</CompanyLink>
           </div>
         </div>
-      </section>
-
-      <section className="section">
-        <div className="container split">
-          <div className="split__media">
-            <img src={productImage('GF15', 'mcu')} alt="GFCI MCU self-test architecture" loading="lazy" />
-          </div>
-          <div>
-            <div className="eyebrow">/ Quality System /</div>
-            <h2>Built Around UL 943 Compliance</h2>
-            <ul className="checklist">
-              <li>
-                <Check size={17} /> Class A trip threshold meets or exceeds UL 943 5th Edition 2018 tripping time
-              </li>
-              <li>
-                <Check size={17} /> MCU-controlled auto-monitoring exceeds the UL 943 self-test requirement
-              </li>
-              <li>
-                <Check size={17} /> Mechanical structure allows trip and power-off in any device state
-              </li>
-              <li>
-                <Check size={17} /> Reverse-wiring lockout prevents live face or downstream output
-              </li>
-              <li>
-                <Check size={17} /> 1.2 mm zinc-plated steel yoke with auto-grounding clip
-              </li>
-              <li>
-                <Check size={17} /> Thickened silver contacts controlling temperature rise under load
-              </li>
-              <li>
-                <Check size={17} /> UL/cUL file {company.ulFile}, ETL verified, ISO 9001 certified
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section className="section section--gray">
-        <div className="container">
-          <div className="section-head">
-            <div className="eyebrow">/ Logistics /</div>
-            <h2>North American Fulfilment</h2>
-          </div>
-          <div className="info-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
-            {[
-              { icon: Timer, title: '3-day shipment', body: 'Stocked items leave our overseas warehouse within three days of order confirmation.' },
-              { icon: Ship, title: '10-day delivery', body: 'Domestic North American transit gets product on your dock in as fast as ten days.' },
-              { icon: Boxes, title: 'Factory-direct orders', body: 'Full container production runs typically complete in 25–35 days depending on volume and customisation.' }
-            ].map((c, i) => (
-              <Reveal className="info-card" key={c.title} delay={i * 70}>
-                <span className="cert__icon" style={{ marginBottom: 14 }}>
-                  <c.icon size={20} />
-                </span>
-                <h4>{c.title}</h4>
-                <p>{c.body}</p>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section section--tight">
-        <div className="container">
-          <div className="cta-banner">
-            <div>
-              <h2>Start Your Private-Label Programme</h2>
-              <p>Send artwork, target finishes and annual volume — we will return a full costed customisation proposal.</p>
-            </div>
-            <div className="cta-banner__actions">
-              <Link to="/contact" className="btn btn--light">
-                Request a proposal <ArrowRight size={16} />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
-  );
+      </div>
+    </section>
+    <section className="company-section company-section--navy" aria-labelledby="process-title">
+      <div className="company-wrap"><div className="company-heading"><h2 id="process-title">From a product brief<br /><span>to an agreed order.</span></h2><p>A clear approval path keeps product choices, documentation and delivery expectations aligned.</p></div>
+        <ol className="company-process" aria-label="From brief to production">{steps.map(([title, body], index) => <li key={title}><span className="company-step">0{index + 1}</span><h3>{title}</h3><p>{body}</p></li>)}</ol>
+        <p className="company-process-note">Order quantities, sample arrangements and lead times are confirmed in your quotation. There is no single minimum or delivery promise for every product.</p>
+      </div>
+    </section>
+    <section className="company-section"><div className="company-wrap company-heading"><div><h2>Documentation for<br /><span>the model you choose.</span></h2><p>Certification coverage is model-specific. Review the original certificate and addendum, then confirm the exact model, finish and construction for your order.</p></div><div className="company-document-callout"><h3>Check the details before you specify.</h3><p>Access original UL product-family files and the ISO 9001 quality-system document. A company certificate does not certify every product in the range.</p><CompanyLink to="/about#certifications" secondary>Review certificates</CompanyLink></div></div></section>
+    <CompanyClosing title="Bring us your product brief." text="A new range, a private-label program or a model-specific question. Start with what your market needs." to="/contact?topic=oem" action="Start a project" />
+  </div>;
 }

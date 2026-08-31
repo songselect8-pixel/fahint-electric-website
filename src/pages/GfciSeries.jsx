@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Filter, Search } from 'lucide-react';
 import ProductCard from '../components/ProductCard.jsx';
 import SafeImage from '../components/SafeImage.jsx';
 import { filterGfciProducts, isVerifiedListing, products } from '../data/products.js';
 import { gfciSeriesVisuals } from '../data/productPageVisuals.js';
+import { getCatalogProducts } from '../data/catalogProducts.js';
+import CatalogModelCard from '../components/products/CatalogModelCard.jsx';
 
 const GFCI_HERO_VIDEO = `${import.meta.env.BASE_URL}assets/videos/gfci-product-video-optimized.mp4`;
 const GFCI_HERO_POSTER = `${import.meta.env.BASE_URL}assets/videos/gfci-product-video-poster.webp`;
@@ -31,6 +33,7 @@ const APPLICATIONS = [
 
 const verifiedListings = products.filter(isVerifiedListing);
 const reviewListings = products.filter((product) => !isVerifiedListing(product));
+const industrialModels = getCatalogProducts('gfci');
 const verifiedListingFile = verifiedListings[0]?.listing.file;
 const ENGINEERING_PROOF = [
   {
@@ -70,6 +73,11 @@ function SelectControl({ label, value, options, onChange }) {
 }
 
 export default function GfciSeries() {
+  useEffect(() => {
+    const previous = document.title;
+    document.title = 'GFCI Outlets · Models & Specifications | FAHINT';
+    return () => { document.title = previous; };
+  }, []);
   const [query, setQuery] = useState('');
   const [amperage, setAmperage] = useState('');
   const [variant, setVariant] = useState('');
@@ -108,7 +116,6 @@ export default function GfciSeries() {
         <div className="gfci-series__hero-shade" aria-hidden="true" />
         <div className="container gfci-series__hero-grid">
           <div className="gfci-series__hero-content">
-            <p className="gfci-series__eyebrow">GFCI product family</p>
             <h1>GFCI Product Range</h1>
             <p className="gfci-series__hero-copy">
               Compare seven published models, then confirm the finish and program requirements for your market.
@@ -121,7 +128,6 @@ export default function GfciSeries() {
         <div className="container">
           <div className="gfci-series__catalog-head">
             <div>
-              <p className="eyebrow">Published range</p>
               <h2 id="gfci-models-heading">Find a published GFCI model</h2>
             </div>
             <button
@@ -193,7 +199,6 @@ export default function GfciSeries() {
       <section className="gfci-series__comparison gfci-comparison section section--gray" aria-labelledby="gfci-comparison-heading">
         <div className="container gfci-series__comparison-panel">
           <div className="section-head">
-            <p className="eyebrow">At-a-glance comparison</p>
             <h2 id="gfci-comparison-heading">Compare the published range</h2>
           </div>
           <div
@@ -226,10 +231,19 @@ export default function GfciSeries() {
         </div>
       </section>
 
+      <section className="catalog-series__models" id="industrial-models" aria-labelledby="gfci-industrial-heading">
+        <div className="container">
+          <header className="catalog-section-heading">
+            <div><h2 id="gfci-industrial-heading">A different industrial configuration.</h2></div>
+            <p>Nylon construction and no feed-through terminals. Review the GTN model-specific documents; the residential-series certificate is not a substitute.</p>
+          </header>
+          <div className="catalog-model-grid">{industrialModels.map((product) => <CatalogModelCard key={product.sku} product={product} />)}</div>
+        </div>
+      </section>
+
       <section id="engineering-proof" className="gfci-series__engineering section" aria-labelledby="gfci-engineering-heading">
         <div className="container">
           <div className="section-head">
-            <p className="eyebrow">Engineering proof</p>
             <h2 id="gfci-engineering-heading">Protection documented at platform level</h2>
           </div>
           <div className="gfci-series__proof-grid gfci-proof-grid">
@@ -258,7 +272,6 @@ export default function GfciSeries() {
             />
             <div className="gfci-series__poster-shade" aria-hidden="true" />
             <div className="gfci-series__poster-copy gfci-series__poster-copy--left">
-              <p className="eyebrow">Application support</p>
               <h2 id="gfci-application-heading">Specify from documented requirements.</h2>
               <p>
                 Match the published model, rating and variant to the project brief before ordering.
@@ -279,18 +292,18 @@ export default function GfciSeries() {
       <section className="gfci-series__poster-section gfci-series__poster-section--oem section" aria-labelledby="gfci-oem-heading">
         <div className="gfci-series__wide-container">
           <article className="gfci-series__poster gfci-series__poster--oem">
+            <figure className="gfci-series__oem-photo">
             <SafeImage
-              className="gfci-series__poster-image"
               data-testid="gfci-oem-poster"
               src={gfciSeriesVisuals.oemPoster}
-              alt=""
-              width={1536}
-              height={1024}
+              alt="FAHINT GF15 retail box and white wall plate"
+              width={1000}
+              height={1000}
               loading="lazy"
             />
-            <div className="gfci-series__poster-shade" aria-hidden="true" />
+            <figcaption>GF15 · FAHINT retail packaging example</figcaption>
+            </figure>
             <div className="gfci-series__poster-copy gfci-series__poster-copy--right">
-              <p className="eyebrow">OEM configuration</p>
               <h2 id="gfci-oem-heading">Verified platforms. Built for your brand.</h2>
               <p>
                 Start with the published product, then coordinate finish, marking, packaging and

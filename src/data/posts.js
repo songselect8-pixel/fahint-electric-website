@@ -1,164 +1,420 @@
-// SEO articles. Technical content is drawn from the NEC and UL 943 as cited in
-// each article, plus Fahint's own catalogue specifications. No invented statistics.
-
+// Buyer guides reviewed against the linked primary references; existing article URLs are retained.
 export const posts = [
   {
-    slug: 'gfci-vs-afci-whats-the-difference',
-    title: 'GFCI vs AFCI: What Is the Difference and Where Does Each Belong?',
-    excerpt:
-      'Both devices interrupt a circuit, but they detect completely different faults. Here is how to specify each one correctly and why some locations need both.',
-    date: '2026-08-12',
-    readMinutes: 7,
-    category: 'Technical Guide',
-    cover: 'assets/images/products/gf15-features.webp',
-    body: [
-      { type: 'p', text: 'Buyers regularly ask us whether a GFCI receptacle can replace an AFCI breaker, or the reverse. It cannot. The two devices monitor different electrical signatures and protect against different hazards, and the National Electrical Code treats them as separate requirements.' },
-      { type: 'h2', text: 'What a GFCI detects' },
-      { type: 'p', text: 'A Ground Fault Circuit Interrupter continuously compares the current flowing out on the hot conductor with the current returning on the neutral. In a healthy circuit those two values match. If current is leaking to ground — for example through a person who has become part of the path — the values diverge.' },
-      { type: 'p', text: 'A Class A GFCI is defined by UL 943 as one that trips when that imbalance reaches 6 milliamperes. The purpose is protection against electrocution. That is why GFCI protection is required in locations where water and people meet: bathrooms, kitchens, basements, garages, laundry areas and outdoors.' },
-      { type: 'h2', text: 'What an AFCI detects' },
-      { type: 'p', text: 'An Arc Fault Circuit Interrupter looks for the high-frequency electrical signature of an arcing fault — the erratic waveform produced by a damaged cord, a nail driven through a cable, or a loose terminal screw. Arcing generates heat and is a fire ignition source.' },
-      { type: 'p', text: 'AFCI protection is therefore a fire-prevention requirement rather than a shock-prevention one, and the NEC applies it broadly to dwelling-unit branch circuits serving living spaces.' },
-      { type: 'h2', text: 'Why some locations require both' },
-      { type: 'p', text: 'Because the two devices address unrelated hazards, a location can fall under both requirements at once. A kitchen countertop circuit in a dwelling unit is the classic example: it needs GFCI protection because of the proximity of water, and AFCI protection because it is a dwelling-unit branch circuit.' },
-      { type: 'p', text: 'In that situation the installer has two compliant paths — a dual-function AFCI/GFCI breaker at the panel, or an AFCI breaker at the panel combined with a GFCI receptacle at the point of use. The second approach is often preferred on renovation work because a tripped GFCI can be reset at the outlet rather than at the panel.' },
-      { type: 'h2', text: 'A note on self-test' },
-      { type: 'p', text: 'UL 943 5th Edition introduced an auto-monitoring requirement, which is why current-production GFCIs perform periodic self-tests. Fahint GFCI devices run an MCU-controlled self-test every 15 minutes, with the initial test completing within three seconds of power-up, and signal end of service life through a dual-colour indicator.' },
-      { type: 'h2', text: 'Specifying correctly' },
-      { type: 'p', text: 'When you are building a bill of materials, treat GFCI and AFCI as independent line items driven by two separate questions: is there a shock risk from water or ground contact, and is this a dwelling-unit branch circuit? Answering them separately avoids both over-specification and inspection failures.' }
+    "slug": "gfci-vs-afci-whats-the-difference",
+    "title": "GFCI vs AFCI: Two Different Kinds of Protection",
+    "excerpt": "Understand the difference between ground-fault and arc-fault protection before comparing devices for your project.",
+    "date": "2026-08-12",
+    "updated": "2026-08-31",
+    "readMinutes": 3,
+    "category": "Technical Guide",
+    "cover": "assets/images/editorial-home/product-gfci-optimized.webp",
+    "coverAlt": "FAHINT GFCI outlet in a kitchen application scene",
+    "coverCaption": "GFCI protection in an illustrated kitchen setting. AFCI protection serves a different purpose.",
+    "coverSource": "Existing FAHINT product application asset — editorial-home/product-gfci-optimized.webp",
+    "sources": [
+      {
+        "label": "CPSC — AFCI fact sheet",
+        "href": "https://www.cpsc.gov/s3fs-public/5133%281%29.pdf"
+      },
+      {
+        "label": "ESFI — Home electrical safety",
+        "href": "https://www.esfi.org/home-safety"
+      },
+      {
+        "label": "FAHINT — Original certificate library",
+        "href": "/about#certifications"
+      }
+    ],
+    "body": [
+      {
+        "type": "p",
+        "text": "A GFCI and an AFCI serve different purposes. Choosing one does not automatically address the protection provided by the other. The appropriate combination depends on the circuit, location and locally adopted electrical code."
+      },
+      {
+        "type": "h2",
+        "text": "Ground-fault protection"
+      },
+      {
+        "type": "p",
+        "text": "A ground-fault circuit interrupter helps protect people from electric shock by interrupting power when it detects a ground fault. This is different from the overload protection provided by a conventional circuit breaker.",
+        "source": 1
+      },
+      {
+        "type": "h2",
+        "text": "Arc-fault protection"
+      },
+      {
+        "type": "p",
+        "text": "An arc-fault circuit interrupter addresses fire hazards associated with dangerous electrical arcing. CPSC distinguishes this role from the shock protection offered by a GFCI. Some devices provide both functions; check the actual product designation rather than assuming that one label includes the other."
+      },
+      {
+        "type": "h2",
+        "text": "Start with the project requirements"
+      },
+      {
+        "type": "p",
+        "text": "Have a qualified electrical professional determine the protection required by the locally adopted code and the circuit design. Do not use a product category name as a substitute for that review, and do not work inside an electrical panel yourself."
+      },
+      {
+        "type": "p",
+        "text": "For a purchasing brief, record the required protection, voltage, current rating, receptacle configuration and installation environment. This gives the supplier a concrete specification to check."
+      },
+      {
+        "type": "h2",
+        "text": "Review the exact FAHINT model"
+      },
+      {
+        "type": "p",
+        "text": "The GFCI collection includes different ratings and configurations. Review the selected model page and original listing documentation. Indicator behavior, testing instructions and available finishes must be confirmed for that model; they are not universal features of every device."
+      }
     ]
   },
   {
-    slug: 'nec-406-8-weather-resistant-receptacles',
-    title: 'NEC 406.8 Explained: When You Need Weather-Resistant Receptacles',
-    excerpt:
-      'A WR marking is not interchangeable with a weatherproof cover. Understanding what NEC 406.8 actually requires for damp and wet locations.',
-    date: '2026-08-08',
-    readMinutes: 6,
-    category: 'Compliance',
-    cover: 'assets/images/products/gw15-lifestyle.webp',
-    body: [
-      { type: 'p', text: 'One of the most common specification errors we see on outdoor installations is treating a weatherproof enclosure and a weather-resistant receptacle as the same thing. They are complementary, not interchangeable, and NEC Section 406.8 addresses both.' },
-      { type: 'h2', text: 'Damp versus wet locations' },
-      { type: 'p', text: 'The Code distinguishes between damp locations — such as a covered porch or a sheltered patio, where moisture is present but direct exposure is limited — and wet locations, where the receptacle is subject to saturation or direct weather. The enclosure requirements differ between the two, but the receptacle requirement does not.' },
-      { type: 'h2', text: 'What the WR marking means' },
-      { type: 'p', text: 'A receptacle marked WR has been constructed and tested to withstand environmental exposure. That means UV-resistant and cold-impact-resistant polymers on the face and buttons, corrosion-resistant metal components, and internal protection for the circuit board.' },
-      { type: 'p', text: 'On Fahint weather-resistant GFCI devices, that internal protection takes the form of a conformal coating applied to the board, keeping moisture away from the components that control the trip mechanism.' },
-      { type: 'h2', text: 'The enclosure is a separate requirement' },
-      { type: 'p', text: 'A WR receptacle installed without a suitable cover is still not compliant, and a weatherproof in-use cover fitted over a standard indoor receptacle is equally non-compliant. Both elements must be present: the device rated for the environment, and the enclosure rated for the location classification.' },
-      { type: 'h2', text: 'Do not forget TR' },
-      { type: 'p', text: 'In dwelling units the tamper-resistant requirement applies alongside the weather-resistant one. This is why outdoor residential receptacles are usually specified as TR and WR together — Fahint GW15 and GW20 ship with both features as standard.' },
-      { type: 'h2', text: 'Practical specification advice' },
-      { type: 'p', text: 'When you write an outdoor receptacle specification, state three things explicitly: the amperage and NEMA configuration, the required device markings (TR, WR, GFCI as applicable), and the enclosure rating appropriate to the damp or wet classification. Leaving any one of the three implicit is where field problems begin.' }
+    "slug": "nec-406-8-weather-resistant-receptacles",
+    "title": "Weather-Resistant Receptacles: The Device and the Cover",
+    "excerpt": "An outdoor installation needs more than a WR marking. Review the device, enclosure and location together.",
+    "date": "2026-08-08",
+    "updated": "2026-08-31",
+    "readMinutes": 3,
+    "category": "Compliance",
+    "cover": "assets/images/products/gw15-application-scene-v1.jpg",
+    "coverAlt": "FAHINT GFCI outlet in an illustrated sheltered garage setting",
+    "coverCaption": "A sheltered garage application illustration. Outdoor locations require the appropriate device, enclosure and cover.",
+    "coverSource": "Existing GW15 application asset — products/gw15-application-scene-v1.jpg",
+    "sources": [
+      {
+        "label": "Leviton — 2023 NEC, receptacles in damp or wet locations",
+        "href": "https://captaincode2023.leviton.com/node/338"
+      },
+      {
+        "label": "FAHINT — Original certificate library",
+        "href": "/about#certifications"
+      }
+    ],
+    "body": [
+      {
+        "type": "p",
+        "text": "Weather-resistant receptacles and weatherproof covers do different jobs. A suitable device does not remove the need to specify the enclosure and cover for the location."
+      },
+      {
+        "type": "h2",
+        "text": "Confirm the code edition"
+      },
+      {
+        "type": "p",
+        "text": "The 2023 NEC addresses receptacles in damp or wet locations in Section 406.9. Older references may use different numbering. Check the edition adopted locally and its amendments with the authority having jurisdiction before finalizing a specification."
+      },
+      {
+        "type": "h2",
+        "text": "Specify the complete installation"
+      },
+      {
+        "type": "p",
+        "text": "The device rating and the enclosure are separate checks. Cover requirements depend on the location and conditions of use, including whether protection is needed while a plug is inserted. A WR device should not be described as waterproof."
+      },
+      {
+        "type": "h2",
+        "text": "Keep the requirements separate"
+      },
+      {
+        "type": "p",
+        "text": "Record the voltage and current rating, receptacle configuration, required GFCI protection, weather resistance and tamper resistance as separate items. A product with one feature does not necessarily provide the others."
+      },
+      {
+        "type": "h2",
+        "text": "Confirm the model and documentation"
+      },
+      {
+        "type": "p",
+        "text": "For a FAHINT order, include the full model designation rather than only “outdoor outlet.” Ask for the relevant model instructions and certification coverage. Have a qualified installer select the appropriate box, cover and installation method for the site."
+      },
+      {
+        "type": "p",
+        "text": "The original article URL is retained for existing links; the text has been revised to avoid presenting an older code number as a universal current requirement."
+      }
     ]
   },
   {
-    slug: 'why-gfci-outlets-trip',
-    title: 'Why GFCI Outlets Trip: Six Causes and How to Diagnose Them',
-    excerpt:
-      'A tripping GFCI is usually reporting a real condition. A systematic way to distinguish genuine ground faults from nuisance trips and wiring errors.',
-    date: '2026-08-04',
-    readMinutes: 8,
-    category: 'Troubleshooting',
-    cover: 'assets/images/products/gf15-install.webp',
-    body: [
-      { type: 'p', text: 'When a GFCI trips repeatedly, the instinct is often to assume the device is defective. In practice a tripping GFCI is usually doing exactly what it was designed to do. Working through the causes in order will identify the real problem faster than swapping devices.' },
-      { type: 'h2', text: '1. A genuine ground fault' },
-      { type: 'p', text: 'Current is leaking to ground somewhere on the protected circuit. Unplug every load, reset the device, then reconnect loads one at a time. If the trip follows a particular appliance, the fault is in that appliance, not the receptacle.' },
-      { type: 'h2', text: '2. Accumulated moisture' },
-      { type: 'p', text: 'Moisture inside an outdoor box, a garage receptacle, or a bathroom enclosure creates a low-resistance path to ground. This is often intermittent and weather-correlated. Dry the enclosure completely and verify the cover and gasket before concluding the device is at fault.' },
-      { type: 'h2', text: '3. Reversed line and load wiring' },
-      { type: 'p', text: 'The LINE terminals connect to the incoming supply and the LOAD terminals feed downstream devices. Reversing them is one of the most frequent installation errors. Fahint GFCI devices include reverse-wiring protection: if line and load are reversed, no power reaches the receptacle face, and the device can be reset only after the wiring is corrected.' },
-      { type: 'h2', text: '4. Shared or crossed neutrals' },
-      { type: 'p', text: 'If the neutral of a GFCI-protected circuit is bonded with the neutral of another circuit — common in older multiwire branch circuit installations — return current bypasses the sensing transformer and the device reads it as an imbalance. Each GFCI needs its own dedicated neutral downstream.' },
-      { type: 'h2', text: '5. Long circuit runs with capacitive leakage' },
-      { type: 'p', text: 'Very long cable runs accumulate small amounts of capacitive leakage to ground. On a marginal installation this can approach the 6 mA Class A threshold, particularly when combined with electronic loads that have their own leakage. Shortening the protected run usually resolves it.' },
-      { type: 'h2', text: '6. End of service life' },
-      { type: 'p', text: 'GFCI devices do not last forever. Under UL 943 5th Edition, auto-monitoring devices must indicate when they can no longer protect. On Fahint devices a solid red indicator means the self-test has determined the unit has reached end of life and must be replaced. A green indicator means the device is working and cycling its self-test every 15 minutes.' },
-      { type: 'h2', text: 'A note on monthly testing' },
-      { type: 'p', text: 'Self-test does not eliminate the recommendation to press the TEST button monthly. The self-test verifies the internal electronics; the manual test additionally verifies the mechanical interruption of the contacts.' }
+    "slug": "why-gfci-outlets-trip",
+    "title": "A GFCI Keeps Tripping: What to Record Before Asking for Help",
+    "excerpt": "A useful support brief starts with the model, symptoms and conditions. Repeated tripping is a reason to investigate, not bypass protection.",
+    "date": "2026-08-04",
+    "updated": "2026-08-31",
+    "readMinutes": 3,
+    "category": "Troubleshooting",
+    "cover": "assets/images/products/gf15-feature-application-v3.jpg",
+    "coverAlt": "FAHINT GFCI outlet with visible test and reset buttons in a bathroom illustration",
+    "coverCaption": "Know the device and the conditions around it before asking for troubleshooting support. Application illustration.",
+    "coverSource": "Existing GF15 application asset — products/gf15-feature-application-v3.jpg",
+    "sources": [
+      {
+        "label": "ESFI — Home electrical safety",
+        "href": "https://www.esfi.org/home-safety"
+      },
+      {
+        "label": "FAHINT — Original certificate library",
+        "href": "/about#certifications"
+      }
+    ],
+    "body": [
+      {
+        "type": "p",
+        "text": "Repeated tripping, a failure to reset or an unfamiliar indicator needs attention. Do not bypass the GFCI or repeatedly reset it to keep equipment operating. Stop using damaged, wet, hot or scorched equipment and contact a qualified electrician."
+      },
+      {
+        "type": "h2",
+        "text": "Record the model and the symptom"
+      },
+      {
+        "type": "p",
+        "text": "Photograph the visible model label only if it can be read safely without removing the device. Note whether the unit trips, will not reset or shows an indicator. Record when the problem started and whether it coincided with a new appliance, weather event or electrical work."
+      },
+      {
+        "type": "h2",
+        "text": "Do not diagnose from the light alone"
+      },
+      {
+        "type": "p",
+        "text": "Indicator meanings differ by model and design. Use the instructions supplied with the exact device. A color alone is not enough to conclude that the receptacle is safe, defective or at the end of its service life."
+      },
+      {
+        "type": "h2",
+        "text": "Leave circuit checks to a qualified electrician"
+      },
+      {
+        "type": "p",
+        "text": "A professional can inspect the device, wiring, connected equipment and installation environment safely. Opening a box, changing conductors or making electrical measurements is not part of this buyer guide. If there is smoke, sparking or an immediate fire risk, keep clear and contact emergency services."
+      },
+      {
+        "type": "h2",
+        "text": "Keep testing instructions with the device"
+      },
+      {
+        "type": "p",
+        "text": "ESFI recommends monthly GFCI testing. Follow the device manufacturer’s test instructions and arrange qualified help if the device does not behave as described. Automatic self-testing is not a reason to disregard those instructions."
+      },
+      {
+        "type": "h2",
+        "text": "Send a useful support request"
+      },
+      {
+        "type": "p",
+        "text": "Include the model, order reference, safely obtained photos, observed indicator and a description of the conditions. FAHINT can help identify the relevant product documentation; site diagnosis remains the responsibility of a qualified electrical professional."
+      }
     ]
   },
   {
-    slug: 'tamper-resistant-receptacle-requirements',
-    title: 'Tamper-Resistant Receptacles: What the NEC Requires in Dwelling Units',
-    excerpt:
-      'TR receptacles are mandatory in dwelling units, but the requirement extends further than most buyers realise. A guide to where the shutter system is needed.',
-    date: '2026-07-29',
-    readMinutes: 5,
-    category: 'Compliance',
-    cover: 'assets/images/products/gt15-plate.webp',
-    body: [
-      { type: 'p', text: 'The tamper-resistant requirement is one of the clearest child-safety provisions in the National Electrical Code, and it is also one of the most frequently under-specified when buyers build a purchase order from an older parts list.' },
-      { type: 'h2', text: 'How the shutter mechanism works' },
-      { type: 'p', text: 'A TR receptacle contains a spring-loaded shutter system behind the face. The shutters open only when balanced pressure is applied to both blade slots simultaneously — which happens naturally when a two- or three-prong plug is inserted, but not when a single object is pushed into one slot.' },
-      { type: 'p', text: 'The mechanism is entirely passive and requires no maintenance. From the user perspective a TR receptacle behaves like a standard one, with slightly higher initial insertion force.' },
-      { type: 'h2', text: 'Where the requirement applies' },
-      { type: 'p', text: 'The NEC requires that 15A and 20A, 125V receptacles installed in dwelling units be listed tamper-resistant. The scope covers the residence broadly rather than only children\'s rooms, and subsequent Code cycles have extended similar requirements into occupancies such as childcare facilities, preschools, waiting areas and patient care spaces.' },
-      { type: 'p', text: 'Because Code adoption varies by jurisdiction and edition, always confirm which NEC edition your Authority Having Jurisdiction has adopted before finalising a specification.' },
-      { type: 'h2', text: 'TR combined with other features' },
-      { type: 'p', text: 'TR is a construction feature, not a device category, so it combines with others. A dwelling-unit bathroom receptacle typically needs TR and GFCI together; an outdoor dwelling-unit receptacle typically needs TR, WR and GFCI together. Fahint covers these combinations with the GT series for TR and the GW series for TR plus WR.' },
-      { type: 'h2', text: 'Purchasing implications' },
-      { type: 'p', text: 'If you are supplying the North American residential market, TR should be treated as the default rather than an upgrade. Stocking non-TR devices for dwelling-unit applications creates returns and inspection failures that cost more than the small unit price difference.' }
+    "slug": "tamper-resistant-receptacle-requirements",
+    "title": "Tamper-Resistant Receptacles: A Buyer’s Specification Checklist",
+    "excerpt": "Keep tamper resistance distinct from weather resistance and GFCI protection, and verify the applicable local requirements.",
+    "date": "2026-07-29",
+    "updated": "2026-08-31",
+    "readMinutes": 3,
+    "category": "Compliance",
+    "cover": "assets/images/products/gt15-application-scene-v1.jpg",
+    "coverAlt": "Tamper-resistant FAHINT outlet in a living-room application illustration",
+    "coverCaption": "Tamper-resistant device selection for living spaces. Application illustration; confirm the markings and requirements for the exact model.",
+    "coverSource": "Existing GT15 application asset — products/gt15-application-scene-v1.jpg",
+    "sources": [
+      {
+        "label": "Eaton — 2023 NEC, tamper-resistant receptacles",
+        "href": "https://www.eaton.com/us/en-us/products/residential/nec-2023-updates/receptacles-tamper-resistant.html"
+      },
+      {
+        "label": "FAHINT — Original certificate library",
+        "href": "/about#certifications"
+      }
+    ],
+    "body": [
+      {
+        "type": "p",
+        "text": "Tamper resistance is a receptacle feature. It does not, by itself, mean that a device is weather-resistant or provides ground-fault protection. Specify each required feature explicitly."
+      },
+      {
+        "type": "h2",
+        "text": "Check the adopted requirements"
+      },
+      {
+        "type": "p",
+        "text": "The 2023 NEC addresses tamper-resistant receptacles in Section 406.12. The scope includes specified residential and other occupancies and includes both 125V and 250V nonlocking receptacles at the stated ratings. Do not reduce it to a rule only about children’s rooms."
+      },
+      {
+        "type": "p",
+        "text": "Applicability and exceptions depend on the adopted edition and local amendments. Confirm the project requirements with a qualified electrical professional or the authority having jurisdiction."
+      },
+      {
+        "type": "h2",
+        "text": "Write a complete model description"
+      },
+      {
+        "type": "p",
+        "text": "List the voltage, current rating, NEMA configuration, tamper resistance, weather resistance and GFCI requirements separately. Then check that the chosen model actually matches the list. Similar-looking devices may have different electrical ratings or functions."
+      },
+      {
+        "type": "h2",
+        "text": "Review the supplied product"
+      },
+      {
+        "type": "p",
+        "text": "Compare the full model designation, device markings and documentation with the purchase order. A family-level description is not enough to confirm the construction of every variant."
+      },
+      {
+        "type": "h2",
+        "text": "Confirm the visible details"
+      },
+      {
+        "type": "p",
+        "text": "Specify the desired finish and wall plate as part of the same order. Use samples to check the appearance and fit, and retain the approved model and finish information for later reorders."
+      }
     ]
   },
   {
-    slug: 'how-to-source-ul-listed-gfci-from-china',
-    title: 'How to Source UL Listed GFCI Outlets From China Without Compliance Risk',
-    excerpt:
-      'A practical due-diligence checklist for importers: verifying UL files, understanding what listing actually covers, and the questions that separate real factories from traders.',
-    date: '2026-07-22',
-    readMinutes: 9,
-    category: 'Sourcing',
-    cover: 'assets/images/hero/hero-factory.webp',
-    body: [
-      { type: 'p', text: 'GFCI devices are life-safety products. For an importer, a compliance failure is not a quality complaint — it is a recall, a liability exposure and potentially a customs detention. The due diligence is worth doing properly.' },
-      { type: 'h2', text: 'Verify the UL file, not the certificate image' },
-      { type: 'p', text: 'Any supplier can send a PDF. What matters is the file number, which you can look up independently in UL\'s online certifications directory. Confirm three things: that the file exists, that it is held by the company you are actually buying from, and that the specific model numbers you are purchasing appear under it.' },
-      { type: 'p', text: 'Fahint products are listed under file E504391. We encourage buyers to verify it directly rather than relying on documents we supply.' },
-      { type: 'h2', text: 'Understand what the listing covers' },
-      { type: 'p', text: 'A UL listing applies to a specific construction. If a supplier changes the internal board, the contact material or the housing polymer without updating the file, the shipped product is no longer the listed product even though the marking is still on it. Ask directly whether the construction has changed since listing and whether follow-up service inspections are current.' },
-      { type: 'h2', text: 'Distinguish the factory from the trader' },
-      { type: 'p', text: 'Questions that are difficult for a trading company to answer convincingly: How many inspection lines do you run and what does each one test? What is your first pass yield? Who holds the tooling for this model? Can you produce a video walkthrough of the assembly line on request?' },
-      { type: 'p', text: 'Fahint operates a 70,000 square foot facility in Wenzhou with 12 automated inspection lines and a first pass yield above 98 percent. Those are the kinds of numbers you should expect a real manufacturer to state without hesitation.' },
-      { type: 'h2', text: 'Confirm the standard edition' },
-      { type: 'p', text: 'GFCI requirements have changed materially over successive editions of UL 943. Ask explicitly which edition the product is certified to. Current production should be to UL 943 5th Edition 2018, which includes the auto-monitoring requirement that drives the self-test function.' },
-      { type: 'h2', text: 'Ask about the failure mode' },
-      { type: 'p', text: 'A well-designed GFCI fails safe. Ask what happens at end of life, whether the device denies power when it can no longer protect, and how the user is notified. A supplier who cannot answer this clearly has probably not designed the product themselves.' },
-      { type: 'h2', text: 'Check logistics realism' },
-      { type: 'p', text: 'Lead time promises are easy to make. Ask whether the supplier holds North American warehouse stock, what the realistic factory-direct production window is, and what happens to your timeline if a shipment is held for inspection. Fahint ships stocked items from overseas warehouses within three days, with delivery in as fast as ten days; factory-direct production runs typically complete in 25 to 35 days.' },
-      { type: 'h2', text: 'Request samples and test them' },
-      { type: 'p', text: 'Before committing to volume, obtain samples and verify the trip threshold, the reverse-wiring behaviour and the self-test indication yourself. A supplier confident in their product will not resist this.' }
+    "slug": "how-to-source-ul-listed-gfci-from-china",
+    "title": "Sourcing GFCI Outlets: A Model-by-Model Review",
+    "excerpt": "Build a sourcing brief around exact models, original documentation, samples and agreed commercial terms.",
+    "date": "2026-07-22",
+    "updated": "2026-08-31",
+    "readMinutes": 4,
+    "category": "Sourcing",
+    "cover": "assets/images/editorial-home/factory-optimized.webp",
+    "coverAlt": "GFCI functional test stations on the FAHINT production floor",
+    "coverCaption": "Inside FAHINT: GFCI assembly and functional testing in Wenzhou, China.",
+    "coverSource": "Archived FAHINT company page — template/default/public/common/images/10.jpg",
+    "sources": [
+      {
+        "label": "UL Solutions — Product iQ certification database",
+        "href": "https://www.ul.com/software/product-sourcing-and-certifications-database"
+      },
+      {
+        "label": "FAHINT — Original certificate library",
+        "href": "/about#certifications"
+      }
+    ],
+    "body": [
+      {
+        "type": "p",
+        "text": "An effective sourcing review connects the product you order to the documentation and sample you approve. A certificate image or a factory photograph alone does not complete that review."
+      },
+      {
+        "type": "h2",
+        "text": "Verify the certification record"
+      },
+      {
+        "type": "p",
+        "text": "UL Solutions provides Product iQ for searching certification information. Use identifiers such as the file number and model designation to locate the relevant record. Compare it with the supplier, device and intended application instead of relying on a logo in a presentation."
+      },
+      {
+        "type": "p",
+        "text": "FAHINT supplies original product-family certificates in its document library. E504391 relates to the listed GFCI models; it is not a single certification number for every FAHINT product. Read the addendum and confirm current coverage before ordering."
+      },
+      {
+        "type": "h2",
+        "text": "Confirm the exact configuration"
+      },
+      {
+        "type": "p",
+        "text": "Record the model, rating, required features, finish and included wall plate. Ask the supplier to confirm any differences between the quotation, sample, published specification and order. Resolve conflicting information before approval."
+      },
+      {
+        "type": "h2",
+        "text": "Review production and verification"
+      },
+      {
+        "type": "p",
+        "text": "Ask which assembly and inspection steps apply to your selected model, and which supporting records are available. Discuss any additional project verification with qualified personnel. Factory size or a generic quality claim is not a substitute for model-specific evidence."
+      },
+      {
+        "type": "h2",
+        "text": "Approve the sample and artwork"
+      },
+      {
+        "type": "p",
+        "text": "Review the product appearance, packaging, required identification and authorized brand artwork together. Electrical performance evaluation should be carried out by qualified personnel using appropriate procedures and equipment."
+      },
+      {
+        "type": "h2",
+        "text": "Agree the commercial terms"
+      },
+      {
+        "type": "p",
+        "text": "Confirm order quantities, sample arrangements, production timing, delivery terms and warranty terms in the quotation. These depend on the actual model and order; do not assume that one stock or lead-time statement applies to all configurations."
+      }
     ]
   },
   {
-    slug: 'gfci-colour-finishes-specification',
-    title: 'Specifying Device Finishes: Matching GFCI Outlets Across a Whole Project',
-    excerpt:
-      'Why finish consistency across receptacles, switches and wallplates matters more than buyers expect, and how to avoid mismatched devices on a completed installation.',
-    date: '2026-07-15',
-    readMinutes: 5,
-    category: 'Specification',
-    cover: 'assets/images/products/gf15-white.webp',
-    body: [
-      { type: 'p', text: 'Finish is usually the last thing on a wiring device specification and the first thing an end client notices. On a completed project, three slightly different shades of white across receptacles, switches and plates reads as poor workmanship even when the electrical work is flawless.' },
-      { type: 'h2', text: 'Why shades drift' },
-      { type: 'p', text: 'Different manufacturers use different polymer formulations and colourants. Two products both described as "white" from two suppliers will rarely match under the same light, and the difference becomes obvious when devices sit next to each other on the same wall.' },
-      { type: 'p', text: 'The problem compounds over the life of a building as devices are replaced piecemeal from whatever is on the shelf.' },
-      { type: 'h2', text: 'Sourcing the whole wall from one system' },
-      { type: 'p', text: 'The cleanest solution is to specify every device on a project from one manufacturer\'s coordinated palette. Fahint produces GFCI outlets, USB outlets, standard receptacles, dimmers, lighting switches, smart switches and wallplates across the same finish range, so a whole installation reads as one system.' },
-      { type: 'h2', text: 'The seven-finish palette' },
-      { type: 'p', text: 'Our standard range covers White, Ivory, Light Almond, Black, Grey and Brown. White remains the core volume colour. Light Almond is heavily used in the renovation market, where it matches devices installed decades earlier. Black has grown substantially in high-end commercial and smart residential work.' },
-      { type: 'h2', text: 'Glossy and matte' },
-      { type: 'p', text: 'Beyond colour, wallplates are available in glossy and matte finishes. Matte hides fingerprints and surface imperfections and tends to suit contemporary interiors; glossy is easier to clean and remains standard on commercial specifications.' },
-      { type: 'h2', text: 'Custom colour matching' },
-      { type: 'p', text: 'For private-label programmes we offer custom colour matching on wall plates, covers and bases, with a standard customisation MOQ of 400 cartons. If you are building a branded product line, a proprietary finish is one of the more visible ways to differentiate it.' }
+    "slug": "gfci-colour-finishes-specification",
+    "title": "Coordinating Device Finishes Across a Project",
+    "excerpt": "Choose the device and wall plate together, then use actual samples to approve the combination.",
+    "date": "2026-07-15",
+    "updated": "2026-08-31",
+    "readMinutes": 3,
+    "category": "Specification",
+    "cover": "assets/images/company/exhibition-source.webp",
+    "coverWidth": 1200,
+    "coverHeight": 1500,
+    "coverRegion": { "left": 319, "top": 947, "width": 557, "height": 271 },
+    "coverAlt": "GFCI devices in different colors on the FAHINT exhibition display",
+    "coverCaption": "Products on the FAHINT exhibition display. Confirm each color and wall-plate combination against the selected model and sample.",
+    "coverSource": "Original company promotional material — 公司资料&产品/详情页/详情页_15.png, product display photograph",
+    "sources": [
+      {
+        "label": "FAHINT — GF15 model and finish options",
+        "href": "/products/gfci/gf15"
+      },
+      {
+        "label": "FAHINT — Wall plate collection",
+        "href": "/products/wallplates"
+      }
+    ],
+    "body": [
+      {
+        "type": "p",
+        "text": "The visible wall device is a combination of product, finish and wall plate. Selecting those details together makes it easier to communicate the intended appearance and repeat it across an order."
+      },
+      {
+        "type": "h2",
+        "text": "Start with the model"
+      },
+      {
+        "type": "p",
+        "text": "Choose the required electrical rating, configuration and functions before the finish. A color selection should never lead to substituting a device with a different rating or feature set."
+      },
+      {
+        "type": "h2",
+        "text": "Do not assume a universal palette"
+      },
+      {
+        "type": "p",
+        "text": "Available colors and surface finishes vary by model and product family. The options shown on one GFCI page do not establish the available finishes for a smart switch or a metal wall plate. Check each exact model."
+      },
+      {
+        "type": "h2",
+        "text": "Review samples together"
+      },
+      {
+        "type": "p",
+        "text": "View the device and plate under the lighting used for the project. Screen images are useful for selection, but they cannot guarantee a physical color match. Approve actual samples if the finish is important to the specification."
+      },
+      {
+        "type": "h2",
+        "text": "Record the approved combination"
+      },
+      {
+        "type": "p",
+        "text": "Keep the model, finish name, plate style and approved sample reference together on the order. For multi-gang installations, also confirm the opening arrangement and dimensions."
+      },
+      {
+        "type": "h2",
+        "text": "Coordinate private-label requirements"
+      },
+      {
+        "type": "p",
+        "text": "Discuss proposed finishes, authorized branding and packaging with FAHINT before promising them to a customer. Feasibility, quantities and lead times must be confirmed for the selected product and finish."
+      }
     ]
   }
 ];
 
-export function findPost(slug) {
-  return posts.find((p) => p.slug === slug);
-}
-
-export const postCategories = ['All', ...Array.from(new Set(posts.map((p) => p.category)))];
+export function findPost(slug) { return posts.find(post => post.slug === slug); }
+export const postCategories = ['All', ...new Set(posts.map(post => post.category))];

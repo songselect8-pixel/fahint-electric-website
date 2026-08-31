@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter, useNavigate } from 'react-router-dom';
+import { Link, MemoryRouter, useNavigate } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import RouteFocusManager from './RouteFocusManager.jsx';
 
@@ -89,5 +89,22 @@ describe('RouteFocusManager', () => {
 
     expect(window.scrollTo).toHaveBeenCalledWith({ top: 0 });
     expect(screen.getByText('Main content')).toHaveFocus();
+  });
+
+  it('revisits a chapter when the same hash link is clicked again after scrolling away', async () => {
+    const user = userEvent.setup();
+    const scrollIntoView = vi.fn();
+    render(
+      <MemoryRouter initialEntries={['/home-studio#studio-brand']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <RouteFocusManager />
+        <Link to="/home-studio#studio-brand">About FAHINT</Link>
+        <section id="studio-brand" ref={(node) => { if (node) node.scrollIntoView = scrollIntoView; }}>Brand introduction</section>
+      </MemoryRouter>
+    );
+
+    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    await user.click(screen.getByRole('link', { name: 'About FAHINT' }));
+    expect(scrollIntoView).toHaveBeenCalledTimes(2);
+    expect(screen.getByText('Brand introduction')).toHaveFocus();
   });
 });

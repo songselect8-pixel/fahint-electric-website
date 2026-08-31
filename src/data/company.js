@@ -86,21 +86,21 @@ export const faqs = [
   {
     q: 'What is your MOQ for a customized order?',
     a:
-      'Standard MOQ for customization — individual color box, logo on wall plate, logo on body, or custom colors for plates, covers and bases — is 400 cartons. Standard catalog items ship at lower volumes; contact us with your target quantity.'
+      'Minimum order quantities depend on the model, finish, packaging and customization requested. Send us your target quantity and artwork requirements so we can confirm the MOQ for your order.'
   },
   {
     q: 'How fast can you deliver to the United States?',
     a:
-      'We maintain overseas warehouses in North America. Stocked items ship within 3 days and can reach the customer in as fast as 10 days. Factory-direct production orders typically run 25–35 days depending on volume and customization.'
+      'Lead time depends on model availability, order quantity, customization and destination. We will confirm the dispatch schedule and shipping options in your quotation; ask our team about current stock before planning a delivery date.'
   },
   {
     q: 'What is the difference between TR, WR and Self-Test?',
     a:
-      'TR (tamper-resistant) adds a shutter system required by the NEC for dwelling units. WR (weather-resistant) adds UV- and cold-impact-resistant materials plus conformal-coated boards for wet and damp locations per NEC 406.8. Self-Test means the GFCI automatically tests its own protection every 15 minutes.'
+      'TR means tamper-resistant; WR means weather-resistant; self-test identifies automatic monitoring of the GFCI protection function. These features vary by model. Check the product specification and approved installation instructions for the intended location and enclosure requirements.'
   },
   {
     q: 'Do you offer a warranty?',
-    a: 'Every product carries a 3-year warranty. Our first pass yield exceeds 98% across 12 automated inspection lines.'
+    a: 'Warranty coverage and duration are model-specific. Refer to the selected product documentation and confirm the applicable warranty terms in your quotation before ordering.'
   },
   {
     q: 'Can you supply neutral or private-label packaging?',

@@ -1,284 +1,125 @@
-import { ArrowRight, Check } from 'lucide-react';
+import { ArrowRight, FileCheck2, Factory } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SafeImage from '../components/SafeImage.jsx';
-import { productFamilies } from '../data/productFamilies.js';
+import ProductRangeDirectory from '../components/products/ProductRangeDirectory.jsx';
+import EditorialPhoto from '../components/company/EditorialPhoto.jsx';
+import { companyPhotos } from '../data/companyProfile.js';
 import {
-  productFamilyVisuals,
   productOverviewVisualDimensions,
   productOverviewVisuals
 } from '../data/productPageVisuals.js';
 
-const productFamilyById = new Map(productFamilies.map((family) => [family.id, family]));
-
 const markets = [
   {
     title: 'Residential & renovation',
-    label: 'Everyday protection',
-    summary: 'Coordinated protection and wiring devices for kitchens, bathrooms and renovation programs.',
+    summary: 'Protection and wiring devices for kitchens, bathrooms and renovation programs.',
     visualKey: 'marketResidential',
-    image: productOverviewVisuals.marketResidential,
-    mobileFocal: 'right',
-    href: '/products/gfci'
+    href: '/products/gfci',
+    action: 'Explore GFCI outlets'
   },
   {
     title: 'Hospitality & multifamily',
-    label: 'In-room convenience',
-    summary: 'Integrated charging platforms for guest rooms, shared spaces and multifamily developments.',
+    summary: 'In-wall charging for guest rooms, shared spaces and multifamily developments.',
     visualKey: 'marketHospitality',
-    image: productOverviewVisuals.marketHospitality,
-    mobileFocal: 'left',
-    href: '/products/usb-outlets'
+    href: '/products/usb-outlets',
+    action: 'Explore USB outlets'
   },
   {
     title: 'Commercial fit-out',
-    label: 'Project coordination',
-    summary: 'Specification and manufacturing support for coordinated commercial wiring-device programs.',
+    summary: 'Product specification and manufacturing support for commercial wiring-device programs.',
     visualKey: 'marketCommercial',
-    image: productOverviewVisuals.marketCommercial,
-    mobileFocal: 'center',
-    href: '/capabilities'
+    href: '/capabilities',
+    action: 'Review project capabilities'
   }
-];
-
-const proofItems = [
-  'Verified product platforms',
-  'Coordinated finishes',
-  'Compliance documentation',
-  'Private-label support'
 ];
 
 export default function ProductsOverview() {
   return (
     <div className="product-overview">
-      <section
-        className="product-overview-hero editorial-hero"
-        aria-labelledby="product-overview-title"
-        data-testid="product-overview-hero"
-      >
-        <SafeImage
-          className="editorial-hero__image"
-          src={productOverviewVisuals.hero}
-          alt=""
-          width={productOverviewVisualDimensions.hero.width}
-          height={productOverviewVisualDimensions.hero.height}
-          loading="eager"
-          fetchpriority="high"
-        />
-        <div className="editorial-hero__shade" />
-        <div className="editorial-hero__grid" />
-        <div className="container editorial-hero__content product-overview-hero__inner">
-          <p className="editorial-eyebrow">Coordinated wiring-device platform</p>
-          <h1 id="product-overview-title">
-            <span className="product-overview-hero__title-line">One platform.</span>
-            <span className="product-overview-hero__title-line">Complete product lines.</span>
-          </h1>
-          <p className="editorial-hero__copy">
-            Bring protection, charging, receptacles and control together in a range designed for consistent
-            specification, branding and project delivery.
-          </p>
-          <div className="editorial-hero__actions">
-            <Link className="editorial-button" to="/products/gfci">
-              Explore GFCI outlets <ArrowRight size={17} aria-hidden="true" />
-            </Link>
-          </div>
-        </div>
-      </section>
+      <ProductRangeDirectory />
 
-      <section className="product-overview-platform-strip" aria-label="Product platform summary">
-        <div className="container product-overview-platform-strip__inner">
-          <div>
-            <strong>UL / cUL</strong>
-            <span>Listed product platforms</span>
-          </div>
-          <div>
-            <strong>5 families</strong>
-            <span>One coordinated device range</span>
-          </div>
-          <div>
-            <strong>OEM / ODM</strong>
-            <span>Brand and program support</span>
-          </div>
-        </div>
-      </section>
-
-      <section className="product-family-section editorial-products" aria-labelledby="product-family-title">
-        <div className="container editorial-heading">
-          <div>
-            <p className="editorial-eyebrow">Five product families</p>
-            <h2 id="product-family-title">One coordinated product platform.</h2>
-          </div>
-          <p>
-            Select a family to explore the product platforms available for coordinated branded and OEM/ODM programs.
-          </p>
-        </div>
-
-        <div className="editorial-product-mosaic product-family-grid">
-          {productFamilyVisuals.map((visual) => {
-            const family = productFamilyById.get(visual.id);
-
-            return (
-              <Link
-                className="editorial-product-panel product-family-card"
-                data-testid="product-family-card"
-                key={visual.id}
-                to={visual.href}
-              >
-                <SafeImage
-                  className="family-scene-image"
-                  src={visual.scene}
-                  alt=""
-                  width={visual.sceneWidth}
-                  height={visual.sceneHeight}
-                  loading="lazy"
-                />
-                <div className="editorial-panel__shade" />
-                <div className="editorial-panel__content">
-                  <p className="editorial-panel__label">{family.label}</p>
-                  <h3>{visual.name}</h3>
-                  <p>{family.summary}</p>
-                  <div className="editorial-panel__meta">
-                    <span>Explore the family</span>
-                    <span className="editorial-panel__arrow" aria-hidden="true">
-                      <ArrowRight size={18} />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="product-brand-system editorial-customization" aria-labelledby="product-brand-title">
-        <div className="container editorial-customization__grid product-brand-system__inner">
-          <div className="editorial-customization__media">
-            <SafeImage
-              src={productOverviewVisuals.brandProgram}
-              alt=""
-              width={productOverviewVisualDimensions.brandProgram.width}
-              height={productOverviewVisualDimensions.brandProgram.height}
-              loading="lazy"
-            />
-            <div className="editorial-customization__caption">
-              <span>Brand system review</span>
-              <strong>Product, finish and packaging reviewed as one program.</strong>
-            </div>
-          </div>
-          <div className="editorial-customization__content">
-            <p className="editorial-eyebrow">OEM/ODM program support</p>
+      <section className="product-brand-system" aria-labelledby="product-brand-title">
+        <div className="container product-brand-system__inner">
+          <figure className="product-brand-system__media">
+            <EditorialPhoto {...companyPhotos.display} ratio={557 / 271} />
+            <figcaption>Original product display · FAHINT exhibition</figcaption>
+          </figure>
+          <div className="product-brand-system__copy">
             <h2 id="product-brand-title">Built for brands and OEM programs.</h2>
-            <p className="editorial-customization__lede">
-              Coordinate product selection, finishes, markings, documentation and packaging around one market-ready
-              wiring-device program.
-            </p>
-            <Link className="editorial-button editorial-button--dark" to="/capabilities">
-              Explore OEM/ODM capability <ArrowRight size={17} aria-hidden="true" />
+            <p>Coordinate product selection, finishes, markings, documentation and packaging around one market-ready wiring-device program.</p>
+            <Link className="editorial-button" to="/capabilities">
+              Explore OEM/ODM support <ArrowRight size={18} aria-hidden="true" />
             </Link>
           </div>
         </div>
       </section>
 
-      <section className="product-market-section editorial-applications" aria-labelledby="product-market-title">
-        <div className="container editorial-heading">
-          <div>
-            <p className="editorial-eyebrow">Market applications</p>
-            <h2 id="product-market-title">Specified for real projects.</h2>
-          </div>
-          <p>Start with the installation environment, then coordinate the product mix around the project brief.</p>
-        </div>
-
+      <section className="product-market-section" aria-labelledby="product-market-title">
         <div className="container">
+          <div className="product-overview-heading">
+            <div>
+              <h2 id="product-market-title">Specified for real projects.</h2>
+            </div>
+            <p>Start with the installation environment, then coordinate the product mix around the project brief.</p>
+          </div>
           <div className="product-market-grid">
             {markets.map((market) => (
-              <Link
-                className="editorial-application"
-                data-mobile-focal={market.mobileFocal}
-                key={market.title}
-                to={market.href}
-              >
-                <SafeImage
-                  src={market.image}
-                  alt=""
-                  width={productOverviewVisualDimensions[market.visualKey].width}
-                  height={productOverviewVisualDimensions[market.visualKey].height}
-                  loading="lazy"
-                />
-                <div className="editorial-application__shade" />
-                <div className="editorial-application__copy">
-                  <p>{market.label}</p>
+              <Link className="product-market-card" key={market.title} to={market.href}>
+                <SafeImage src={productOverviewVisuals[market.visualKey]} alt="" {...productOverviewVisualDimensions[market.visualKey]} loading="lazy" />
+                <div className="product-market-card__shade" aria-hidden="true" />
+                <div className="product-market-card__body">
                   <h3>{market.title}</h3>
-                  <span>{market.summary}</span>
+                  <p>{market.summary}</p>
+                  <span className="product-market-card__action">{market.action} <ArrowRight size={17} aria-hidden="true" /></span>
                 </div>
-                <span className="editorial-application__arrow" aria-hidden="true">
-                  <ArrowRight size={19} />
-                </span>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="product-evidence-section editorial-factory" aria-labelledby="product-evidence-title">
-        <SafeImage
-          className="editorial-factory__bg"
-          src="assets/images/company/facility-workshop.webp"
-          alt="Fahint wiring-device manufacturing workshop"
-          loading="lazy"
-        />
-        <div className="editorial-factory__shade" />
-        <div className="container editorial-factory__content product-evidence-section__grid">
-          <div className="editorial-factory__copy">
-            <p className="editorial-eyebrow">Factory evidence</p>
+      <section className="product-evidence-section" aria-labelledby="product-evidence-title">
+          <SafeImage
+            className="product-evidence-section__image"
+            src={productOverviewVisuals.factory}
+            alt="Fahint production and functional testing line"
+            {...productOverviewVisualDimensions.factory}
+            loading="lazy"
+          />
+          <div className="product-evidence-section__shade" aria-hidden="true" />
+        <div className="container product-evidence-section__grid">
+          <div className="product-evidence-section__copy">
             <h2 id="product-evidence-title">Verified manufacturing and compliance.</h2>
-            <p>
-              Integrated production, functional inspection and standards-focused documentation support consistent
-              product programs from approval sample through shipment.
-            </p>
+            <p>Integrated production, functional inspection and standards-focused documentation support consistent product programs from approval sample through shipment.</p>
           </div>
-          <div className="editorial-factory__points">
-            <div>
-              <span>01</span>
-              <strong>Manufacturing capability</strong>
-              <small>See the production, quality and program support behind the range.</small>
-              <Link className="editorial-text-link" to="/capabilities">
-                View manufacturing <ArrowRight size={15} aria-hidden="true" />
-              </Link>
-            </div>
-            <div>
-              <span>02</span>
-              <strong>Certification details</strong>
-              <small>Review the compliance information available for product planning.</small>
-              <Link className="editorial-text-link" to="/capabilities">
-                View certification details <ArrowRight size={15} aria-hidden="true" />
-              </Link>
-            </div>
-          </div>
+          <ul className="product-evidence-links" aria-label="Manufacturing and certification resources" role="list">
+            <li>
+              <Factory size={24} aria-hidden="true" />
+              <div>
+                <h3>Production &amp; testing</h3>
+                <p>Product development, manufacturing and quality control in Yueqing, Wenzhou.</p>
+                <Link className="editorial-text-link" to="/capabilities">View manufacturing <ArrowRight size={17} aria-hidden="true" /></Link>
+              </div>
+            </li>
+            <li>
+              <FileCheck2 size={24} aria-hidden="true" />
+              <div>
+                <h3>Model-specific certification</h3>
+                <p>Certification coverage varies by model. Review the applicable UL/cUL files and model addenda before specifying.</p>
+                <Link className="editorial-text-link" to="/about#certifications">View certification details <ArrowRight size={17} aria-hidden="true" /></Link>
+              </div>
+            </li>
+          </ul>
         </div>
       </section>
 
-      <section className="product-proof-strip editorial-proof" aria-label="Product program proof points">
-        <div className="container editorial-proof__grid">
-          {proofItems.map((item) => (
-            <div key={item}>
-              <Check size={19} aria-hidden="true" />
-              <strong>{item}</strong>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="product-overview-cta home-cta" aria-labelledby="product-cta-title">
-        <div className="container home-cta__inner">
-          <div className="home-cta__copy">
-            <p className="home-section-label">Start a program</p>
+      <section className="product-overview-cta" aria-labelledby="product-cta-title">
+        <div className="container product-overview-cta__inner">
+          <div>
             <h2 id="product-cta-title">Tell us what your market needs.</h2>
             <p>Share your target product mix, finishes, compliance needs and forecast volume.</p>
           </div>
-          <div className="home-cta__action">
-            <Link className="btn btn--primary" to="/contact">
-              Start a product program <ArrowRight size={17} aria-hidden="true" />
-            </Link>
-          </div>
+          <Link className="editorial-button" to="/contact">Request a quote <ArrowRight size={18} aria-hidden="true" /></Link>
         </div>
       </section>
     </div>

@@ -1,132 +1,42 @@
-import { Link, useParams, Navigate } from 'react-router-dom';
-import { ArrowRight, Clock, Mail } from 'lucide-react';
+import { Link, useParams } from 'react-router-dom';
+import { Download, ArrowUpRight } from 'lucide-react';
 import { findPost, posts } from '../data/posts.js';
-import { company } from '../data/company.js';
+import { catalogueDocument } from '../data/documents.js';
+import { publicAsset } from '../utils/publicAsset.js';
+import { CompanyLink, usePageMeta } from '../components/company/CompanyShared.jsx';
+import EditorialPhoto from '../components/company/EditorialPhoto.jsx';
+import { formatPostDate, ReadingCard } from '../components/company/ReadingShared.jsx';
+import NotFound from './NotFound.jsx';
 
-function formatDate(iso) {
-  return new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+function SourceLink({ source, children, ...props }) {
+  if (source.href.startsWith('/')) return <Link to={source.href} {...props}>{children || source.label}</Link>;
+  return <a href={source.href} target="_blank" rel="noreferrer" {...props}>{children || source.label}</a>;
+}
+
+function ArticleContent({ post }) {
+  usePageMeta(post.title, post.excerpt);
+  const headings = post.body.map((block,index) => ({ ...block, id:'article-section-' + index })).filter(block => block.type === 'h2');
+  const related = posts.filter(item => item.slug !== post.slug).sort((a,b) => Number(b.category === post.category) - Number(a.category === post.category)).slice(0,3);
+  return <div className="company-page reading-page">
+    <header className="reading-article-heading company-section--paper"><div className="company-wrap">
+      <nav className="company-breadcrumb" aria-label="Breadcrumb"><Link to="/">Home</Link><span aria-hidden="true">/</span><Link to="/blog">Guides & insights</Link><span aria-hidden="true">/</span><span>{post.category}</span></nav>
+      <h1>{post.title}</h1><p>{post.excerpt}</p><div className="reading-meta"><span>{post.category}</span><time dateTime={post.updated || post.date}>Updated {formatPostDate(post.updated || post.date)}</time><span>{post.readMinutes} min read</span></div>
+    </div></header>
+    <div className="company-wrap reading-article-layout">
+      <aside className="reading-article-nav"><nav aria-label="In this article"><h2>In this article</h2><ol>{headings.map(heading => <li key={heading.id}><Link to={'#' + heading.id}>{heading.text}</Link></li>)}</ol></nav><div className="reading-document"><h3>Keep the details close.</h3><p>Compare the product with the original model documentation.</p><a className="company-text-link" href={publicAsset(catalogueDocument)} download>Download FAHINT catalog <Download size={16} aria-hidden="true" /></a><CompanyLink to="/about#certifications" secondary>Certificate library</CompanyLink></div></aside>
+      <article className="reading-article"><figure className="reading-article-image"><EditorialPhoto src={post.cover} alt={post.coverAlt} region={post.coverRegion} width={post.coverWidth} height={post.coverHeight} position={post.coverPosition} priority /><figcaption>{post.coverCaption}</figcaption></figure>
+        <p className="reading-safety-note">Buyer information, not installation instructions. Requirements depend on the adopted local code and exact product. Electrical work and site diagnosis should be performed by qualified professionals.</p>
+        {post.body.map((block,index) => block.type === 'h2' ? <h2 id={'article-section-' + index} key={index}>{block.text}</h2> : <p key={index}>{block.text}{Number.isInteger(block.source) && post.sources[block.source] && <> <SourceLink className="reading-inline-source" source={post.sources[block.source]}>[Source]</SourceLink></>}</p>)}
+        <section className="reading-sources" aria-labelledby="reading-sources-title"><h2 id="reading-sources-title">Sources & further reading</h2><ul>{post.sources.map(source => <li key={source.href}><SourceLink source={source} /><ArrowUpRight size={15} aria-hidden="true" /></li>)}</ul></section>
+        <div className="reading-article-cta"><h2>Reviewing a specific model?</h2><p>Send the model and the question you want to resolve. We will help locate the relevant product information.</p><CompanyLink to="/contact?topic=technical">Ask a product question</CompanyLink></div>
+      </article>
+    </div>
+    <section className="company-section company-section--paper"><div className="company-wrap"><div className="company-heading"><h2>Continue reading.</h2><CompanyLink to="/blog" secondary>All guides & insights</CompanyLink></div><div className="reading-grid">{related.map(item => <ReadingCard post={item} key={item.slug} />)}</div></div></section>
+  </div>;
 }
 
 export default function BlogPost() {
   const { slug } = useParams();
   const post = findPost(slug);
-  if (!post) return <Navigate to="/blog" replace />;
-
-  const related = posts.filter((p) => p.slug !== post.slug).slice(0, 3);
-
-  return (
-    <>
-      <section className="page-banner page-banner--article">
-        <div className="container">
-          <div className="crumbs">
-            <Link to="/">Home</Link> <span>/</span> <Link to="/blog">Blog</Link> <span>/</span>
-            <span>{post.category}</span>
-          </div>
-          <h1>{post.title}</h1>
-          <div className="post-meta post-meta--light">
-            <span>{formatDate(post.date)}</span>
-            <span>
-              <Clock size={14} /> {post.readMinutes} min read
-            </span>
-            <span>{post.category}</span>
-          </div>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="container article-layout">
-          <article className="article">
-            <img className="article__hero" src={post.cover} alt={post.title} />
-            <p className="article__lead">{post.excerpt}</p>
-
-            {post.body.map((block, i) =>
-              block.type === 'h2' ? (
-                <h2 key={i}>{block.text}</h2>
-              ) : (
-                <p key={i}>{block.text}</p>
-              )
-            )}
-
-            <div className="article__cta">
-              <h3>Need this specified for a live project?</h3>
-              <p>
-                Our engineering team answers NEC, UL 943 and product-selection questions directly — usually within one
-                business day.
-              </p>
-              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                <Link to="/contact" className="btn btn--primary">
-                  Ask a question <ArrowRight size={16} />
-                </Link>
-                <a href={`mailto:${company.email}`} className="btn btn--ghost">
-                  <Mail size={16} /> {company.email}
-                </a>
-              </div>
-            </div>
-          </article>
-
-          <aside className="article-side">
-            <div className="side-card">
-              <h4>About Fahint</h4>
-              <p>
-                {company.name} manufactures UL/cUL listed American standard wiring devices in Wenzhou, China. UL file{' '}
-                {company.ulFile}, ISO 9001 certified, US and CN patented.
-              </p>
-              <Link to="/about" className="textlink">
-                Company profile <ArrowRight size={15} />
-              </Link>
-            </div>
-
-            <div className="side-card">
-              <h4>More articles</h4>
-              <ul className="side-list">
-                {related.map((r) => (
-                  <li key={r.slug}>
-                    <Link to={`/blog/${r.slug}`}>{r.title}</Link>
-                    <small>{formatDate(r.date)}</small>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="side-card side-card--dark">
-              <h4>Request the catalogue</h4>
-              <p>Full specifications for all seven product families, including datasheets and certification documents.</p>
-              <Link to="/contact" className="btn btn--light" style={{ marginTop: 6 }}>
-                Get catalogue <ArrowRight size={15} />
-              </Link>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section className="section section--gray">
-        <div className="container">
-          <div className="section-head">
-            <div className="eyebrow">/ Keep Reading /</div>
-            <h2>Related Articles</h2>
-          </div>
-          <div className="post-grid">
-            {related.map((p) => (
-              <Link key={p.slug} to={`/blog/${p.slug}`} className="post-card">
-                <div className="post-card__media">
-                  <img src={p.cover} alt={p.title} loading="lazy" />
-                  <span className="post-cat post-cat--float">{p.category}</span>
-                </div>
-                <div className="post-card__body">
-                  <h3>{p.title}</h3>
-                  <p>{p.excerpt}</p>
-                  <div className="post-meta">
-                    <span>{formatDate(p.date)}</span>
-                    <span>
-                      <Clock size={14} /> {p.readMinutes} min
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-    </>
-  );
+  return post ? <ArticleContent key={post.slug} post={post} /> : <NotFound />;
 }

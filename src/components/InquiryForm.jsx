@@ -17,6 +17,7 @@ const EMAIL_PATTERN = /^\S+@\S+\.\S+$/;
 const SUCCESS_MESSAGE = 'Your email app should now be open with the inquiry pre-filled.';
 const MINIMUM_HANDOFF_LOCK_MS = 1_500;
 const MAX_MAILTO_URL_LENGTH = 1_800;
+const REQUEST_TIMEOUT_MS = 12_000;
 
 const clean = (value) => String(value ?? '').trim();
 const normalizeInquiry = (form) =>
@@ -62,6 +63,13 @@ export function buildInquiryText(form) {
 }
 
 const defaultDelivery = (url) => window.location.assign(url);
+const defaultRequest = (...args) => fetch(...args);
+const secureEndpoint = (value) => {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && !url.username && !url.password ? url.href : '';
+  } catch { return ''; }
+};
 const defaultClipboardWriter = (text) => {
   if (!navigator.clipboard?.writeText) return Promise.reject(new Error('Clipboard unavailable'));
   return navigator.clipboard.writeText(text);
@@ -70,9 +78,13 @@ const defaultClipboardWriter = (text) => {
 export default function InquiryForm({
   defaultModel = '',
   title = 'Send a message',
+  modelOptions = products,
   delivery = defaultDelivery,
+  endpoint = import.meta.env.VITE_INQUIRY_ENDPOINT || '',
+  request = defaultRequest,
   clipboardWriter = defaultClipboardWriter
 }) {
+  const submissionEndpoint = secureEndpoint(endpoint);
   const [form, setForm] = useState({ ...EMPTY, model: defaultModel });
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('');
@@ -83,6 +95,7 @@ export default function InquiryForm({
   const inFlightRef = useRef(false);
   const copyInFlightRef = useRef(false);
   const cooldownRef = useRef(null);
+  const requestControllerRef = useRef(null);
   const mountedRef = useRef(true);
   const modelVersionRef = useRef(0);
   const idPrefix = useId();
@@ -112,6 +125,7 @@ export default function InquiryForm({
 
     return () => {
       mountedRef.current = false;
+      requestControllerRef.current?.abort();
       if (cooldownRef.current) {
         window.clearTimeout(cooldownRef.current.id);
         cooldownRef.current.resolve();
@@ -121,6 +135,8 @@ export default function InquiryForm({
   }, []);
 
   const update = (key) => (event) => {
+    // Pending delivery/copy feedback belongs to the draft that started it.
+    modelVersionRef.current += 1;
     const nextValue = event.target.value;
     const nextErrors = validateInquiry({ ...form, [key]: nextValue });
 
@@ -172,7 +188,7 @@ export default function InquiryForm({
     }
 
     const mailtoUrl = buildMailtoUrl(form);
-    if (mailtoUrl.length > MAX_MAILTO_URL_LENGTH) {
+    if (!submissionEndpoint && mailtoUrl.length > MAX_MAILTO_URL_LENGTH) {
       setStatus('too-long');
       return;
     }
@@ -181,15 +197,35 @@ export default function InquiryForm({
     setIsSubmitting(true);
     const handoffStartedAt = Date.now();
     const modelVersion = modelVersionRef.current;
+    let requestTimeout;
 
     try {
-      await delivery(mailtoUrl);
-      if (mountedRef.current && modelVersionRef.current === modelVersion) setStatus('success');
+      if (submissionEndpoint) {
+        const controller = new AbortController();
+        requestControllerRef.current = controller;
+        requestTimeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+        const response = await request(submissionEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(normalizeInquiry(form)),
+          signal: controller.signal,
+          credentials: 'omit',
+          redirect: 'error'
+        });
+        if (!response.ok) throw new Error('Delivery failed');
+        const receipt = await response.json();
+        if (receipt.ok !== true && receipt.success !== true) throw new Error('Delivery not confirmed');
+      } else {
+        await delivery(mailtoUrl);
+      }
+      if (mountedRef.current && modelVersionRef.current === modelVersion) setStatus(submissionEndpoint ? 'received' : 'success');
     } catch {
-      if (mountedRef.current && modelVersionRef.current === modelVersion) setStatus('failure');
+      if (mountedRef.current && modelVersionRef.current === modelVersion) setStatus(submissionEndpoint ? 'delivery-failure' : 'failure');
     } finally {
+      window.clearTimeout(requestTimeout);
+      requestControllerRef.current = null;
       const remainingLockMs = Math.max(0, MINIMUM_HANDOFF_LOCK_MS - (Date.now() - handoffStartedAt));
-      if (remainingLockMs > 0) {
+      if (remainingLockMs > 0 && mountedRef.current) {
         await new Promise((resolve) => {
           const id = window.setTimeout(() => {
             cooldownRef.current = null;
@@ -209,7 +245,7 @@ export default function InquiryForm({
   });
 
   return (
-    <form ref={formRef} className="form-card" noValidate onSubmit={submit}>
+    <form ref={formRef} className="form-card" noValidate onSubmit={submit} aria-busy={isSubmitting}>
       {title && <h3 className="form-card__title">{title}</h3>}
 
       {Object.keys(errors).length > 0 && (
@@ -222,6 +258,14 @@ export default function InquiryForm({
           {SUCCESS_MESSAGE}
         </div>
       )}
+      {status === 'received' && (
+        <div className="alert alert--ok" role="status">Your inquiry has been received. We will reply to the email address you provided.</div>
+      )}
+      {status === 'delivery-failure' && (
+        <div className="alert alert--error" role="alert">
+          We could not confirm delivery. Your details are still here. Retry or <a href={`mailto:${company.email}`}>email us directly</a>.
+        </div>
+      )}
       {status === 'failure' && (
         <div className="alert alert--error" role="alert">
           We could not open your email app. <a href={`mailto:${company.email}`}>Email us directly</a> or try again.
@@ -232,10 +276,10 @@ export default function InquiryForm({
           This inquiry is too long to open reliably in an email app. Copy the inquiry details instead.
         </div>
       )}
-      {(status === 'success' || status === 'failure' || status === 'too-long') && (
+      {['success', 'failure', 'too-long', 'delivery-failure'].includes(status) && (
         <div className="form-card__recovery">
           <p>
-            If it did not open, copy the inquiry details and send them to <strong>{company.email}</strong>.
+            {status === 'delivery-failure' ? 'You can copy the inquiry details and send them to ' : 'If it did not open, copy the inquiry details and send them to '}<strong>{company.email}</strong>.
           </p>
           <button type="button" className="btn btn--ghost" onClick={copyInquiryDetails} disabled={isCopying}>
             {isCopying ? 'Copying…' : 'Copy inquiry details'}
@@ -324,7 +368,10 @@ export default function InquiryForm({
           <label htmlFor={ids.model}>Model of interest</label>
           <select id={ids.model} name="model" value={form.model} onChange={update('model')}>
             <option value="">Select a model</option>
-            {products.map((product) => (
+            {form.model && form.model !== 'Mixed / multiple' && !modelOptions.some((product) => product.sku === form.model) && (
+              <option value={form.model}>{form.model}</option>
+            )}
+            {modelOptions.map((product) => (
               <option key={product.sku} value={product.sku}>
                 {product.sku} — {product.name}
               </option>
@@ -352,7 +399,7 @@ export default function InquiryForm({
           required
           value={form.message}
           onChange={update('message')}
-          placeholder="Tell us about colours, packaging, private label, certification or delivery requirements."
+          placeholder="Tell us about colors, packaging, private label, certification or delivery requirements."
           {...validationProps('message', ids.messageError)}
         />
         {errors.message && (
@@ -368,12 +415,14 @@ export default function InquiryForm({
         style={{ width: '100%', justifyContent: 'center' }}
         disabled={isSubmitting}
       >
-        {isSubmitting ? 'Opening email app…' : 'Send inquiry'} <Send size={16} aria-hidden="true" />
+        {isSubmitting ? (submissionEndpoint ? 'Sending inquiry…' : 'Opening email app…') : (submissionEndpoint ? 'Send inquiry' : 'Open email app')} <Send size={16} aria-hidden="true" />
       </button>
 
       <p className="form-note">
-        This static site has no server-side database — submitting opens your own email client with the details pre-filled. You can
-        review and send the message from there. You can also write to {company.email} or message us on WhatsApp.
+        {submissionEndpoint
+          ? 'Your details will be sent to our inquiry service so we can respond to your request. '
+          : 'This opens your email app with your inquiry filled in. You can review and send the message from there. '}
+        You can also <a href={`mailto:${company.email}`}>email us directly</a> or <a href={`https://wa.me/${company.whatsapp.replace(/[^0-9]/g, '')}`}>use WhatsApp</a>.
       </p>
     </form>
   );

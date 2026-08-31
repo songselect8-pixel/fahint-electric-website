@@ -15,6 +15,22 @@ function renderContact(entry) {
 }
 
 describe('Contact model query', () => {
+  it('provides a clear OEM inquiry context and keeps the selected model', () => {
+    renderContact('/contact?topic=oem&model=GF15');
+    expect(screen.getByRole('heading', { level: 1, name: 'Let’s talk about your next project.' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'OEM / ODM inquiry' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByLabelText('Model of interest')).toHaveValue('GF15');
+    expect(screen.getByRole('link', { name: 'Technical question' })).toHaveAttribute('href', '/contact?topic=technical&model=GF15');
+  });
+  it('falls back to product inquiry for an unsupported topic', () => {
+    renderContact('/contact?topic=invalid');
+    expect(screen.getByRole('link', { name: 'Product inquiry' })).toHaveAttribute('aria-current', 'page');
+    expect(document.title).toBe('Contact FAHINT | FAHINT');
+  });
+  it.each(['FTR20QC-DC65W', 'DM2010S', 'EUW8811C', 'DS15.3', 'BS1803-M'])('retains the exact non-GFCI inquiry model %s', (sku) => {
+    renderContact(`/contact?model=${encodeURIComponent(sku)}`);
+    expect(screen.getByLabelText('Model of interest')).toHaveValue(sku);
+  });
   it('prefills a validated public product from the query without unsafe response promises', () => {
     renderContact('/contact?model=gw15');
 

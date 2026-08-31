@@ -12,6 +12,9 @@ export default function Header() {
   const closeTimer = useRef(null);
   const { pathname } = useLocation();
   const overHero = pathname === '/';
+  const homePath = pathname.replace(/\/$/, '') === '/home-next' ? '/home-next' : '/';
+  const productsPath = '/products';
+  const inquiryPath = ['/', '/home-studio'].includes(pathname) ? '/#studio-inquiry' : '/contact';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -42,7 +45,7 @@ export default function Header() {
       <a className="skip-link" href="#main-content">Skip to main content</a>
       <header className={`header ${solid ? 'header--solid' : 'header--transparent'}`}>
         <div className="header__inner">
-          <Link to="/" className="logo" aria-label={company.shortName}>
+          <Link to={homePath} className="logo" aria-label={company.shortName}>
             <img
               className="logo__image"
               src="assets/images/brand/fahint-logo-navy.png"
@@ -53,13 +56,13 @@ export default function Header() {
           </Link>
 
           <nav className="nav">
-            <NavLink to="/" end className={({ isActive }) => (isActive ? 'is-active' : '')}>
+            <NavLink to={homePath} end className={({ isActive }) => (isActive ? 'is-active' : '')}>
               Home
             </NavLink>
 
             <div className="nav__has-menu" onMouseEnter={openDropdown} onMouseLeave={closeDropdown}>
               <NavLink
-                to="/products"
+                to={productsPath}
                 className={({ isActive }) => `nav__trigger ${isActive ? 'is-active' : ''}`}
               >
                 Products <ChevronDown size={15} className={dropdown ? 'is-flipped' : ''} />
@@ -78,7 +81,7 @@ export default function Header() {
                       </Link>
                     ))}
                   </div>
-                  <Link to="/products" className="dropdown__all">
+                  <Link to={productsPath} className="dropdown__all">
                     View all product series <ArrowRight size={15} />
                   </Link>
                 </div>
@@ -99,7 +102,7 @@ export default function Header() {
             </NavLink>
           </nav>
 
-          <Link to="/contact" className="btn btn--primary header__cta">
+          <Link to={inquiryPath} className="btn btn--primary header__cta">
             Send Inquiry <ArrowRight size={16} />
           </Link>
 
@@ -111,14 +114,14 @@ export default function Header() {
 
       {open && (
         <div className="mobile-menu">
-          <Link to="/">Home</Link>
+          <Link to={homePath}>Home</Link>
 
           <button className="mobile-menu__toggle" onClick={() => setMobileProducts((v) => !v)} aria-expanded={mobileProducts}>
             Products <ChevronDown size={17} className={mobileProducts ? 'is-flipped' : ''} />
           </button>
           {mobileProducts && (
             <div className="mobile-menu__sub">
-              <Link to="/products">All product series</Link>
+              <Link to={productsPath}>All product series</Link>
               {productLines.map((l) => (
                 <Link key={l.slug} to={`/products/${l.slug}`}>
                   {l.name}
@@ -131,7 +134,7 @@ export default function Header() {
           <Link to="/blog">Blog</Link>
           <Link to="/about">About</Link>
           <Link to="/contact">Contact</Link>
-          <Link to="/contact" className="btn btn--primary">
+          <Link to={inquiryPath} className="btn btn--primary" onClick={() => setOpen(false)}>
             Send Inquiry <ArrowRight size={16} />
           </Link>
         </div>

@@ -1,0 +1,168 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowRight, ArrowUpRight, Check } from 'lucide-react';
+import { company } from '../data/company.js';
+import { studioRanges } from '../data/studioCatalog.js';
+import { StudioImage, StudioLink, useStudioPageMeta } from '../components/studio/StudioShared.jsx';
+import StudioBuyerSections from '../components/studio/StudioBuyerSections.jsx';
+import StudioProductSelection from '../components/studio/StudioProductSelection.jsx';
+import '../styles/studio.css';
+
+/* Published homepage — earlier designs remain available only for local review.
+ * THESIS: an architectural wiring-device brand with a visible manufacturing backbone.
+ * WORLD: FAHINT Source Sans 3, ink navy, cool white, functional blue, real device photography.
+ * STORY: a device in its room → the collection → the brand and company → your own range → factory evidence.
+ * FIRST VIEW: full-bleed interior, a large quiet statement and an actionable product label.
+ * FORM: code-led, surface seed 8b58929a; editorial image scale and asymmetrical pacing, not a repeated card stack.
+ * References: Vibia/Plusminus editorial case (Eva Sánchez/Réplica); Mara product/space catalogue via Siteinspire.
+ * All imagery below is from the existing FAHINT library; no model geometry or facts generated.
+ */
+const scenes = [
+  { label: 'Kitchen essentials', line: 'gfci', name: 'GFCI Outlets', image: 'family-gfci-installed-v3-optimized.webp', alt: 'White FAHINT GFCI outlet installed on a dark kitchen backsplash' },
+  { label: 'Bedside charging', line: 'usb-outlets', name: 'USB Outlets', image: 'family-usb-installed-v3-optimized.webp', alt: 'FAHINT USB charging outlet beside a hospitality desk' },
+  { label: 'Lighting control', line: 'dimmers', name: 'Dimmers', image: 'family-switch-installed-v3-optimized.webp', alt: 'FAHINT slide dimmer beside a softly lit dining room' }
+];
+const programSteps = [
+  { title: 'Select your products', text: 'Choose models, ratings and finishes for your market and applications.' },
+  { title: 'Make the details yours', text: 'Coordinate colors, wall plates, authorized artwork and packaging.' },
+  { title: 'Review the sample', text: 'Check appearance, function and model documentation before approval.' },
+  { title: 'Confirm production', text: 'Confirm order quantities and lead times for your selected models.' }
+];
+
+function RoomHero() {
+  const [active, setActive] = useState(0);
+  const scene = scenes[active];
+  return <section className="studio-hero" aria-labelledby="studio-hero-title">
+    <div className="studio-hero__photo" id="studio-room-scene">
+      {scenes.map((item, index) => <StudioImage key={item.line} src={`assets/images/editorial-products/${item.image}`} alt={item.alt} width={1536} height={1024} priority={index === 0} className={index === active ? 'is-current' : ''} aria-hidden={index !== active} />)}
+    </div>
+    <div className="studio-wrap studio-hero__layout">
+      <div className="studio-hero__copy">
+        <p className="studio-hero__identity">FAHINT <span aria-hidden="true">/</span> North American wiring devices</p>
+        <h1 id="studio-hero-title"><span className="studio-hero__opening">Wiring devices.</span>{' '}<span className="studio-hero__continuation">Built for your market.</span></h1>
+        <p className="studio-hero__summary">Explore outlets, switches and wall plates for homes and commercial spaces. Choose FAHINT products, or work with us on your own brand.</p>
+        <div className="studio-hero__paths">
+          <div role="group" aria-labelledby="studio-project-path">
+            <span id="studio-project-path">For your projects</span>
+            <StudioLink to="/products" light>Explore FAHINT products</StudioLink>
+          </div>
+          <div role="group" aria-labelledby="studio-brand-path">
+            <span id="studio-brand-path">For your brand</span>
+            <Link className="studio-hero__secondary" to="/#studio-oem">Build a range with us <ArrowRight size={18} aria-hidden="true" /></Link>
+          </div>
+        </div>
+        <ul className="studio-hero__evidence" aria-label="Product and program support">
+          <li><Check size={16} aria-hidden="true" />{studioRanges.length} product families</li>
+          <li><Check size={16} aria-hidden="true" />Model-specific documentation</li>
+          <li><Check size={16} aria-hidden="true" />OEM / ODM support</li>
+        </ul>
+      </div>
+      <div className="studio-hero__bottom">
+        <div className="studio-scene-switch" aria-label="Choose an application scene">
+          {scenes.map((item, index) => <button type="button" key={item.line} aria-pressed={active === index} aria-controls="studio-room-scene" onClick={() => setActive(index)}>{item.label}</button>)}
+        </div>
+        <Link to={`/products/${scene.line}`} className="studio-product-label" aria-label="Explore the featured product family">
+          <span><small>In this space</small><strong>{scene.name}</strong></span><span className="studio-circle"><ArrowUpRight size={24} aria-hidden="true" /></span>
+        </Link>
+      </div>
+    </div>
+  </section>;
+}
+
+function BrandIntroduction() {
+  // Original company photo: FAHINT PRODUCT CATALOG -Louis 13MB.pdf, page 3, image X17.
+  return <section className="studio-brand" id="studio-brand" aria-labelledby="studio-brand-title">
+    <figure className="studio-brand-visual">
+      <StudioImage src="assets/images/company/fahint-laboratory-catalog.webp" alt="Product testing equipment in the FAHINT laboratory, from the company catalog" width={1417} height={422} />
+      <figcaption><strong>Inside FAHINT</strong><span>Laboratory · Wenzhou, China</span></figcaption>
+    </figure>
+    <div className="studio-wrap studio-brand-layout">
+      <div className="studio-brand-panel">
+        <h2 id="studio-brand-title">Everyday power.<br /><span>Made by FAHINT.</span></h2>
+        <div className="studio-company-summary">
+          <h3>{company.name}</h3>
+          <p>Based in Wenzhou, China, we develop and manufacture wiring devices for the North American market, bringing product development, manufacturing and quality control together.</p>
+        </div>
+        <div className="studio-brand-details">
+          <dl className="studio-brand-paths">
+            <div><dt>FAHINT products</dt><dd>Explore our range for your next project or product order.</dd></div>
+            <div><dt>Your brand, our manufacturing</dt><dd>Create an OEM/ODM range with coordinated products, finishes and packaging.</dd></div>
+          </dl>
+          <div className="studio-brand-actions">
+            <StudioLink to="/about" light>Get to know FAHINT</StudioLink>
+            <Link className="studio-text-link" to="/#studio-oem">Explore OEM / ODM <ArrowUpRight size={18} aria-hidden="true" /></Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>;
+}
+
+function PrivateLabel() {
+  return <section className="studio-oem studio-space" id="studio-oem" aria-labelledby="studio-oem-title">
+    <div className="studio-wrap">
+      <header className="studio-section-head studio-section-head--oem">
+        <h2 id="studio-oem-title">Your product range.<br /><span>Our manufacturing.</span></h2>
+        <div><p>Choose the products, finishes and packaging for your market. We coordinate the details from your first brief to the approved order.</p></div>
+      </header>
+      <div className="studio-program">
+        <figure className="studio-program__image">
+          {/* Generated scene referenced only the original GF15 main, FTR15C-3100 white and DS15 white product photographs. */}
+          <StudioImage src="assets/images/editorial-products/oem-fahint-product-samples-v1.webp" alt="FAHINT GF15 GFCI, FTR15C-3100 USB outlet and DS15 paddle switch in a sample-packaging concept" width={1536} height={1024} />
+          <figcaption>Product and packaging concept · GF15 / FTR15C-3100 / DS15</figcaption>
+        </figure>
+        <div className="studio-program__steps">
+          <ol className="studio-process" aria-label="OEM / ODM process">
+            {programSteps.map((step, index) => <li key={step.title}>
+              <span className="studio-process__number" aria-hidden="true">0{index + 1}</span>
+              <div><h3>{step.title}</h3><p>{step.text}</p></div>
+            </li>)}
+          </ol>
+          <div className="studio-program-actions">
+            <StudioLink to="/#studio-inquiry" light>Discuss your OEM / ODM project</StudioLink>
+            <Link className="studio-text-link" to="/capabilities#oem">Explore OEM / ODM capabilities <ArrowUpRight size={18} aria-hidden="true" /></Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>;
+}
+
+function Manufacturing() {
+  return <section className="studio-making studio-space" id="studio-making" aria-labelledby="studio-making-title">
+      <div className="studio-wrap">
+        <header className="studio-section-head">
+          <h2 id="studio-making-title">Manufacturing<br /><span>you can see.</span></h2>
+          <div><p>Inside our Wenzhou facility: product development, assembly and functional testing. See the production line, then review the documentation for your chosen model.</p><Link className="studio-text-link" to="/capabilities">Inside our manufacturing <ArrowUpRight size={19} aria-hidden="true" /></Link></div>
+        </header>
+      </div>
+      <div className="studio-factory-stage"><figure className="studio-factory-photo">
+        <StudioImage src="assets/images/editorial-home/factory-optimized.webp" alt="FAHINT workers and GFCI functional testing stations on the production line" width={1600} height={900} />
+        <figcaption className="studio-factory-caption"><span>Made with care.<br />Checked on the line.</span><Link to="/capabilities">Explore manufacturing <ArrowUpRight size={24} aria-hidden="true" /></Link></figcaption>
+      </figure></div>
+      <div className="studio-wrap studio-quality-context">
+        <div><h3>Product development & assembly</h3><p>Device development, manufacturing and quality control brought together in Wenzhou, China.</p></div>
+        <div><h3>Functional inspection</h3><p>The GFCI production line shown above includes comprehensive functional testing stations.</p></div>
+        <div><h3>Model documentation</h3><p>Check electrical ratings, installation information and certification coverage for the exact model.</p><Link className="studio-text-link" to="/#studio-certificates">Review model certificates <ArrowUpRight size={17} aria-hidden="true" /></Link></div>
+      </div>
+    </section>;
+}
+
+export default function HomeStudio() {
+  useStudioPageMeta('Wiring Devices & OEM/ODM Manufacturing', 'FAHINT develops and manufactures North American wiring devices, with seven product families and OEM/ODM support for brands, distributors and project buyers.');
+  return <div className="studio-page studio-home" data-home-version="studio">
+    <RoomHero />
+    <div className="studio-product-transition">
+      <nav className="studio-wrap studio-chapter-nav" aria-label="Homepage sections">
+        <Link to="/#studio-collection">The collection</Link>
+        <Link to="/#studio-brand">About FAHINT</Link>
+        <Link to="/#studio-oem">OEM / ODM</Link>
+        <Link to="/#studio-making">Inside FAHINT</Link>
+        <Link to="/#studio-certificates">Certificates</Link>
+        <Link to="/#studio-inquiry">Let’s talk <ArrowUpRight size={17} aria-hidden="true" /></Link>
+      </nav>
+      <StudioProductSelection />
+    </div>
+    <BrandIntroduction /><PrivateLabel /><Manufacturing /><StudioBuyerSections />
+  </div>;
+}

@@ -1,28 +1,67 @@
+import { useEffect, useRef, useState } from 'react';
 import { Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import { company, faqs } from '../../data/company.js';
+import { products } from '../../data/products.js';
 import Faq from '../Faq.jsx';
 import InquiryForm from '../InquiryForm.jsx';
 
 export default function HomeFaqInquiry() {
+  const inquiryRef = useRef(null);
+  const [inquiryModels, setInquiryModels] = useState(products);
+  const [catalogUnavailable, setCatalogUnavailable] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    let requested = false;
+    let observer;
+    const section = inquiryRef.current;
+    const loadModels = () => {
+      if (requested) return;
+      requested = true;
+      import('../../data/catalogProducts.js').then(({ catalogProducts }) => {
+        if (!active) return;
+        setInquiryModels([...products, ...catalogProducts.filter((product) => !product.draft)]);
+        setCatalogUnavailable(false);
+        observer?.disconnect();
+      }).catch(() => {
+        requested = false;
+        if (active) setCatalogUnavailable(true);
+      });
+    };
+    if (typeof IntersectionObserver === 'undefined') loadModels();
+    else {
+      observer = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) loadModels();
+      }, { rootMargin: '600px' });
+      observer.observe(section);
+    }
+    section.addEventListener('focusin', loadModels);
+    section.addEventListener('pointerenter', loadModels);
+    return () => {
+      active = false;
+      observer?.disconnect();
+      section.removeEventListener('focusin', loadModels);
+      section.removeEventListener('pointerenter', loadModels);
+    };
+  }, []);
+
   return (
     <>
-      <section className="home-faq" aria-labelledby="home-faq-title" data-title-align="right">
+      <section className="home-faq" aria-labelledby="home-faq-title" data-title-align="left">
         <div className="container home-faq__layout">
           <div className="home-faq__intro">
-            <p className="home-section-label">Before you write</p>
-            <h2 id="home-faq-title">Buyer Questions, Answered.</h2>
+            <h2 id="home-faq-title">Buyer questions, answered.</h2>
             <p>Quick answers on certification, customization, logistics and private-label packaging.</p>
           </div>
           <Faq items={faqs} />
         </div>
       </section>
 
-      <section className="home-inquiry" aria-label="Send an inquiry" data-title-align="left">
+      <section ref={inquiryRef} className="home-inquiry" aria-label="Send an inquiry" data-title-align="left">
         <div className="container home-inquiry__layout">
           <div className="home-inquiry__intro">
-            <p className="home-section-label">Start a project</p>
-            <h2>Tell Us What You Want to Build.</h2>
-            <p>Share your market, product mix, annual volume and branding requirements. We will route the brief to the right team.</p>
+            <h2>Request a quote.</h2>
+            <p>Tell us the product, quantity and delivery market. For private-label orders, include your packaging or branding requirements.</p>
 
             <ul className="home-inquiry__contacts">
               <li>
@@ -43,7 +82,10 @@ export default function HomeFaqInquiry() {
               </li>
             </ul>
           </div>
-          <InquiryForm title="Send a Project Brief" />
+          <div className="home-inquiry__form">
+            <InquiryForm title="Tell us what you need" modelOptions={inquiryModels} />
+            {catalogUnavailable && <p role="status">The full model list is unavailable. Please add your model number under Requirements.</p>}
+          </div>
         </div>
       </section>
     </>
