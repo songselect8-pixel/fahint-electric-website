@@ -11,7 +11,7 @@ export default function Header() {
   const [mobileProducts, setMobileProducts] = useState(false);
   const closeTimer = useRef(null);
   const { pathname } = useLocation();
-  const overHero = pathname === '/';
+  const overHero = ['/', '/home-studio'].includes(pathname);
   const homePath = pathname.replace(/\/$/, '') === '/home-next' ? '/home-next' : '/';
   const productsPath = '/products';
   const inquiryPath = ['/', '/home-studio'].includes(pathname) ? '/#studio-inquiry' : '/contact';
@@ -43,7 +43,7 @@ export default function Header() {
   return (
     <>
       <a className="skip-link" href="#main-content">Skip to main content</a>
-      <header className={`header ${solid ? 'header--solid' : 'header--transparent'}`}>
+      <header className={`header${overHero ? ' header--home' : ''} ${solid ? 'header--solid' : 'header--transparent'}`}>
         <div className="header__inner">
           <Link to={homePath} className="logo" aria-label={company.shortName}>
             <img

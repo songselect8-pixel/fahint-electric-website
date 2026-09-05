@@ -1,6 +1,6 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
 import HomeStudio from './HomeStudio.jsx';
 import ProductsStudio from './ProductsStudio.jsx';
@@ -49,11 +49,93 @@ describe('studio homepage and catalog', () => {
     expect(screen.getByRole('link', { name: 'Explore FAHINT products' })).toHaveAttribute('href', '/products');
   });
 
-  it('switches between real application scenes and their product destinations', () => {
+  it('switches between the three real application scenes without a floating product card', () => {
     show(HomeStudio);
     fireEvent.click(screen.getByRole('button', { name: 'Bedside charging' }));
     expect(screen.getByRole('button', { name: 'Bedside charging' })).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByRole('link', { name: 'Explore the featured product family' })).toHaveAttribute('href', '/products/usb-outlets');
+    expect(screen.queryByRole('link', { name: 'Explore the featured product family' })).not.toBeInTheDocument();
+  });
+
+  it('keeps the hero within the first viewport and aligns the scene controls on the right', () => {
+    const css = readFileSync('src/styles/studio.css', 'utf8');
+    expect(css).toMatch(/\.studio-hero\s*\{[^}]*min-height:\s*100(?:svh|dvh)/s);
+    expect(css).toMatch(/\.studio-hero__bottom\s*\{[^}]*justify-content:\s*flex-end/s);
+  });
+
+  it('rotates the three hero scenes every five seconds and restarts after a manual choice', () => {
+    vi.useFakeTimers();
+    try {
+      show(HomeStudio);
+      expect(screen.getByRole('button', { name: 'Kitchen essentials' })).toHaveAttribute('aria-pressed', 'true');
+
+      act(() => vi.advanceTimersByTime(5000));
+      expect(screen.getByRole('button', { name: 'Bedside charging' })).toHaveAttribute('aria-pressed', 'true');
+
+      fireEvent.click(screen.getByRole('button', { name: 'Kitchen essentials' }));
+      act(() => vi.advanceTimersByTime(4999));
+      expect(screen.getByRole('button', { name: 'Kitchen essentials' })).toHaveAttribute('aria-pressed', 'true');
+      act(() => vi.advanceTimersByTime(1));
+      expect(screen.getByRole('button', { name: 'Bedside charging' })).toHaveAttribute('aria-pressed', 'true');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('pauses the hero rotation while a visitor is interacting with it', () => {
+    vi.useFakeTimers();
+    try {
+      show(HomeStudio);
+      const hero = screen.getByRole('region', { name: 'Wiring devices. Built for your market.' });
+      fireEvent.mouseEnter(hero);
+      act(() => vi.advanceTimersByTime(10000));
+      expect(screen.getByRole('button', { name: 'Kitchen essentials' })).toHaveAttribute('aria-pressed', 'true');
+
+      fireEvent.mouseLeave(hero);
+      act(() => vi.advanceTimersByTime(5000));
+      expect(screen.getByRole('button', { name: 'Bedside charging' })).toHaveAttribute('aria-pressed', 'true');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('does not auto-rotate when the visitor prefers reduced motion', () => {
+    vi.useFakeTimers();
+    const originalMatchMedia = window.matchMedia;
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      value: vi.fn().mockReturnValue({
+        matches: true,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn()
+      })
+    });
+    try {
+      show(HomeStudio);
+      act(() => vi.advanceTimersByTime(10000));
+      expect(screen.getByRole('button', { name: 'Kitchen essentials' })).toHaveAttribute('aria-pressed', 'true');
+    } finally {
+      Object.defineProperty(window, 'matchMedia', { configurable: true, value: originalMatchMedia });
+      vi.useRealTimers();
+    }
+  });
+
+  it('stops the hero timer while the poster is outside the viewport', () => {
+    vi.useFakeTimers();
+    const OriginalIntersectionObserver = window.IntersectionObserver;
+    class HiddenHeroObserver {
+      constructor(callback) { this.callback = callback; }
+      observe(target) { this.callback([{ isIntersecting: false, target }]); }
+      disconnect() {}
+    }
+    Object.defineProperty(window, 'IntersectionObserver', { configurable: true, value: HiddenHeroObserver });
+    try {
+      show(HomeStudio);
+      act(() => vi.advanceTimersByTime(10000));
+      expect(screen.getByRole('button', { name: 'Kitchen essentials' })).toHaveAttribute('aria-pressed', 'true');
+    } finally {
+      Object.defineProperty(window, 'IntersectionObserver', { configurable: true, value: OriginalIntersectionObserver });
+      vi.useRealTimers();
+    }
   });
 
   it('groups the hero actions around project buyers and private-label brands', () => {

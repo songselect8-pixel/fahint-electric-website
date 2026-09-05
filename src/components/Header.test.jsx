@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
@@ -32,6 +32,28 @@ describe('Header', () => {
     expect(screen.getByRole('link', { name: /Send Inquiry/i })).toHaveAttribute('href', '/#studio-inquiry');
   });
 
+  it('uses a transparent overlay at the top of the homepage and glass after scrolling', () => {
+    Object.defineProperty(window, 'scrollY', { configurable: true, value: 0 });
+    const { container } = renderHeader('/');
+    const header = container.querySelector('.header');
+    expect(header).toHaveClass('header--home', 'header--transparent');
+    expect(header).not.toHaveClass('header--solid');
+
+    Object.defineProperty(window, 'scrollY', { configurable: true, value: 80 });
+    fireEvent.scroll(window);
+    expect(header).toHaveClass('header--home', 'header--solid');
+    expect(header).not.toHaveClass('header--transparent');
+
+    Object.defineProperty(window, 'scrollY', { configurable: true, value: 0 });
+  });
+
+  it('keeps inner-page navigation solid and outside the homepage overlay treatment', () => {
+    const { container } = renderHeader('/products');
+    const header = container.querySelector('.header');
+    expect(header).toHaveClass('header--solid');
+    expect(header).not.toHaveClass('header--home');
+  });
+
   it('keeps Home navigation within the independent homepage preview', () => {
     renderHeader('/home-next');
 
@@ -57,6 +79,17 @@ describe('Header', () => {
       /\.header__inner\s*\{[\s\S]*?width:\s*min\(calc\(100%\s*-\s*48px\),\s*1480px\);[\s\S]*?border:\s*0;[\s\S]*?border-radius:\s*0;[\s\S]*?background:\s*transparent/
     );
     expect(styles).not.toMatch(/\.header\s*\{[^}]*inset:\s*16px\s+0\s+auto\s+0/);
+  });
+
+  it('defines transparent and scrolled glass states specifically for the homepage', () => {
+    const styles = readFileSync('src/styles.css', 'utf8');
+    expect(styles).toMatch(/\.header--home\s*\{[^}]*position:\s*fixed/);
+    expect(styles).toMatch(
+      /\.header--home\.header--transparent\s*\{[^}]*background:\s*transparent[^}]*backdrop-filter:\s*none/
+    );
+    expect(styles).toMatch(
+      /\.header--home\.header--solid\s*\{[^}]*background:\s*rgba\(247,\s*250,\s*252,\s*\.82\)[^}]*backdrop-filter:\s*blur\(22px\)\s+saturate\(160%\)/
+    );
   });
 
   it('uses the same full-width glass structure on phones', () => {
@@ -109,5 +142,12 @@ describe('Header', () => {
     const styles = readFileSync('src/styles.css', 'utf8');
 
     expect(styles).not.toMatch(/transition:\s*all\b/);
+  });
+
+  it('animates the navigation marker without changing layout width', () => {
+    const styles = readFileSync('src/styles.css', 'utf8');
+    expect(styles).toMatch(/\.nav a::after\s*\{[^}]*width:\s*100%[^}]*transform:\s*scaleX\(0\)[^}]*transition:\s*transform/);
+    expect(styles).not.toMatch(/\.nav a::after\s*\{[^}]*transition:\s*width/);
+    expect(styles).toMatch(/\.nav a\.is-active::after\s*\{[^}]*transform:\s*scaleX\(1\)/);
   });
 });

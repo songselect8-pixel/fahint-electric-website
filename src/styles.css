@@ -3537,6 +3537,42 @@ ul {
   box-shadow: 0 8px 28px rgba(3, 18, 39, .14);
 }
 
+/* On the homepage the brand frame begins inside the poster, then gains a
+   readable glass surface once the visitor starts moving through the story. */
+.header--home {
+  position: fixed;
+  right: 0;
+  left: 0;
+}
+
+.header--home.header--transparent {
+  border-bottom-color: transparent;
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.header--home.header--solid {
+  border-bottom-color: rgba(213, 224, 232, .72);
+  background: rgba(247, 250, 252, .82);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(160%);
+  box-shadow: 0 8px 28px rgba(3, 18, 39, .12);
+}
+
+.header--home.header--transparent .logo__image {
+  filter: brightness(0) invert(1);
+}
+
+.header--home.header--transparent .nav a {
+  color: #fff;
+}
+
+.header--home.header--transparent .nav a::after {
+  background: #a3cfdf;
+}
+
 .header__inner {
   display: grid;
   grid-template-columns: 200px max-content 190px;
@@ -3570,6 +3606,7 @@ ul {
   width: 170px;
   height: auto;
   object-fit: contain;
+  transition: filter 220ms ease;
 }
 
 .nav {
@@ -3593,14 +3630,16 @@ ul {
   left: 0;
   bottom: 0;
   height: 2px;
-  width: 0;
+  width: 100%;
   background: var(--blue);
-  transition: width var(--t-fast);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--t-fast);
 }
 
 .nav a:hover::after,
 .nav a.is-active::after {
-  width: 100%;
+  transform: scaleX(1);
 }
 
 .header__cta {

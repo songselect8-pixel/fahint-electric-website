@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowUpRight, Check } from 'lucide-react';
 import { company } from '../data/company.js';
@@ -22,6 +22,7 @@ const scenes = [
   { label: 'Bedside charging', line: 'usb-outlets', name: 'USB Outlets', image: 'family-usb-installed-v3-optimized.webp', alt: 'FAHINT USB charging outlet beside a hospitality desk' },
   { label: 'Lighting control', line: 'dimmers', name: 'Dimmers', image: 'family-switch-installed-v3-optimized.webp', alt: 'FAHINT slide dimmer beside a softly lit dining room' }
 ];
+const HERO_ROTATION_MS = 5000;
 const programSteps = [
   { title: 'Select your products', text: 'Choose models, ratings and finishes for your market and applications.' },
   { title: 'Make the details yours', text: 'Coordinate colors, wall plates, authorized artwork and packaging.' },
@@ -30,9 +31,62 @@ const programSteps = [
 ];
 
 function RoomHero() {
+  const heroRef = useRef(null);
   const [active, setActive] = useState(0);
-  const scene = scenes[active];
-  return <section className="studio-hero" aria-labelledby="studio-hero-title">
+  const [hovered, setHovered] = useState(false);
+  const [focusWithin, setFocusWithin] = useState(false);
+  const [heroVisible, setHeroVisible] = useState(true);
+  const [pageVisible, setPageVisible] = useState(() => typeof document === 'undefined' || !document.hidden);
+  const [reducedMotion, setReducedMotion] = useState(() => (
+    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      : false
+  ));
+  const paused = hovered || focusWithin || !heroVisible || !pageVisible || reducedMotion;
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return undefined;
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const updateMotionPreference = () => setReducedMotion(media.matches);
+    updateMotionPreference();
+    media.addEventListener?.('change', updateMotionPreference);
+    return () => media.removeEventListener?.('change', updateMotionPreference);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window.IntersectionObserver !== 'function' || !heroRef.current) return undefined;
+    const observer = new window.IntersectionObserver(([entry]) => {
+      setHeroVisible(entry.isIntersecting);
+    }, { threshold: 0.05 });
+    observer.observe(heroRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const updatePageVisibility = () => setPageVisible(!document.hidden);
+    document.addEventListener('visibilitychange', updatePageVisibility);
+    return () => document.removeEventListener('visibilitychange', updatePageVisibility);
+  }, []);
+
+  useEffect(() => {
+    if (paused) return undefined;
+    const timeout = window.setTimeout(() => {
+      setActive((current) => (current + 1) % scenes.length);
+    }, HERO_ROTATION_MS);
+    return () => window.clearTimeout(timeout);
+  }, [active, paused]);
+
+  return <section
+    ref={heroRef}
+    className={`studio-hero${paused ? ' is-paused' : ''}`}
+    aria-labelledby="studio-hero-title"
+    onMouseEnter={() => setHovered(true)}
+    onMouseLeave={() => setHovered(false)}
+    onFocusCapture={() => setFocusWithin(true)}
+    onBlurCapture={(event) => {
+      if (!event.currentTarget.contains(event.relatedTarget)) setFocusWithin(false);
+    }}
+  >
     <div className="studio-hero__photo" id="studio-room-scene">
       {scenes.map((item, index) => <StudioImage key={item.line} src={`assets/images/editorial-products/${item.image}`} alt={item.alt} width={1536} height={1024} priority={index === 0} className={index === active ? 'is-current' : ''} aria-hidden={index !== active} />)}
     </div>
@@ -61,9 +115,6 @@ function RoomHero() {
         <div className="studio-scene-switch" aria-label="Choose an application scene">
           {scenes.map((item, index) => <button type="button" key={item.line} aria-pressed={active === index} aria-controls="studio-room-scene" onClick={() => setActive(index)}>{item.label}</button>)}
         </div>
-        <Link to={`/products/${scene.line}`} className="studio-product-label" aria-label="Explore the featured product family">
-          <span><small>In this space</small><strong>{scene.name}</strong></span><span className="studio-circle"><ArrowUpRight size={24} aria-hidden="true" /></span>
-        </Link>
       </div>
     </div>
   </section>;
