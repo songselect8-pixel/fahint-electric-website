@@ -40,7 +40,7 @@ Wall plates, 0–10 V commercial dimmers, EV chargers, sensors, and other produc
 - Hovering or keyboard-focusing a hotspot opens one product card. On touch devices, tapping opens it and tapping another hotspot changes the active card.
 - The card contains the existing real product image, product family, model number, short application description, and a link to the corresponding product page.
 - Cards choose a left- or right-facing placement class so they remain within the image on desktop.
-- Mobile uses a single bottom-aligned overlay inside the image rather than positioning a floating card beside the hotspot.
+- Mobile and small tablets place the selected product card directly below the image rather than positioning it beside a hotspot, so the product link remains easy to tap without obscuring the rooms.
 - Hotspots use native buttons with accessible names, `aria-expanded`, `aria-controls`, visible focus treatment, and at least a 44 px interactive target.
 - The active card remains usable while the pointer moves from its hotspot to its link.
 
@@ -54,9 +54,9 @@ Wall plates, 0–10 V commercial dimmers, EV chargers, sensors, and other produc
 ## Responsive behavior
 
 - Desktop: full-width image, minimum height controlled with `clamp()`, four absolute hotspots, compact adaptive product cards.
-- Tablet: preserve the same spatial map and reduce card width without obscuring the selected room.
-- Mobile: use a taller crop with hotspot coordinates adjusted per breakpoint; product details open in a bottom overlay. The section must not create horizontal overflow.
-- Generated image focal areas must remain usable under `object-fit: cover` at common desktop and mobile ratios.
+- Medium desktop and large tablet (901–1100 px): preserve the complete 16:9 frame so edge locations such as the entry switch are not cropped away.
+- Mobile and small tablet (900 px and below): place the introduction in normal flow above a full-width 16:9 stage; product details open below the image. The section must not create horizontal overflow.
+- Desktop may use `object-fit: cover`; narrower layouts preserve the complete image so hotspot percentages continue to match their rooms.
 
 ## Motion and performance
 

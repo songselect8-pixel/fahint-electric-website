@@ -23,7 +23,7 @@
 **Files:**
 - Create: `public/assets/images/editorial-home/fahint-residential-application-map-v1.webp`
 
-- [ ] **Step 1: Generate a wide background-only scene**
+- [x] **Step 1: Generate a wide background-only scene**
 
 Use the built-in image generator with this production prompt:
 
@@ -31,11 +31,11 @@ Use the built-in image generator with this production prompt:
 Create a premium photorealistic editorial architectural photograph for a North American wiring-device manufacturer's website. Wide 16:9 composition, a contemporary two-storey North American residence shown as an elegant open cutaway at blue hour. Deep navy outdoor atmosphere, warm amber practical lighting inside. Clearly readable but visually connected zones: kitchen countertop and backsplash, bedroom bedside or compact home office, living and dining room, and entry hallway beside a doorway. Keep all four zones concentrated around the central 70% of the frame so they survive responsive cropping. Add only extremely subtle cool-cyan architectural drafting lines in a few structural edges, not a glowing sci-fi wireframe. Premium architectural-magazine realism, restrained materials, realistic scale, no people, no car, no text, no logos, no labels, no callout dots, no electrical outlets or switches featured prominently, no distorted hardware. Leave calm darker negative space in the upper-left for white headline text and clean wall areas near each room for interface hotspots. Edge-to-edge poster composition.
 ```
 
-- [ ] **Step 2: Inspect the generated scene**
+- [x] **Step 2: Inspect the generated scene**
 
 Reject any result with text, logos, people, distorted room geometry, prominently fabricated devices, missing application zones, excessive neon lines, or insufficient upper-left contrast.
 
-- [ ] **Step 3: Crop and export the selected image**
+- [x] **Step 3: Crop and export the selected image**
 
 Use Pillow to make a centered 16:9 crop and save an optimized WebP at a maximum width of 1920 px:
 
@@ -62,7 +62,7 @@ with Image.open(source) as image:
     image.save(target, "WEBP", quality=88, method=6)
 ```
 
-- [ ] **Step 4: Verify the asset**
+- [x] **Step 4: Verify the asset**
 
 Run:
 
@@ -77,7 +77,7 @@ Expected: a 16:9 RGB image no wider than 1920 px.
 **Files:**
 - Modify: `src/pages/StudioPages.test.jsx`
 
-- [ ] **Step 1: Write the failing application-map test**
+- [x] **Step 1: Write the failing application-map test**
 
 Add this test inside `describe('studio homepage and catalog', ...)`:
 
@@ -107,7 +107,7 @@ it('maps four verified products to real residential locations', async () => {
 });
 ```
 
-- [ ] **Step 2: Run the focused test and confirm the intended failure**
+- [x] **Step 2: Run the focused test and confirm the intended failure**
 
 Run:
 
@@ -122,7 +122,7 @@ Expected: FAIL because the `Power, room by room.` region does not exist.
 **Files:**
 - Create: `src/components/studio/StudioApplicationMap.jsx`
 
-- [ ] **Step 1: Add the product-backed hotspot component**
+- [x] **Step 1: Add the product-backed hotspot component**
 
 Create the component with this structure:
 
@@ -174,7 +174,7 @@ export default function StudioApplicationMap() {
 }
 ```
 
-- [ ] **Step 2: Run the focused test**
+- [x] **Step 2: Run the focused test**
 
 Run the same focused test command. Expected: it still fails because the component is not mounted yet.
 
@@ -184,7 +184,7 @@ Run the same focused test command. Expected: it still fails because the componen
 - Modify: `src/pages/HomeStudio.jsx`
 - Modify: `src/styles/studio.css`
 
-- [ ] **Step 1: Mount the component after product selection**
+- [x] **Step 1: Mount the component after product selection**
 
 Add:
 
@@ -201,7 +201,7 @@ Then change the homepage sequence to:
     <BrandIntroduction /><PrivateLabel /><Manufacturing /><StudioBuyerSections />
 ```
 
-- [ ] **Step 2: Add the desktop visual system and irregular pulse**
+- [x] **Step 2: Add the desktop visual system and irregular pulse**
 
 Add these scoped rules to `studio.css`:
 
@@ -244,7 +244,9 @@ Add these scoped rules to `studio.css`:
 
 Each hotspot ring uses `animation-duration: var(--pulse-duration)` and `animation-delay: var(--pulse-delay)` so the four locations never flash as a synchronized set.
 
-- [ ] **Step 3: Add tablet and mobile containment**
+- [x] **Step 3: Add tablet and mobile containment**
+
+Real-browser inspection refined the breakpoint behavior: 901–1100 px preserves the full scene at 16:9, while 900 px and below moves the introduction above a full-width 16:9 stage and places the active card beneath it. This keeps all four hotspot coordinates aligned with visible rooms.
 
 Add these initial responsive rules, then adjust only the four percentage coordinates if visual inspection of the selected image shows a room mismatch:
 
@@ -279,7 +281,7 @@ Add these initial responsive rules, then adjust only the four percentage coordin
 }
 ```
 
-- [ ] **Step 4: Add reduced-motion behavior**
+- [x] **Step 4: Add reduced-motion behavior**
 
 The existing global reduced-motion rule disables animation. Add this explicit static fallback:
 
@@ -290,7 +292,7 @@ The existing global reduced-motion rule disables animation. Add this explicit st
 }
 ```
 
-- [ ] **Step 5: Run the focused test**
+- [x] **Step 5: Run the focused test**
 
 Run:
 
@@ -300,7 +302,7 @@ npm test -- --run src/pages/StudioPages.test.jsx -t "maps four verified products
 
 Expected: PASS.
 
-- [ ] **Step 6: Commit the feature implementation**
+- [x] **Step 6: Commit the feature implementation**
 
 ```powershell
 git add -- public/assets/images/editorial-home/fahint-residential-application-map-v1.webp src/components/studio/StudioApplicationMap.jsx src/pages/HomeStudio.jsx src/styles/studio.css src/pages/StudioPages.test.jsx
@@ -315,7 +317,7 @@ git commit -m "feat: add homepage residential application map"
 - Verify: `src/styles/studio.css`
 - Verify: `src/pages/StudioPages.test.jsx`
 
-- [ ] **Step 1: Run studio-page tests**
+- [x] **Step 1: Run studio-page tests**
 
 ```powershell
 npm test -- --run src/pages/StudioPages.test.jsx
@@ -323,7 +325,7 @@ npm test -- --run src/pages/StudioPages.test.jsx
 
 Expected: all studio tests pass.
 
-- [ ] **Step 2: Run the full suite**
+- [x] **Step 2: Run the full suite**
 
 ```powershell
 npm test
@@ -331,7 +333,7 @@ npm test
 
 Expected: all tests pass.
 
-- [ ] **Step 3: Build the production bundle**
+- [x] **Step 3: Build the production bundle**
 
 ```powershell
 npm run build
@@ -339,11 +341,11 @@ npm run build
 
 Expected: Vite completes without errors.
 
-- [ ] **Step 4: Check the page in a real browser**
+- [x] **Step 4: Check the page in a real browser**
 
 Verify `/` at approximately 1440×900, 1024×768, and 390×844. Confirm the four locations align with their intended rooms, cards remain inside the scene, mouse-to-card movement does not close the active card, mobile tap toggles the bottom overlay, no image is stretched, there is no horizontal overflow, and the console is clear.
 
-- [ ] **Step 5: Check repository scope**
+- [x] **Step 5: Check repository scope**
 
 ```powershell
 git status --short
