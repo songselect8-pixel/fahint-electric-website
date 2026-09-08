@@ -5,6 +5,7 @@ import { company } from '../data/company.js';
 import { studioRanges } from '../data/studioCatalog.js';
 import { StudioImage, StudioLink, useStudioPageMeta } from '../components/studio/StudioShared.jsx';
 import StudioBuyerSections from '../components/studio/StudioBuyerSections.jsx';
+import StudioApplicationMap from '../components/studio/StudioApplicationMap.jsx';
 import StudioProductSelection from '../components/studio/StudioProductSelection.jsx';
 import '../styles/studio.css';
 
@@ -214,6 +215,7 @@ export default function HomeStudio() {
       </nav>
       <StudioProductSelection />
     </div>
+    <StudioApplicationMap />
     <BrandIntroduction /><PrivateLabel /><Manufacturing /><StudioBuyerSections />
   </div>;
 }

@@ -171,6 +171,37 @@ describe('studio homepage and catalog', () => {
     }
   });
 
+  it('maps four verified products to real residential locations', async () => {
+    const user = userEvent.setup();
+    show(HomeStudio);
+    const section = screen.getByRole('region', { name: 'Power, room by room.' });
+    const expected = [
+      ['GF15 GFCI Outlet', '/products/gfci/gf15'],
+      ['FTR15C-3100 USB Outlet', '/products/usb-outlets/ftr15c-3100'],
+      ['DM2010 Digital Dimmer', '/products/dimmers/dm2010'],
+      ['DS15 Paddle Switch', '/products/lighting-switches/ds15']
+    ];
+
+    expect(within(section).getByRole('img', { name: /cutaway North American home/i }))
+      .toHaveAttribute('src', publicAsset('assets/images/editorial-home/fahint-residential-application-map-v1.webp'));
+    const hotspots = within(section).getAllByRole('button', { name: /^Show / });
+    expect(hotspots).toHaveLength(4);
+    for (const [name, href] of expected) {
+      const button = within(section).getByRole('button', { name: `Show ${name}` });
+      expect(button).toHaveAttribute('aria-expanded', 'false');
+      await user.click(button);
+      expect(button).toHaveAttribute('aria-expanded', 'true');
+      expect(within(section).getByRole('link', { name: `View ${name}` })).toHaveAttribute('href', href);
+    }
+  });
+
+  it('keeps inactive application cards out of the visual layout', () => {
+    const css = readFileSync('src/styles/studio.css', 'utf8');
+    expect(css).toMatch(/\.studio-map-card\[hidden\]\s*\{[^}]*display:\s*none/s);
+    expect(css).toMatch(/@media \(min-width:\s*901px\) and \(max-width:\s*1100px\)[\s\S]*?\.studio-application-map\s*\{[^}]*min-height:\s*56\.25vw/s);
+    expect(css).toMatch(/@media \(max-width:\s*900px\)[\s\S]*?\.studio-application-map__stage\s*\{[^}]*aspect-ratio:\s*16\s*\/\s*9/s);
+  });
+
   it('supports arrow, Home and End navigation with a single family tab in the keyboard order', async () => {
     const user = userEvent.setup();
     show(HomeStudio);
