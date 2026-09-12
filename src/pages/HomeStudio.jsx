@@ -7,6 +7,7 @@ import { StudioImage, StudioLink, useStudioPageMeta } from '../components/studio
 import StudioBuyerSections from '../components/studio/StudioBuyerSections.jsx';
 import StudioApplicationMap from '../components/studio/StudioApplicationMap.jsx';
 import StudioProductSelection from '../components/studio/StudioProductSelection.jsx';
+import Reveal from '../components/Reveal.jsx';
 import '../styles/studio.css';
 
 /* Published homepage — earlier designs remain available only for local review.
@@ -19,9 +20,9 @@ import '../styles/studio.css';
  * All imagery below is from the existing FAHINT library; no model geometry or facts generated.
  */
 const scenes = [
-  { label: 'Kitchen essentials', line: 'gfci', name: 'GFCI Outlets', image: 'family-gfci-installed-v3-optimized.webp', alt: 'White FAHINT GFCI outlet installed on a dark kitchen backsplash' },
-  { label: 'Bedside charging', line: 'usb-outlets', name: 'USB Outlets', image: 'family-usb-installed-v3-optimized.webp', alt: 'FAHINT USB charging outlet beside a hospitality desk' },
-  { label: 'Lighting control', line: 'dimmers', name: 'Dimmers', image: 'family-switch-installed-v3-optimized.webp', alt: 'FAHINT slide dimmer beside a softly lit dining room' }
+  { label: 'Kitchen essentials', line: 'gfci', name: 'GFCI Outlets', image: 'home-hero-kitchen-scene-v2.webp', alt: 'White FAHINT GFCI outlet installed beside a warmly lit kitchen' },
+  { label: 'Bedside charging', line: 'usb-outlets', name: 'USB Outlets', image: 'home-hero-bedside-scene-v2.webp', alt: 'White FAHINT USB charging outlet installed beside a bed' },
+  { label: 'Lighting control', line: 'dimmers', name: 'Dimmers', image: 'home-hero-lighting-scene-v2.webp', alt: 'White FAHINT slide dimmer installed in a softly lit living room' }
 ];
 const HERO_ROTATION_MS = 5000;
 const programSteps = [
@@ -129,7 +130,7 @@ function BrandIntroduction() {
       <figcaption><strong>Inside FAHINT</strong><span>Laboratory · Wenzhou, China</span></figcaption>
     </figure>
     <div className="studio-wrap studio-brand-layout">
-      <div className="studio-brand-panel">
+      <Reveal className="studio-brand-panel" delay={120}>
         <h2 id="studio-brand-title">Everyday power.<br /><span>Made by FAHINT.</span></h2>
         <div className="studio-company-summary">
           <h3>{company.name}</h3>
@@ -145,7 +146,7 @@ function BrandIntroduction() {
             <Link className="studio-text-link" to="/#studio-oem">Explore OEM / ODM <ArrowUpRight size={18} aria-hidden="true" /></Link>
           </div>
         </div>
-      </div>
+      </Reveal>
     </div>
   </section>;
 }
@@ -153,10 +154,10 @@ function BrandIntroduction() {
 function PrivateLabel() {
   return <section className="studio-oem studio-space" id="studio-oem" aria-labelledby="studio-oem-title">
     <div className="studio-wrap">
-      <header className="studio-section-head studio-section-head--oem">
+      <Reveal as="header" className="studio-section-head studio-section-head--oem">
         <h2 id="studio-oem-title">Your product range.<br /><span>Our manufacturing.</span></h2>
         <div><p>Choose the products, finishes and packaging for your market. We coordinate the details from your first brief to the approved order.</p></div>
-      </header>
+      </Reveal>
       <div className="studio-program">
         <figure className="studio-program__image">
           {/* Generated scene referenced only the original GF15 main, FTR15C-3100 white and DS15 white product photographs. */}
@@ -183,10 +184,10 @@ function PrivateLabel() {
 function Manufacturing() {
   return <section className="studio-making studio-space" id="studio-making" aria-labelledby="studio-making-title">
       <div className="studio-wrap">
-        <header className="studio-section-head">
+        <Reveal as="header" className="studio-section-head">
           <h2 id="studio-making-title">Manufacturing<br /><span>you can see.</span></h2>
           <div><p>Inside our Wenzhou facility: product development, assembly and functional testing. See the production line, then review the documentation for your chosen model.</p><Link className="studio-text-link" to="/capabilities">Inside our manufacturing <ArrowUpRight size={19} aria-hidden="true" /></Link></div>
-        </header>
+        </Reveal>
       </div>
       <div className="studio-factory-stage"><figure className="studio-factory-photo">
         <StudioImage src="assets/images/editorial-home/factory-optimized.webp" alt="FAHINT workers and GFCI functional testing stations on the production line" width={1600} height={900} />
@@ -204,18 +205,22 @@ export default function HomeStudio() {
   useStudioPageMeta('Wiring Devices & OEM/ODM Manufacturing', 'FAHINT develops and manufactures North American wiring devices, with seven product families and OEM/ODM support for brands, distributors and project buyers.');
   return <div className="studio-page studio-home" data-home-version="studio">
     <RoomHero />
+    <nav className="studio-chapter-nav" aria-label="Homepage sections">
+      <Link to="/#studio-collection">The collection</Link>
+      <Link to="/#studio-brand">About FAHINT</Link>
+      <Link to="/#studio-oem">OEM / ODM</Link>
+      <Link to="/#studio-making">Inside FAHINT</Link>
+      <Link to="/#studio-certificates">Certificates</Link>
+      <Link to="/#studio-inquiry">Let’s talk <ArrowUpRight size={17} aria-hidden="true" /></Link>
+    </nav>
     <div className="studio-product-transition">
-      <nav className="studio-wrap studio-chapter-nav" aria-label="Homepage sections">
-        <Link to="/#studio-collection">The collection</Link>
-        <Link to="/#studio-brand">About FAHINT</Link>
-        <Link to="/#studio-oem">OEM / ODM</Link>
-        <Link to="/#studio-making">Inside FAHINT</Link>
-        <Link to="/#studio-certificates">Certificates</Link>
-        <Link to="/#studio-inquiry">Let’s talk <ArrowUpRight size={17} aria-hidden="true" /></Link>
-      </nav>
+      <StudioImage className="studio-product-transition__scene" src="assets/images/home-installations/home-interior-background-v1.webp" alt="" aria-hidden="true" width={1672} height={941} />
       <StudioProductSelection />
     </div>
     <StudioApplicationMap />
+    <div className="studio-brand-transition">
+      <div className="studio-wrap"><span>Inside FAHINT</span></div>
+    </div>
     <BrandIntroduction /><PrivateLabel /><Manufacturing /><StudioBuyerSections />
   </div>;
 }

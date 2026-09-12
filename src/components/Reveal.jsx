@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-export default function Reveal({ children, as: Tag = 'div', className = '', delay = 0, ...rest }) {
+export default function Reveal({ children, as: Tag = 'div', className = '', delay = 0, onFocusCapture, ...rest }) {
   const ref = useRef(null);
   const [enhanced, setEnhanced] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -33,6 +33,10 @@ export default function Reveal({ children, as: Tag = 'div', className = '', dela
       data-motion={enhanced ? 'ready' : undefined}
       data-visible={visible ? 'true' : undefined}
       style={{ '--reveal-delay': `${delay}ms` }}
+      onFocusCapture={event => {
+        setVisible(true);
+        onFocusCapture?.(event);
+      }}
       {...rest}
     >
       {children}

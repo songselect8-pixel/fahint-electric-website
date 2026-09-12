@@ -16,7 +16,6 @@ export const categories = [
   { slug: 'industrial', name: 'Industrial Grade' }
 ];
 
-const GALLERY_ROLES = ['plate', 'main', 'sides', 'back', 'lifestyle'];
 const PRODUCT_PLACEHOLDER = 'assets/images/products/product-placeholder.svg';
 const PRODUCT_IMAGE_ROLE_MAP = new Map([
   ['card', 'plate'],
@@ -44,7 +43,13 @@ function buildAssets(sku) {
   return {
     hero: assetPath(sku, 'main'),
     card: assetPath(sku, 'plate'),
-    gallery: GALLERY_ROLES.map((role) => assetPath(sku, role)),
+    gallery: [
+      assetPath(sku, 'main'),
+      assetPath(sku, 'sides'),
+      assetPath(sku, 'back'),
+      `assets/images/products/${String(sku).toLowerCase()}-standard-plate.png`,
+      assetPath(sku, 'plate')
+    ],
     technicalViews: {
       plate: assetPath(sku, 'plate'),
       front: assetPath(sku, 'main'),
@@ -137,7 +142,13 @@ function buildPackagingAssets(sku) {
   const key = String(sku).toLowerCase();
   return {
     standard: `assets/images/products/${key}-package-standard-white-v1.jpg`,
-    screwless: `assets/images/products/${key}-package-screwless-white-v1.jpg`
+    screwless: `assets/images/products/${key}-package-screwless-white-v1.jpg`,
+    black: `assets/images/products/${key}-package-standard-black-v1.jpg`,
+    grey: `assets/images/products/${key}-package-standard-grey-v1.jpg`,
+    graphite: `assets/images/products/${key}-package-standard-graphite-v1.jpg`,
+    ivory: `assets/images/products/${key}-package-standard-ivory-v1.jpg`,
+    almond: `assets/images/products/${key}-package-standard-almond-v1.jpg`,
+    brown: `assets/images/products/${key}-package-standard-brown-v1.jpg`
   };
 }
 

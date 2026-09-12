@@ -162,10 +162,25 @@ const PACKAGING_PROGRAMS = [
   }
 ];
 
+const PACKAGING_REFERENCES = [
+  { key: 'standard', name: 'White' },
+  { key: 'black', name: 'Black' },
+  { key: 'grey', name: 'Grey' },
+  { key: 'graphite', name: 'Graphite' },
+  { key: 'ivory', name: 'Ivory' },
+  { key: 'almond', name: 'Light Almond' },
+  { key: 'brown', name: 'Brown' }
+];
+
 export function ProductOemStory({ product }) {
   const packagingTitleId = `packaging-${product.sku.toLowerCase()}`;
   const wallPlateTitleId = `wall-plates-${product.sku.toLowerCase()}`;
   const programTitleId = `packaging-programs-${product.sku.toLowerCase()}`;
+  const packagingReferences = PACKAGING_REFERENCES.map((reference) => ({
+    ...reference,
+    src: product.assets.packaging?.[reference.key]
+  })).filter((reference) => reference.src);
+  const showsPackagingReferences = packagingReferences.length > 0;
 
   return (
     <section
@@ -183,22 +198,42 @@ export function ProductOemStory({ product }) {
           <p>Align the visible finish and approved program materials around a reviewed product specification.</p>
         </div>
         <div className="product-finish-heading">
-          <p>Finish options</p>
-          <span>{colors.length} standard finishes</span>
+          <p>{showsPackagingReferences ? 'Retail packaging references' : 'Finish options'}</p>
+          <span>
+            {showsPackagingReferences
+              ? `${packagingReferences.length} standard presentations`
+              : `${colors.length} standard finishes`}
+          </span>
         </div>
-        <div className="product-finish-strip" aria-label={`${product.sku} finish references`}>
-          {colors.map((finish) => (
-            <figure key={finish.slug} data-testid="product-finish-cell">
-              <SafeImage
-                src={productFinishImage(product.sku, finish.slug)}
-                alt={`${product.sku} ${finish.name} finish`}
-                width={620}
-                height={620}
-                loading="lazy"
-              />
-              <figcaption>{finish.name}</figcaption>
-            </figure>
-          ))}
+        <div
+          className={`product-finish-strip${showsPackagingReferences ? ' product-packaging-showcase' : ''}`}
+          aria-label={`${product.sku} ${showsPackagingReferences ? 'retail packaging' : 'finish'} references`}
+        >
+          {showsPackagingReferences
+            ? packagingReferences.map((reference) => (
+              <figure key={reference.key} data-testid="product-packaging-showcase-cell">
+                <SafeImage
+                  src={reference.src}
+                  alt={`${product.sku} ${reference.name} standard retail packaging`}
+                  width={620}
+                  height={620}
+                  loading="lazy"
+                />
+                <figcaption>{reference.name}</figcaption>
+              </figure>
+            ))
+            : colors.map((finish) => (
+              <figure key={finish.slug} data-testid="product-finish-cell">
+                <SafeImage
+                  src={productFinishImage(product.sku, finish.slug)}
+                  alt={`${product.sku} ${finish.name} finish`}
+                  width={620}
+                  height={620}
+                  loading="lazy"
+                />
+                <figcaption>{finish.name}</figcaption>
+              </figure>
+            ))}
         </div>
         {product.assets.packaging && (
           <section className="product-packaging" aria-labelledby={packagingTitleId}>

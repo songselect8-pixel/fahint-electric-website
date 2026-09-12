@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import { studioRanges } from '../../data/studioCatalog.js';
 import { StudioImage } from './StudioShared.jsx';
+import Reveal from '../Reveal.jsx';
 
 const locations = [
   {
@@ -62,20 +63,50 @@ const mappedLocations = locations.map((location) => {
 
 export default function StudioApplicationMap() {
   const [activeSku, setActiveSku] = useState(null);
+  const sectionRef = useRef(null);
+  const closeTimer = useRef(null);
+
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
+
+  const openCard = (sku) => {
+    clearTimeout(closeTimer.current);
+    setActiveSku(sku);
+  };
+  const closeCard = () => {
+    clearTimeout(closeTimer.current);
+    setActiveSku(null);
+  };
+  // Match the navigation menu's short grace period for crossing into the card.
+  const scheduleClose = () => {
+    clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => {
+      const focusedCard = document.activeElement?.closest('.studio-map-card');
+      if (!focusedCard || focusedCard.hidden || !sectionRef.current?.contains(focusedCard)) setActiveSku(null);
+    }, 160);
+  };
 
   return <section
+    ref={sectionRef}
     className="studio-application-map"
     aria-labelledby="studio-application-map-title"
-    onMouseLeave={() => setActiveSku(null)}
+    onMouseLeave={scheduleClose}
     onBlurCapture={(event) => {
-      if (!event.currentTarget.contains(event.relatedTarget)) setActiveSku(null);
+      if (!event.currentTarget.contains(event.relatedTarget)) closeCard();
+    }}
+    onKeyDown={(event) => {
+      if (event.key !== 'Escape' || !activeSku) return;
+      event.stopPropagation();
+      if (event.target.closest('.studio-map-card')) {
+        event.currentTarget.querySelector('.studio-map-hotspot[aria-expanded=true]')?.focus();
+      }
+      closeCard();
     }}
   >
-    <header className="studio-application-map__intro">
+    <Reveal as="header" className="studio-application-map__intro">
       <p>MADE FOR REAL SPACES</p>
       <h2 id="studio-application-map-title">Power, room by room.</h2>
       <span>Explore where selected FAHINT devices belong in an everyday residential project.</span>
-    </header>
+    </Reveal>
 
     <div className="studio-application-map__stage">
       <StudioImage
@@ -106,9 +137,10 @@ export default function StudioApplicationMap() {
               aria-label={`Show ${location.label}`}
               aria-expanded={open}
               aria-controls={cardId}
-              onMouseEnter={() => setActiveSku(location.product.sku)}
-              onFocus={() => setActiveSku(location.product.sku)}
-              onClick={() => setActiveSku(location.product.sku)}
+              onMouseEnter={() => openCard(location.product.sku)}
+              onMouseLeave={scheduleClose}
+              onFocus={() => openCard(location.product.sku)}
+              onClick={() => openCard(location.product.sku)}
             >
               <span aria-hidden="true" />
             </button>
@@ -124,6 +156,9 @@ export default function StudioApplicationMap() {
         id={`studio-application-card-${location.product.sku.toLowerCase()}`}
         key={location.product.sku}
         hidden={!open}
+        onMouseEnter={() => openCard(location.product.sku)}
+        onMouseLeave={scheduleClose}
+        onFocus={() => openCard(location.product.sku)}
         style={{ '--spot-x': location.x, '--spot-y': location.y }}
       >
         <div className="studio-map-card__image">

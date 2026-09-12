@@ -1,0 +1,68 @@
+{
+  "stage": "Homepage six-category expansion; fixed two-row grid with no Wallplates card.",
+  "tool": "Built-in image_gen",
+  "status": "integrated; appearance ready for user review",
+  "presentation": {
+    "layout": "Six native category links; three columns on desktop, two on tablet, one on phones.",
+    "visible_copy": "One section heading and six category names; no models, facts, footnote, tabs or duplicate actions.",
+    "background": "Preserved original scene with a uniform 54% neutral-charcoal mask and no edge fades. A separate, compact charcoal navigation band with fine borders divides the hero from the collection; generous breathing room sits above the collection heading. Hero scene controls remain unboxed with their original labels and underline treatment.",
+    "scope": "Six-category homepage collection; Wallplates remains in the full catalog and seven-category inquiry form. Hero alignment and imagery, category photographs and the second chapter transition are preserved."
+  },
+  "reused_manifest": "docs/product-data/home-installation-showcase-assets.json",
+  "preserved_images": [
+    "gf15-kitchen-installed-v1.webp",
+    "ftr15qc-dc65w-desk-installed-v1.webp",
+    "dm2010-living-installed-v1.webp",
+    "home-interior-background-v1.webp"
+  ],
+  "assets": [
+    {
+      "id": "receptacles",
+      "sku": "R15",
+      "output": "r15-reading-corner-installed-v1.webp",
+      "references": [
+        "public/assets/images/catalog/models/1740fe075fb5d5f7.webp"
+      ],
+      "prompt": "Use case: compositing. Asset type: one photorealistic installed-product photograph for the FAHINT homepage Standard Receptacles category. Image 1 is the exact white R15 duplex receptacle and wallplate reference, not a background. Generate a clean 1536 x 1024 landscape photograph, 3:2, of this same product mounted flush on a warm light-gray finely textured wall above a walnut sideboard in a contemporary North American reading corner. Lock the device geometry: two separate vertically stacked rounded duplex faces, each with two straight vertical blade openings and one arched ground opening; one slotted screw at the center of the plate between the two outlet faces; the same white rectangular beveled outer wallplate. NO T-slot, no USB ports, no GFCI buttons, no extra screws or labels. Keep both receptacles completely visible and unplugged. All rear hardware and mounting brackets are inside the wall and invisible. Plate nearly front-on, centered horizontally, sharp, unobstructed and about 58 percent of image height. A slim strip of walnut furniture across the bottom and a softly blurred book and linen lampshade at the far edge establish a realistic setting, never obscure the product. Match the other FAHINT kitchen, desk and dimmer photos: natural white plastic, warm oak/walnut and muted neutral plaster, soft side daylight with gentle warm ambient light, tactile credible surfaces and subtle contact shadows, premium editorial photography rather than CGI. Avoid a giant product, floating plate, dramatic spotlight or strong blue tint. No people, hands, text overlay, UI, logos, watermark, border or baked-in rounded corners.",
+      "output_path": "public/assets/images/home-installations/r15-reading-corner-installed-v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 126936,
+      "generated_source": "C:/Users/XuWanPi/.codex/generated_images/01a04405-36a7-7a42-b27e-2ac0183d79b6/exec-d934f933-a964-48ad-8dde-7340c015c696.png",
+      "qa_status": "accepted",
+      "qa_notes": "Inspected generated image: white 15A duplex geometry and center screw preserved, both outlet faces visible, flush wall installation with natural contact shadow and matching warm-neutral interior."
+    },
+    {
+      "id": "smart-switches",
+      "sku": "USW8811",
+      "output": "usw8811-bedside-installed-v1.webp",
+      "references": [
+        "public/assets/images/catalog/smart-switches/17f21f2fe226b9cf-white-v1.webp"
+      ],
+      "prompt": "Use case: compositing. Asset type: one photorealistic installed-product photograph for the FAHINT homepage Smart Switches category. Image 1 is the exact black USW8811 one-gang glass touch panel, not a background. Create a 1536 x 1024 landscape 3:2 photograph showing this exact black glass panel installed flush on a soft warm taupe plaster wall beside an oak bedside table in a contemporary North American bedroom. Preserve the reference silhouette and tall US rectangular proportions, the single thin circular touch marking near the vertical middle, and the small Wi-Fi symbol centered above it. Exactly ONE circle, no plus/minus, no brightness icons, no added screen or extra buttons, no enlarged glowing markings. Preserve reflective black glass with a restrained natural highlight; do not replace it with matte plastic or a white face. Hide the reference's white rear electronics, cooling fins and electrical terminals fully INSIDE the wall; only the thin finished panel edge and a subtle wall contact shadow may be visible. The full panel is centered, nearly front-on, sharp and about 58 percent of image height. Show a little oak nightstand at the bottom and a softly out-of-focus cream linen pillow or lampshade only at the far right edge, keeping the glass face unmistakable and clear. Calm soft daylight and gentle warm bedside ambient light, realistic material textures, coherent scale, matching the premium warm-oak/stone editorial mood of the existing FAHINT installed-product photo series. No people, hands, wires, loose mounting parts, additional switches, promotional copy, logo, watermark, UI, borders or rounded canvas corners. This is an illustrative scene, not a customer project.",
+      "output_path": "public/assets/images/home-installations/usw8811-bedside-installed-v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 129862,
+      "generated_source": "C:/Users/XuWanPi/.codex/generated_images/01a04405-36a7-7a42-b27e-2ac0183d79b6/exec-f2fb0746-77b2-4ec8-a96d-59984d68fae1.png",
+      "qa_status": "accepted",
+      "qa_notes": "Inspected generated image: one touch circle and Wi-Fi marking retained on reflective black US panel, rear housing concealed, complete panel and believable bedside installation."
+    },
+    {
+      "id": "lighting-switches",
+      "sku": "DS15",
+      "output": "ds15-hallway-installed-v1.webp",
+      "references": [
+        "public/assets/images/catalog/lighting-switches/paddle-screwless-white-v1.png"
+      ],
+      "prompt": "Use case: compositing. Asset type: one photorealistic installed-product photograph for the FAHINT homepage Lighting Switches category. Image 1 is the exact white DS15 single-pole paddle switch in a white screwless plate. Produce a 1536 x 1024 landscape 3:2 editorial photograph of this exact unit correctly installed flush into a muted sage-gray plaster wall at the entrance to a contemporary North American hallway. Lock the reference proportions and geometry: one tall broad rectangular rocker paddle with its fine inset outline and slight physical bottom edge, a smooth white rectangular screwless outer plate with softly rounded corners. NO slider, no touch circle, no toggle lever, no extra button or indicator, no screws or invented markings. Hide all rear housing, yoke and terminals inside the wall. Keep the full plate centered, nearly front-on, sharp and about 58 percent of the image height with a realistic thin contact shadow. At the far right, a narrow oak door jamb may reveal a softly defocused warm stair railing or hallway; leave enough plain wall around the switch so the actual product remains dominant. Soft natural side light and modest warm interior light, natural white plastic, real plaster texture and oak grain. Match the other FAHINT installed kitchen, desk and living-room photos in photographic quality and restrained warm-neutral color, without strong blue grading. No people, hands, packaging, diagram, floating product, text, caption, UI, logo, watermark, border or rounded canvas corners.",
+      "output_path": "public/assets/images/home-installations/ds15-hallway-installed-v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 192316,
+      "generated_source": "C:/Users/XuWanPi/.codex/generated_images/01a04405-36a7-7a42-b27e-2ac0183d79b6/exec-8a3e5e0d-c971-455f-a4e5-90d5bd5a3873.png",
+      "qa_status": "accepted",
+      "qa_notes": "Inspected generated image: single white rocker with screwless plate, no slider or touch markings, full front face and correct flush hallway installation."
+    }
+  ]
+}

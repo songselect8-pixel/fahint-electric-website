@@ -71,6 +71,13 @@ describe('ProductGallery', () => {
 
     const thumbnails = screen.getAllByRole('button', { name: /^View GF15 image [1-5]$/ });
     expect(thumbnails).toHaveLength(5);
+    expect(thumbnails.map((thumbnail) => thumbnail.querySelector('img')?.getAttribute('src'))).toEqual([
+      `${import.meta.env.BASE_URL}assets/images/products/gf15-main.webp`,
+      `${import.meta.env.BASE_URL}assets/images/products/gf15-sides.webp`,
+      `${import.meta.env.BASE_URL}assets/images/products/gf15-back.webp`,
+      `${import.meta.env.BASE_URL}assets/images/products/gf15-standard-plate.png`,
+      `${import.meta.env.BASE_URL}assets/images/products/gf15-plate.webp`
+    ]);
     thumbnails.forEach((thumbnail) => {
       const image = thumbnail.querySelector('img');
       expect(thumbnail).toHaveAttribute('data-testid', 'product-gallery-thumb');

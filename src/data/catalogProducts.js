@@ -1,5 +1,6 @@
 import legacyRecords from './catalog/legacy-products.json' with { type: 'json' };
 import catalogueRecords from './catalog/catalogue-products.json' with { type: 'json' };
+import smartSwitchMedia from './catalog/smart-switch-media.json' with { type: 'json' };
 import { colors, products as gfciProducts } from './products.js';
 
 import { catalogueDocument } from './documents.js';
@@ -10,6 +11,29 @@ export const modelSlug = (value) => clean(value).toLowerCase().replace(/[^a-z0-9
 const finishPalette = Object.fromEntries([
   ...colors, { slug: 'graphite', name: 'Graphite', hex: '#484A4B' }, { slug: 'gold', name: 'Gold', hex: '#cbbb82' }
 ].map((finish) => [finish.slug, finish]));
+
+// Only these verified structural views belong in the USB thumbnail strip.
+// Color variants remain available through finishes; packaging stays in presentation.
+// Shared rear/side photographs are approved fallbacks for USB receptacles, not F4P.
+const sharedUsbViews = ['430f555427db1805', 'ddf36c5c6fcae0e3'].map((id) => ({
+  src: `assets/images/catalog/models/${id}.webp`, width: 800, height: 800
+}));
+const usbStructuralViews = new Set([
+  ...sharedUsbViews.map((image) => image.src),
+  ...['d93d93a37fc05d32', '9e0642bd67a45176', 'ebaf77f3a03e5a07']
+    .map((id) => `assets/images/catalog/models/${id}.webp`)
+]);
+
+// Verified library order: bare white device, own rear, own sides, white plates.
+// Keep finish variants in the swatches, not mixed into the product gallery.
+const lightingSwitchViews = {
+  DS15: ['models/50e6f2d3f5cf9b64.webp', 'models/f27fdfb77ebc422d.webp', 'models/d0d49278307b26d7.webp', 'models/bbd1ee3b3a7ef0ea.webp', 'lighting-switches/paddle-screwless-white-v1.png'],
+  'DS15.3': ['models/50e6f2d3f5cf9b64.webp', 'models/dc383c22eded4661.webp', 'models/1cca0ee7ddcc8f0a.webp', 'models/bbd1ee3b3a7ef0ea.webp', 'lighting-switches/paddle-screwless-white-v1.png'],
+  DS1502: ['models/9c21053579be1cac.webp', 'models/f5bff2d649a9a069.webp', 'lighting-switches/ds1502-side-v1.png', 'lighting-switches/ds1502-standard-plate-v1.png', 'lighting-switches/ds1502-screwless-plate-v1.png'],
+  DS1503: ['models/9ef60ea16e0567a5.webp', 'models/a9bd7366f5c2aaa4.webp', 'lighting-switches/ds1503-side-v1.png', 'lighting-switches/ds1503-standard-plate-v1.png', 'lighting-switches/ds1503-screwless-plate-v1.png'],
+  T15: ['models/f859bb10d2d105c0.webp', 'models/f8141a47c5ffc32b.webp', 'models/40197c504db5ed01.webp', 'models/345569ec6e60fd6f.webp'],
+  'T15.3': ['models/e865d6e03bd24428.webp', 'models/d0fdd5bd30be0743.webp', 'models/797c494ac3c405f7.webp', 'models/4212209407e00bbc.webp'],
+};
 
 const LABELS = {
   Model: 'Source model designation', Certification: 'Published certification', 'File No.': 'Certification file',
@@ -304,12 +328,39 @@ function legacyProduct(record) {
       : 'The combined USB output is shared across the charging ports. Individual port limits are listed separately and must not be added together.');
   }
   const finishRecord = catalogueRecords.find((item) => item.family === record.family && modelKey(item.model) === modelKey(description.sku));
+  const smartMedia = record.family === 'smart-switches' ? smartSwitchMedia[record.model] : null;
   const finishNames = record.family === 'smart-switches'
     ? record.model.startsWith('EU') ? ['black', 'white', 'gold', 'grey'] : ['black', 'white', 'grey', 'gold'] : [];
-  const finishImages = finishRecord?.finishImages
+  const finishImages = smartMedia?.finishes || finishRecord?.finishImages
     || (finishNames.length ? finishNames.map((slug, index) => ({ slug, ...gallery[index] }))
       : /^GTN(?:15|20)$/.test(record.model) ? [{ slug: 'black', ...hero }] : []);
   const finishes = finishImages.map(({ slug, src }) => ({ ...finishPalette[slug], image: src }));
+  const usbPlates = record.family === 'usb-outlets' ? ['standard', 'screwless'].map((plate) => ({
+    src: `assets/images/catalog/usb-plates/${description.slug}-${plate}-v1.png`, width: 800, height: 800
+  })) : [];
+  const dimmerScrewless = record.family === 'dimmers' ? {
+    src: `assets/images/catalog/dimmers/${description.slug}-screwless-plate-v1.png`, width: 800, height: 800
+  } : null;
+  const dimmerPackage = dimmerScrewless ? {
+    ...dimmerScrewless, src: `assets/images/catalog/dimmers/${description.slug}-screwless-package-v1.png`,
+    caption: 'Screwless plate · packaged'
+  } : null;
+  const lightingViews = record.family === 'lighting-switches' ? lightingSwitchViews[record.model]?.map((path) => ({
+    src: `assets/images/catalog/${path}`, width: 800, height: 800
+  })) : null;
+  const productViews = lightingViews || (smartMedia ? smartMedia.gallery : record.family === 'usb-outlets'
+    ? [finishImages.find((finish) => finish.slug === 'white') || hero,
+      ...gallery.filter((image) => usbStructuralViews.has(image.src)),
+      ...(record.model === 'F4P' ? [] : sharedUsbViews.filter((shared) => !gallery.some((image) => image.src === shared.src))),
+      ...usbPlates]
+    : dimmerScrewless ? [...gallery.slice(0, 2), dimmerScrewless, gallery[2], dimmerPackage, ...gallery.slice(3)] : gallery);
+  const primaryView = lightingViews || smartMedia || record.family === 'usb-outlets' ? productViews[0] : hero;
+  const drawings = smartMedia?.drawings || record.drawings;
+  const detailViews = smartMedia?.detailViews || [];
+  const presentation = dimmerPackage
+    ? [dimmerPackage, { ...gallery[2], caption: 'Standard screw plate · packaged' }]
+    : record.presentationIndices ? record.presentationIndices.map((index) => gallery[index])
+      : record.family === 'usb-outlets' && record.model !== 'F4P' ? record.gallery.slice(0, 2) : [];
   const features = description.keyFacts.map(([label, value]) => `${label}: ${value}`);
   if (values.get('Wiring method') && !description.keyFacts.some(([label]) => label === 'Wiring')) features.push(`Wiring: ${values.get('Wiring method')}`);
   if (warrantyValue) features.push(`Warranty: ${warrantyValue}`);
@@ -325,12 +376,13 @@ function legacyProduct(record) {
     certificationLabel: draft ? 'No certification stated in the source' : /^GTN/.test(record.model) ? 'Legacy source: E504391 · exact model scope requires review' : certificate?.label || 'Model-specific documentation available on request',
     notes, reviewNotice, draft,
     assets: {
-      hero: hero.src, card: hero.src, gallery: gallery.map((image) => image.src),
-      imageSizes: Object.fromEntries([...gallery, ...record.drawings, ...finishImages].map((image) => [image.src, [image.width, image.height]])),
+      hero: primaryView.src, card: primaryView.src, gallery: productViews.map((image) => image.src),
+      imageSizes: Object.fromEntries([...gallery, ...drawings, ...finishImages, ...productViews, ...presentation, ...detailViews].map((image) => [image.src, [image.width, image.height]])),
       finishes: Object.fromEntries(finishes.map((finish) => [finish.slug, finish.image])),
-      detail: record.detailIndex != null ? gallery[record.detailIndex]?.src : gallery.find((image) => /430f555427db1805|9e0642bd67a45176/.test(image.src))?.src || gallery[Math.min(primaryIndex + 1, gallery.length - 1)]?.src,
-      drawings: draft ? [] : record.drawings,
-      presentation: record.presentationIndices ? record.presentationIndices.map((index) => gallery[index]) : record.family === 'usb-outlets' && record.model !== 'F4P' ? record.gallery.slice(0, 2) : []
+      detail: lightingViews ? lightingViews[1].src : smartMedia ? detailViews[0].src : record.detailIndex != null ? gallery[record.detailIndex]?.src : gallery.find((image) => /430f555427db1805|9e0642bd67a45176/.test(image.src))?.src || gallery[Math.min(primaryIndex + 1, gallery.length - 1)]?.src,
+      detailViews,
+      drawings: draft ? [] : drawings,
+      presentation
     }
   };
 }

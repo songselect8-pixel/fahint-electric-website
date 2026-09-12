@@ -11,6 +11,10 @@ import InquiryForm from '../components/InquiryForm.jsx';
 export default function CatalogProductDetail({ product }) {
   const { pathname, search } = useLocation();
   const line = findLine(product.line);
+  const isUsb = product.line === 'usb-outlets';
+  const isSmart = product.line === 'smart-switches';
+  const isLighting = product.line === 'lighting-switches';
+  const upfrontSpecifications = isUsb || isSmart || isLighting || product.line === 'receptacles' || product.line === 'dimmers';
   const models = getCatalogProducts(product.line);
   const related = models.filter((candidate) => candidate.slug !== product.slug)
     .sort((a, b) => Number(b.group === product.group) - Number(a.group === product.group)).slice(0, 4);
@@ -38,7 +42,7 @@ export default function CatalogProductDetail({ product }) {
   }, [product]);
 
   return (
-    <div className="catalog-product-detail">
+    <div className={`catalog-product-detail${isUsb ? ' catalog-product-detail--usb' : ''}${isSmart ? ' catalog-product-detail--smart' : ''}${isLighting ? ' catalog-product-detail--lighting' : ''}${upfrontSpecifications ? ' catalog-product-detail--matrix' : ''}`}>
       <nav className="product-detail-breadcrumb" aria-label="Breadcrumb">
         <div className="container crumbs">
           <Link to="/">Home</Link><span aria-hidden="true">/</span><Link to="/products">Products</Link>
@@ -47,18 +51,18 @@ export default function CatalogProductDetail({ product }) {
         </div>
       </nav>
       <ProductDetailHero key={product.slug} product={product} anchorPath={pathname} anchorSearch={search} />
-      <nav className="catalog-product-nav" aria-label="Product sections">
+      {upfrontSpecifications ? <ProductSpecifications key={`specifications-${product.slug}`} product={product} layout="matrix" /> : <nav className="catalog-product-nav" aria-label="Product sections">
         <div className="container">
           <Link to={{ pathname, search, hash: '#technical-details' }}>Specifications</Link>
           {product.assets.drawings.length > 0 && <Link to={{ pathname, search, hash: '#installation-reference' }}>Drawings</Link>}
           <Link to={{ pathname, search, hash: '#model-documentation' }}>Documentation</Link>
           <Link to={{ pathname, search, hash: '#inquiry' }}>Request a quote</Link>
         </div>
-      </nav>
+      </nav>}
       <CatalogFeatures product={product} />
       <CatalogApplications product={product} />
       {!product.draft && <CatalogPresentation product={product} />}
-      <ProductSpecifications key={`specifications-${product.slug}`} product={product} />
+      {!upfrontSpecifications && <ProductSpecifications key={`specifications-${product.slug}`} product={product} />}
       <CatalogDrawings product={product} />
       <CatalogDocumentation product={product} />
       {related.length > 0 && <section className="product-related">

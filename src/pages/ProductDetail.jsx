@@ -105,10 +105,10 @@ export default function ProductDetail() {
       </nav>
 
       <ProductDetailHero product={product} anchorPath={pathname} anchorSearch={search} />
+      <ProductSpecifications product={product} layout="matrix" />
       <ProductFeatureStory product={product} />
       <ProductApplicationStory product={product} />
       <ProductOemStory product={product} />
-      <ProductSpecifications product={product} />
       <ProductInstallation product={product} />
       <ProductCertification product={product} />
       <ProductManufacturingProof />

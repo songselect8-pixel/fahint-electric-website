@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import InquiryForm, { buildInquiryText, buildMailtoUrl, validateInquiry } from './InquiryForm.jsx';
+import { productLines } from '../data/lines.js';
 
 const validForm = {
   name: 'Avery Chen',
@@ -20,6 +21,16 @@ async function completeRequiredFields(user) {
 }
 
 describe('InquiryForm helpers', () => {
+  it.each(['USB Outlets', ''])('labels category inquiries correctly, including an optional empty selection: %s', (category) => {
+    const inquiry = { ...validForm, category };
+    const expected = `Product category: ${category || 'Not specified'}`;
+    const body = new URLSearchParams(buildMailtoUrl(inquiry).split('?')[1]).get('body');
+    expect(body).toContain(expected);
+    expect(body).not.toContain('Model of interest:');
+    expect(buildInquiryText(inquiry)).toContain(expected);
+    expect(buildInquiryText(inquiry)).not.toContain('Model of interest:');
+  });
+
   it('returns the exact errors for trimmed required fields and an invalid email', () => {
     expect(
       validateInquiry({
@@ -93,6 +104,37 @@ describe('InquiryForm', () => {
     render(<InquiryForm defaultModel="GF15" />);
 
     expect(screen.getByLabelText('Model of interest')).toHaveValue('GF15');
+  });
+
+  it('includes the selected category in the email and copy recovery without a model field', async () => {
+    const user = userEvent.setup();
+    const delivery = vi.fn();
+    const clipboardWriter = vi.fn();
+    render(<InquiryForm categoryOptions={productLines} delivery={delivery} clipboardWriter={clipboardWriter} />);
+    await completeRequiredFields(user);
+    await user.selectOptions(screen.getByRole('combobox'), 'USB Outlets');
+    await user.click(screen.getByRole('button', { name: 'Open email app' }));
+    const body = new URLSearchParams(delivery.mock.calls[0][0].split('?')[1]).get('body');
+    expect(body).toContain('Product category: USB Outlets');
+    expect(body).not.toContain('Model of interest:');
+    await user.click(await screen.findByRole('button', { name: 'Copy inquiry details' }));
+    expect(clipboardWriter.mock.calls[0][0]).toContain('Product category: USB Outlets');
+    expect(clipboardWriter.mock.calls[0][0]).not.toContain('Model of interest:');
+  });
+
+  it('sends the selected category instead of a model to a configured inquiry service', async () => {
+    const request = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) });
+    render(<InquiryForm categoryOptions={productLines} endpoint="https://forms.example.com/inquiry" request={request} />);
+    fireEvent.change(screen.getByLabelText('Your name *'), { target: { value: validForm.name } });
+    fireEvent.change(screen.getByLabelText('Business email *'), { target: { value: validForm.email } });
+    fireEvent.change(screen.getByLabelText('Requirements *'), { target: { value: validForm.message } });
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Wallplates' } });
+    fireEvent.submit(screen.getByRole('button', { name: 'Send inquiry' }).closest('form'));
+    expect(request).toHaveBeenCalledTimes(1);
+    const payload = JSON.parse(request.mock.calls[0][1].body);
+    expect(payload).toMatchObject({ category: 'Wallplates', name: validForm.name, message: validForm.message });
+    expect(payload).not.toHaveProperty('model');
+    expect(await screen.findByRole('status')).toHaveTextContent('Your inquiry has been received.');
   });
 
   it('updates the model when defaultModel changes without clearing other fields', async () => {

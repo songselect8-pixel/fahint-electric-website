@@ -38,6 +38,7 @@ Every published asset is sourced from the same model folder; no cross-model fall
 | Public role | Model-folder source | Web asset role |
 |---|---|---|
 | Card / plate | `2.png` | `<model>-plate.webp` |
+| Gallery standard screw plate | `3.png` | `<model>-standard-plate.png` |
 | Hero / main | `1.png` | `<model>-main.webp` |
 | Gallery sides | `4.png` | `<model>-sides.webp` |
 | Gallery back | `7.png` | `<model>-back.webp` |
@@ -51,6 +52,14 @@ Every published asset is sourced from the same model folder; no cross-model fall
 | Finish: Black | `Black.png` | `<model>-black.webp` |
 | Finish: Grey | `Grey.png` | `<model>-grey.webp` |
 | Finish: Brown | `Brown.png` | `<model>-brown.webp` |
+
+### Approved detailed-page presentation (2026-09-10)
+
+All seven detailed GFCI pages now use the approved GF15 gallery order: main, sides, back, standard screw plate, screwless plate. Lifestyle artwork is retained in the asset library but no longer appears in the five-image product gallery. Each model keeps its dedicated engineering and application scenes.
+
+The program-configuration strip shows seven retail packaging photographs instead of repeating the hero finish photographs. Sources are the same model's `GFCI中性包装/<MODEL>/标准-白.jpg`, `标准-黑.jpg`, `标准-灰.jpg`, `标准-石墨灰.jpg`, `标准-象牙.jpg`, `标准-杏仁.jpg` and `标准-棕.jpg`. Public filenames use `<model>-package-standard-<color>-v1.jpg`, with color keys `white`, `black`, `grey`, `graphite`, `ivory`, `almond` and `brown`. White screwless packaging continues to use the same model's `无螺丝-白.jpg` in the wall-plate comparison.
+
+The six additional standard-plate images and 36 colored packaging JPEGs were copied byte-for-byte from their model folders. No source images were overwritten, recolored or borrowed across models. The matrix layout and earlier specification placement are shared; all model-specific ratings, configuration, TR/WR values and GL20's documentation-review status remain unchanged.
 
 ## Unresolved fields and publication limits
 

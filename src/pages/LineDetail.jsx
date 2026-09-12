@@ -4,6 +4,7 @@ import { ArrowRight, Search } from 'lucide-react';
 import { findLine, productLines } from '../data/lines.js';
 import { filterCatalogProducts, getCatalogProducts } from '../data/catalogProducts.js';
 import CatalogModelCard from '../components/products/CatalogModelCard.jsx';
+import SafeImage from '../components/SafeImage.jsx';
 
 function ModelCatalogue({ line }) {
   const [query, setQuery] = useState('');
@@ -12,6 +13,15 @@ function ModelCatalogue({ line }) {
   const groups = [...new Set(models.map((product) => product.group))];
   const filtered = filterCatalogProducts(models, { query, group });
   const clear = () => { setQuery(''); setGroup(''); };
+  const isCenteredPoster = ['receptacles', 'smart-switches'].includes(line.slug);
+  const isRightPoster = line.slug === 'lighting-switches';
+  const poster = {
+    'usb-outlets': 'assets/images/lines/usb-series-desktop-charging-v1.webp',
+    dimmers: 'assets/images/lines/dimmer-series-living-room-v1.webp',
+    receptacles: 'assets/images/lines/receptacle-series-desk-power-v1.webp',
+    'smart-switches': 'assets/images/lines/smart-series-bedside-touch-v1.webp',
+    'lighting-switches': 'assets/images/lines/lighting-series-stair-entry-v1.webp',
+  }[line.slug];
 
   useEffect(() => {
     const previous = document.title;
@@ -20,15 +30,20 @@ function ModelCatalogue({ line }) {
   }, [line]);
 
   return <div className="catalog-series">
-    <section className="catalog-series__intro">
+    <section className={`catalog-series__intro${poster ? ' catalog-series__intro--poster' : ''}${isCenteredPoster ? ' catalog-series__intro--centered' : ''}${isRightPoster ? ' catalog-series__intro--right' : ''}`} aria-labelledby="catalog-series-title">
+      {poster && <>
+        <SafeImage className="catalog-series__poster" src={poster}
+          alt="" width={1920} height={450} loading="eager" fetchpriority="high" />
+        <div className="catalog-series__poster-shade" aria-hidden="true" />
+      </>}
       <div className="container">
         <nav className="crumbs" aria-label="Breadcrumb">
           <Link to="/">Home</Link><span aria-hidden="true">/</span><Link to="/products">Products</Link>
           <span aria-hidden="true">/</span><span aria-current="page">{line.name}</span>
         </nav>
         <div className="catalog-section-heading">
-          <div><h1>{line.name}</h1></div>
-          <p>{line.summary}</p>
+          <div><h1 id="catalog-series-title">{line.name}</h1></div>
+          {!isCenteredPoster && !isRightPoster && <p>{line.summary}</p>}
         </div>
         <div className="catalog-series__meta">
           <span>{models.length} model configurations</span><span>Model-specific specifications</span><span>Original product references</span>

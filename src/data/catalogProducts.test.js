@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
 import { catalogProducts, findCatalogProduct, getCatalogProducts, modelKey, productHref } from './catalogProducts.js';
 import { products } from './products.js';
+import { findLine } from './lines.js';
+import { studioRanges } from './studioCatalog.js';
 import { PUBLIC_ROUTES } from '../../scripts/prepare-pages.mjs';
 
 const rows = (product) => new Map(product.specificationGroups.flatMap((group) => group.rows));
@@ -64,6 +66,28 @@ describe('complete, model-specific catalogue', () => {
     expect(photo('wallplates', 'BS1803-G')).not.toBe(photo('wallplates', 'BS1803-M'));
   });
 
+  it('gives all smart switches structural galleries, white photos and their own source references', () => {
+    for (const p of getCatalogProducts('smart-switches')) {
+      expect(p.assets.gallery.length, p.sku).toBe(p.sku.startsWith('US') ? 5 : 4);
+      expect(p.assets.gallery[0], p.sku).toBe(p.assets.finishes.black);
+      for (const finish of p.finishes.filter((f) => f.slug !== 'black')) {
+        expect(p.assets.gallery, `${p.sku}: ${finish.slug}`).not.toContain(finish.image);
+      }
+      expect(p.assets.detailViews.map((view) => view.kind), p.sku).toEqual(['front', 'side', 'rear']);
+      expect(p.assets.drawings.map((drawing) => drawing.kind), p.sku).toEqual(['dimensions', 'wiring']);
+      for (const image of [...p.assets.detailViews, ...p.assets.drawings]) {
+        expect(image.source, p.sku).toContain(p.sku);
+        expect(existsSync(`public/${image.src}`), `${p.sku}: ${image.kind}`).toBe(true);
+        expect(p.assets.imageSizes[image.src], p.sku).toEqual([image.width, image.height]);
+      }
+      if (p.sku.startsWith('US')) {
+        for (const image of [...p.assets.gallery, ...p.finishes.map((finish) => finish.image)]) {
+          expect(image, p.sku).toMatch(/smart-switches\/.*-white-v1\.webp$/);
+        }
+      }
+    }
+  });
+
   it('makes all approved catalogue routes deployable, but excludes FLB20 from public listings', () => {
     const draft = catalogProducts.find((p) => p.sku === 'FLB20');
     expect(draft.draft).toBe(true);
@@ -87,6 +111,45 @@ describe('complete, model-specific catalogue', () => {
     expect(model('usb-outlets', 'FTR20QC-DC65W').notes.join(' ')).toMatch(/not a promise.*both ports/);
   });
 
+  it('keeps USB color variants out of thumbnails and places genuine plate photographs last', () => {
+    for (const p of getCatalogProducts('usb-outlets')) {
+      expect(p.assets.gallery[0], p.sku).toBe(p.assets.finishes.white);
+      expect(new Set(p.assets.gallery).size, p.sku).toBe(p.assets.gallery.length);
+      expect(p.assets.gallery.length, p.sku).toBeLessThanOrEqual(6);
+      for (const finish of p.finishes.filter((f) => f.slug !== 'white')) {
+        expect(p.assets.gallery, `${p.sku}: ${finish.slug}`).not.toContain(finish.image);
+      }
+      expect(p.assets.gallery.slice(-2), p.sku).toEqual([
+        `assets/images/catalog/usb-plates/${p.slug}-standard-v1.png`,
+        `assets/images/catalog/usb-plates/${p.slug}-screwless-v1.png`
+      ]);
+      if (!p.sku.endsWith('-4200') && p.sku !== 'F4P') {
+        for (const packaged of p.assets.presentation) expect(p.assets.gallery).not.toContain(packaged.src);
+      }
+    }
+  });
+
+  it('fills missing USB receptacle rear and side views before the plate photographs', () => {
+    const sharedViews = ['430f555427db1805', 'ddf36c5c6fcae0e3']
+      .map((id) => `assets/images/catalog/models/${id}.webp`);
+    for (const p of getCatalogProducts('usb-outlets').filter((product) => product.sku !== 'F4P')) {
+      for (const src of sharedViews) {
+        expect(p.assets.gallery.filter((image) => image === src), p.sku).toHaveLength(1);
+        expect(p.assets.gallery.indexOf(src), p.sku).toBeGreaterThan(0);
+        expect(p.assets.gallery.indexOf(src), p.sku).toBeLessThan(p.assets.gallery.length - 2);
+        expect(p.assets.imageSizes[src], p.sku).toEqual([800, 800]);
+      }
+    }
+  });
+
+  it('preserves the four-port charger’s own structural views', () => {
+    const p = model('usb-outlets', 'F4P');
+    expect(p.assets.gallery.slice(1, -2)).toEqual([
+      'assets/images/catalog/models/9e0642bd67a45176.webp',
+      'assets/images/catalog/models/ebaf77f3a03e5a07.webp'
+    ]);
+  });
+
   it('keeps Q wiring, TR/WR variants and 250V receptacles distinct', () => {
     expect(rows(model('receptacles', 'R15Q')).get('Wiring method')).toMatch(/Push-In/);
     expect(rows(model('receptacles', 'R15')).get('Wiring method')).toMatch(/Back Wire/);
@@ -107,6 +170,26 @@ describe('complete, model-specific catalogue', () => {
     expect(rows(model('dimmers', 'DM2010S')).has('Incandescent load')).toBe(false);
   });
 
+  it.each(['DM2010', 'DM2010S'])('adds the matching screwless dimmer views for %s', (sku) => {
+    const p = model('dimmers', sku);
+    const screwless = `assets/images/catalog/dimmers/${p.slug}-screwless-plate-v1.png`;
+    const packaged = `assets/images/catalog/dimmers/${p.slug}-screwless-package-v1.png`;
+    expect(p.assets.gallery).toEqual([
+      p.assets.hero,
+      'assets/images/catalog/models/ea83e27b52508303.webp',
+      screwless,
+      'assets/images/catalog/models/cb4dfb328d0db950.webp',
+      packaged,
+      'assets/images/catalog/models/89b3d42444050e1d.webp'
+    ]);
+    expect(p.assets.presentation.map((image) => image.src)).toEqual([
+      packaged, 'assets/images/catalog/models/cb4dfb328d0db950.webp'
+    ]);
+    expect(p.assets.imageSizes[screwless]).toEqual([800, 800]);
+    expect(p.assets.imageSizes[packaged]).toEqual([800, 800]);
+    expect(p.assets.detail).toBe('assets/images/catalog/models/89b3d42444050e1d.webp');
+  });
+
   it('distinguishes smart-switch wiring, radios, formats and model-specific uncertainty', () => {
     expect(rows(model('smart-switches', 'EUW8811')).get('Operating voltage')).toMatch(/90–250/);
     expect(rows(model('smart-switches', 'EUW8811C')).get('Operating voltage')).toMatch(/160–240/);
@@ -119,6 +202,15 @@ describe('complete, model-specific catalogue', () => {
     expect(rows(model('smart-switches', 'EUZ8834')).get('Program status')).toMatch(/Sample-stage/);
     expect(model('smart-switches', 'USW8811').certificate).toBeNull();
     expect(model('smart-switches', 'EUW8811').finishes).toHaveLength(4);
+    const neutral = model('smart-switches', 'USW8811');
+    const singleLive = model('smart-switches', 'USW8811-S');
+    const touch = model('smart-switches', 'UST8811');
+    expect(neutral.assets.detailViews[2].src).not.toBe(singleLive.assets.detailViews[2].src);
+    expect(singleLive.assets.detailViews[2].src).not.toBe(touch.assets.detailViews[2].src);
+    expect(neutral.assets.drawings[1].source).toContain('Wi-Fi Neutral Reruired/USW8811/10.png');
+    expect(singleLive.assets.drawings[1].source).toContain('Wi-Fi Single Life Wire/USW8811-S/10.png');
+    expect(touch.assets.drawings[1].source).toContain('Touch Switch/Single Life Wire/UST8811/10.png');
+    expect(model('smart-switches', 'UST8832').assets.drawings[1].source).toContain('Neutral Reruired/UST8832/10.png');
   });
 
   it('preserves the lighting-switch voltage and UL/ETL differences', () => {
@@ -131,6 +223,65 @@ describe('complete, model-specific catalogue', () => {
       expect(model('lighting-switches', sku).certificate.image).toBeNull();
       expect(model('lighting-switches', sku).name).not.toMatch(/Gang/);
     }
+  });
+
+  it('uses white bare-device covers for the selected lighting switches across the catalogue', () => {
+    const expected = {
+      DS15: 'assets/images/catalog/models/50e6f2d3f5cf9b64.webp',
+      'DS15.3': 'assets/images/catalog/models/50e6f2d3f5cf9b64.webp',
+      DS1502: 'assets/images/catalog/models/9c21053579be1cac.webp',
+      T15: 'assets/images/catalog/models/f859bb10d2d105c0.webp'
+    };
+    for (const [sku, src] of Object.entries(expected)) {
+      const p = model('lighting-switches', sku);
+      expect(p.assets.card, sku).toBe(src);
+      expect(p.assets.card, sku).toBe(p.assets.finishes.white);
+      expect(p.assets.imageSizes[src], sku).toEqual([800, 800]);
+      expect(existsSync(`public/${src}`), sku).toBe(true);
+      // The curated detail gallery now starts with the approved bare white cover.
+      expect(p.assets.hero, sku).toBe(p.assets.card);
+      expect(p.assets.gallery, sku).toContain(p.assets.hero);
+    }
+    for (const sku of ['DS1503', 'T15.3']) {
+      const p = model('lighting-switches', sku);
+      expect(p.assets.card, sku).toBe(p.assets.hero);
+    }
+    expect(findLine('lighting-switches').cover).toBe(expected.DS15);
+    expect(studioRanges.find((range) => range.slug === 'lighting-switches').featured.map((p) => p.assets.card))
+      .toEqual([expected.DS15, expected.T15]);
+  });
+
+  it('curates compact model-specific white lighting galleries without color or promotional clutter', () => {
+    const expected = {
+      DS15: ['models/50e6f2d3f5cf9b64.webp', 'models/f27fdfb77ebc422d.webp', 'models/d0d49278307b26d7.webp', 'models/bbd1ee3b3a7ef0ea.webp', 'lighting-switches/paddle-screwless-white-v1.png'],
+      'DS15.3': ['models/50e6f2d3f5cf9b64.webp', 'models/dc383c22eded4661.webp', 'models/1cca0ee7ddcc8f0a.webp', 'models/bbd1ee3b3a7ef0ea.webp', 'lighting-switches/paddle-screwless-white-v1.png'],
+      DS1502: ['models/9c21053579be1cac.webp', 'models/f5bff2d649a9a069.webp', 'lighting-switches/ds1502-side-v1.png', 'lighting-switches/ds1502-standard-plate-v1.png', 'lighting-switches/ds1502-screwless-plate-v1.png'],
+      DS1503: ['models/9ef60ea16e0567a5.webp', 'models/a9bd7366f5c2aaa4.webp', 'lighting-switches/ds1503-side-v1.png', 'lighting-switches/ds1503-standard-plate-v1.png', 'lighting-switches/ds1503-screwless-plate-v1.png'],
+      T15: ['models/f859bb10d2d105c0.webp', 'models/f8141a47c5ffc32b.webp', 'models/40197c504db5ed01.webp', 'models/345569ec6e60fd6f.webp'],
+      'T15.3': ['models/e865d6e03bd24428.webp', 'models/d0fdd5bd30be0743.webp', 'models/797c494ac3c405f7.webp', 'models/4212209407e00bbc.webp'],
+    };
+    const legacy = JSON.parse(readFileSync('src/data/catalog/legacy-products.json', 'utf8'));
+    for (const [sku, paths] of Object.entries(expected)) {
+      const p = model('lighting-switches', sku);
+      const gallery = paths.map((path) => `assets/images/catalog/${path}`);
+      expect(p.assets.gallery, sku).toEqual(gallery);
+      expect(p.assets.hero, sku).toBe(gallery[0]);
+      expect(p.assets.detail, sku).toBe(gallery[1]);
+      expect(new Set(gallery).size, sku).toBe(gallery.length);
+      expect(p.finishes, sku).toHaveLength(7);
+      for (const finish of p.finishes.filter((f) => f.slug !== 'white')) {
+        expect(gallery, `${sku} ${finish.slug}`).not.toContain(finish.image);
+      }
+      for (const src of gallery) {
+        expect(existsSync(`public/${src}`), src).toBe(true);
+        expect(p.assets.imageSizes[src], src).toEqual([800, 800]);
+      }
+      expect(p.assets.drawings, sku).toEqual(legacy.find((r) => r.family === 'lighting-switches' && r.model === sku).drawings);
+    }
+    const css = readFileSync('src/styles/catalog.css', 'utf8');
+    expect(css).toMatch(/\.catalog-product-detail--lighting \.product-gallery__thumbs\s*\{[^}]*display:\s*grid[^}]*overflow:\s*visible/);
+    expect(css.slice(css.indexOf('@media (max-width: 420px)')))
+      .toMatch(/\.catalog-product-detail--lighting \.product-gallery__thumbs\s*\{[^}]*grid-template-columns:\s*repeat\(3/);
   });
 
   it('keeps glossy/matte and screw-fixed/screwless plate sizes separate', () => {

@@ -1339,6 +1339,10 @@
   background: transparent;
 }
 
+.product-packaging-showcase {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
 .product-finish-strip figure {
   display: grid;
   min-width: 0;
@@ -1717,6 +1721,14 @@
   max-width: 1160px;
 }
 
+.product-specifications--matrix {
+  background: #f4f7f9;
+}
+
+.product-specifications--matrix .product-technical__narrow {
+  max-width: 1240px;
+}
+
 .product-specifications__heading {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 0.62fr);
@@ -1905,10 +1917,170 @@
   overflow-wrap: anywhere;
 }
 
+.product-specifications--matrix .product-specification-summary {
+  overflow: hidden;
+  border: 0;
+  border-radius: 16px;
+  background: var(--product-navy-soft);
+  box-shadow: 0 18px 44px rgba(7, 28, 55, .12);
+}
+
+.product-specifications--matrix .product-specification-summary > div {
+  border-color: rgba(255, 255, 255, .13);
+}
+
+.product-specifications--matrix .product-specification-summary dt {
+  color: rgba(179, 218, 235, .82);
+}
+
+.product-specifications--matrix .product-specification-summary dd {
+  color: #fff;
+}
+
+.product-specifications__controls--static {
+  min-height: 62px;
+  margin-top: 42px;
+}
+
+.product-specification-matrix {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.product-specification-panel {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(7, 28, 55, .1);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 28px rgba(7, 28, 55, .055);
+}
+
+.product-specification-panel:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.product-specification-panel__head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  min-height: 72px;
+  box-sizing: border-box;
+  align-items: baseline;
+  padding: 22px 24px;
+  background: #edf4f7;
+  box-shadow: inset 0 3px 0 rgba(71, 180, 222, .58);
+  color: var(--product-navy);
+}
+
+.product-specification-panel__head > span:first-child {
+  color: var(--product-cyan-ink);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+}
+
+.product-specification-panel__head > span:last-child {
+  color: var(--product-muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.product-specification-panel h3 {
+  margin: 0;
+  color: var(--product-navy);
+  font-size: clamp(1.06rem, 1.5vw, 1.3rem);
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+}
+
+.product-specification-panel__rows {
+  margin: 0;
+}
+
+.product-specification-panel__rows > div {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.82fr) minmax(0, 1.18fr);
+  gap: 20px;
+  padding: 15px 24px;
+  border-top: 1px solid rgba(7, 28, 55, .08);
+}
+
+.product-specification-panel__rows > div:nth-child(odd) {
+  background: transparent;
+}
+
+.product-specification-panel dt,
+.product-specification-panel dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.product-specification-panel dt {
+  color: var(--product-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.5;
+  text-transform: none;
+}
+
+.product-specification-panel dd {
+  color: var(--product-navy);
+  font-size: 0.9rem;
+  font-weight: 650;
+  font-variant-numeric: lining-nums tabular-nums;
+  line-height: 1.5;
+}
+
+.product-specification-panel:last-child:nth-child(odd) .product-specification-panel__rows {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.product-specification-panel:last-child:nth-child(odd) .product-specification-panel__rows > div:nth-child(even) {
+  border-left: 1px solid var(--product-line);
+}
+
+@media (max-width: 760px) {
+  .product-specification-matrix {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .product-specification-panel:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+
+  .product-specification-panel:last-child:nth-child(odd) .product-specification-panel__rows {
+    grid-template-columns: 1fr;
+  }
+
+  .product-specification-panel:last-child:nth-child(odd) .product-specification-panel__rows > div:nth-child(even) {
+    border-left: 0;
+  }
+
+  .product-specification-panel__head,
+  .product-specification-panel__rows > div {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+}
+
 /* Installation reference: one technical canvas instead of two poster cards. */
 .product-installation {
   scroll-margin-top: calc(var(--header-h) + 24px);
   background: #edf3f6;
+}
+
+.product-story--oem + .product-installation {
+  padding-top: 0;
 }
 
 .product-installation > .container {
@@ -2941,6 +3113,21 @@
 }
 
 @media (max-width: 520px) {
+  .product-specification-panel__head {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .product-specification-panel__head > span:last-child {
+    display: none;
+  }
+
+  .product-specification-panel__rows > div {
+    grid-template-columns: 1fr;
+    gap: 5px;
+    padding-top: 13px;
+    padding-bottom: 13px;
+  }
+
   .product-specification-summary {
     grid-template-columns: 1fr;
   }

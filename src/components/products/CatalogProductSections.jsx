@@ -2,8 +2,13 @@ import { ArrowRight, ExternalLink, FileCheck2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SafeImage from '../SafeImage.jsx';
 import { publicAsset } from '../../utils/publicAsset.js';
+import { usbDimensionReference } from '../../data/usbDimensions.js';
+import UsbDimensions from './UsbDimensions.jsx';
+import ReceptacleOutline from './ReceptacleOutline.jsx';
+import { SmartSwitchDetails, SmartSwitchReferences } from './SmartSwitchDetails.jsx';
 
 export function CatalogFeatures({ product }) {
+  if (product.line === 'smart-switches') return <SmartSwitchDetails product={product} />;
   const image = product.assets.detail || product.assets.hero;
   const [width, height] = product.assets.imageSizes[image] || [800, 800];
   const separateDetail = image !== product.assets.hero;
@@ -55,8 +60,8 @@ export function CatalogPresentation({ product }) {
         <div className={`catalog-presentation__body${photos.length ? '' : ' catalog-presentation__body--text'}`}>
           {photos.length > 0 && <div className="catalog-presentation__photos">
             {photos.map((image, index) => <figure key={image.src}>
-              <SafeImage src={image.src} alt={`${product.sku} presentation reference ${index + 1}`} width={image.width} height={image.height} loading="lazy" />
-              <figcaption>Presentation reference {String(index + 1).padStart(2, '0')}</figcaption>
+              <SafeImage src={image.src} alt={`${product.sku} ${image.caption || `presentation reference ${index + 1}`}`} width={image.width} height={image.height} loading="lazy" />
+              <figcaption>{image.caption || `Presentation reference ${String(index + 1).padStart(2, '0')}`}</figcaption>
             </figure>)}
           </div>}
           <div className="catalog-presentation__copy">
@@ -77,7 +82,13 @@ export function CatalogPresentation({ product }) {
 
 export function CatalogDrawings({ product }) {
   const drawings = product.assets.drawings || [];
-  if (!drawings.length) return null;
+  if (product.line === 'smart-switches' && drawings.length) return <SmartSwitchReferences product={product} />;
+  if (!drawings.length) {
+    return product.line === 'receptacles' && ['R15', 'R15Q', 'R20'].includes(product.sku)
+      ? <ReceptacleOutline product={product} /> : null;
+  }
+  const usbDimensions = usbDimensionReference(product);
+  if (usbDimensions) return <UsbDimensions product={product} dimensions={usbDimensions} />;
   return (
     <section className="product-technical catalog-drawings" id="installation-reference">
       <div className="container">

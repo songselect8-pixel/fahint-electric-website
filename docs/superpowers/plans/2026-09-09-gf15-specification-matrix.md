@@ -16,7 +16,7 @@
 - Modify: `src/pages/ProductDetail.test.jsx`
 - Test: `src/pages/ProductDetail.test.jsx`
 
-- [ ] **Step 1: Replace the GF15 accordion expectations with matrix expectations and retain a non-GF15 regression**
+- [x] **Step 1: Replace the GF15 accordion expectations with matrix expectations and retain a non-GF15 regression**
 
 ```jsx
 it('renders the complete GF15 specification as an always-visible grouped matrix', () => {
@@ -41,7 +41,7 @@ it('keeps accordion controls on non-GF15 product specifications', () => {
 });
 ```
 
-- [ ] **Step 2: Run the focused tests and verify the new GF15 test fails**
+- [x] **Step 2: Run the focused tests and verify the new GF15 test fails**
 
 Run: `npm test -- --run src/pages/ProductDetail.test.jsx -t "specification"`
 
@@ -53,7 +53,7 @@ Expected: FAIL because GF15 still renders the expand button and `<details>` grou
 - Modify: `src/components/products/ProductTechnicalSections.jsx`
 - Test: `src/pages/ProductDetail.test.jsx`
 
-- [ ] **Step 1: Add the static group panel**
+- [x] **Step 1: Add the static group panel**
 
 ```jsx
 function SpecificationPanel({ group, index }) {
@@ -80,7 +80,7 @@ function SpecificationPanel({ group, index }) {
 }
 ```
 
-- [ ] **Step 2: Select the matrix only for GF15**
+- [x] **Step 2: Select the matrix only for GF15**
 
 Inside `ProductSpecifications`, define `const usesSpecificationMatrix = product.sku === 'GF15';`, omit the global toggle button in that mode, and render:
 
@@ -106,7 +106,7 @@ Inside `ProductSpecifications`, define `const usesSpecificationMatrix = product.
 )}
 ```
 
-- [ ] **Step 3: Run the focused behavior tests**
+- [x] **Step 3: Run the focused behavior tests**
 
 Run: `npm test -- --run src/pages/ProductDetail.test.jsx -t "specification"`
 
@@ -118,7 +118,7 @@ Expected: PASS for the GF15 matrix and the GT20 accordion regression.
 - Modify: `src/styles/product-experience.css`
 - Test: `src/pages/ProductDetail.test.jsx`
 
-- [ ] **Step 1: Add a failing responsive-style regression**
+- [x] **Step 1: Add a failing responsive-style regression**
 
 ```jsx
 it('styles the always-visible specification matrix as two columns with a mobile stack', () => {
@@ -129,13 +129,13 @@ it('styles the always-visible specification matrix as two columns with a mobile 
 });
 ```
 
-- [ ] **Step 2: Run the style test and verify it fails**
+- [x] **Step 2: Run the style test and verify it fails**
 
 Run: `npm test -- --run src/pages/ProductDetail.test.jsx -t "always-visible specification matrix"`
 
 Expected: FAIL because the matrix selectors do not exist yet.
 
-- [ ] **Step 3: Add the desktop matrix and row styles**
+- [x] **Step 3: Add the desktop matrix and row styles**
 
 ```css
 .product-specification-matrix {
@@ -180,7 +180,7 @@ Expected: FAIL because the matrix selectors do not exist yet.
 }
 ```
 
-- [ ] **Step 4: Add the existing mobile-breakpoint override**
+- [x] **Step 4: Add the existing mobile-breakpoint override**
 
 ```css
 @media (max-width: 760px) {
@@ -200,19 +200,19 @@ Expected: FAIL because the matrix selectors do not exist yet.
 }
 ```
 
-- [ ] **Step 5: Run the complete product-detail test file**
+- [x] **Step 5: Run the complete product-detail test file**
 
 Run: `npm test -- --run src/pages/ProductDetail.test.jsx`
 
 Expected: all tests PASS.
 
-- [ ] **Step 6: Build the site**
+- [x] **Step 6: Build the site**
 
 Run: `npm run build`
 
 Expected: Vite build completes without errors.
 
-- [ ] **Step 7: Review the scoped diff**
+- [x] **Step 7: Review the scoped diff**
 
 Run: `git diff --check && git diff -- src/components/products/ProductTechnicalSections.jsx src/pages/ProductDetail.test.jsx src/styles/product-experience.css`
 

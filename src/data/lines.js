@@ -1,5 +1,6 @@
 // The seven wiring-device families Fahint manufactures.
 // Data traced to the FAHINT product catalogue; GFCI detail lives in products.js.
+import smartSwitchMedia from './catalog/smart-switch-media.json' with { type: 'json' };
 
 export const productLines = [
   {
@@ -70,7 +71,7 @@ export const productLines = [
     slug: 'smart-switches',
     name: 'Smart Switches',
     short: 'Smart',
-    cover: 'assets/images/lines/smart-switch.webp',
+    cover: smartSwitchMedia.USW8811.gallery[0].src,
     tagline: 'Wi-Fi, Zigbee and touch glass panels',
     summary:
       'US- and EU-format glass controls for Wi-Fi, Zigbee and touch-only operation. Compare neutral-required, single-live and dual-wiring versions, with separate switching, dimming, curtain, fan and heater controls.',
@@ -82,13 +83,13 @@ export const productLines = [
       { name: 'Zigbee single live wire', items: ['1 gang', '2 gang', '3 gang'] },
       { name: 'Touch switch', items: ['Neutral required', 'Single live wire'] }
     ],
-    gallery: ['assets/images/lines/smart-switch.webp', 'assets/images/lines/smart-switch-alt.webp']
+    gallery: [smartSwitchMedia.USW8811.gallery[0].src, smartSwitchMedia.USW8811.gallery[2].src]
   },
   {
     slug: 'lighting-switches',
     name: 'Lighting Switches',
     short: 'Switches',
-    cover: 'assets/images/lines/switch-paddle.webp',
+    cover: 'assets/images/catalog/models/50e6f2d3f5cf9b64.webp',
     tagline: 'Paddle rocker and toggle wall switches',
     summary:
       'Single-pole and 3-way paddle and toggle switches, plus double- and triple-rocker combination controls. Compare the 125V and 120/277V ratings and each model’s stated UL or ETL certification.',

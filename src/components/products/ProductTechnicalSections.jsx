@@ -115,9 +115,33 @@ function SpecificationGroup({ group, index, isOpen, onToggle }) {
   );
 }
 
-export function ProductSpecifications({ product }) {
+function SpecificationPanel({ group, index }) {
+  if (!Array.isArray(group.rows) || group.rows.length === 0) return null;
+  const headingId = `specification-panel-${index + 1}`;
+
+  return (
+    <section className="product-specification-panel" aria-labelledby={headingId}>
+      <header className="product-specification-panel__head">
+        <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+        <h3 id={headingId}>{group.title}</h3>
+        <span>{group.rows.length} details</span>
+      </header>
+      <dl className="product-specification-panel__rows">
+        {group.rows.map(([label, value]) => (
+          <div key={label}>
+            <dt>{label}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  );
+}
+
+export function ProductSpecifications({ product, layout = 'accordion' }) {
   const summaryRows = productSpecificationSummaryRows(product);
   const groups = productSpecificationGroups(product);
+  const usesSpecificationMatrix = layout === 'matrix';
   const [expandedGroups, setExpandedGroups] = useState(() => new Set(groups[0] ? [groups[0].title] : []));
 
   useEffect(() => {
@@ -140,7 +164,10 @@ export function ProductSpecifications({ product }) {
   };
 
   return (
-    <section className="product-technical product-specifications" id="technical-details">
+    <section
+      className={`product-technical product-specifications${usesSpecificationMatrix ? ' product-specifications--matrix' : ''}`}
+      id="technical-details"
+    >
       <div className="container product-technical__narrow">
         <div className="product-specifications__heading">
           <div>
@@ -157,23 +184,33 @@ export function ProductSpecifications({ product }) {
             </div>
           ))}
         </dl>
-        <div className="product-specifications__controls">
+        <div className={`product-specifications__controls${usesSpecificationMatrix ? ' product-specifications__controls--static' : ''}`}>
           <p>Complete model specification</p>
-          <button type="button" aria-expanded={allExpanded} onClick={handleToggleAll}>
-            {allExpanded ? 'Collapse all specifications' : 'Expand all specifications'}
-          </button>
+          {!usesSpecificationMatrix && (
+            <button type="button" aria-expanded={allExpanded} onClick={handleToggleAll}>
+              {allExpanded ? 'Collapse all specifications' : 'Expand all specifications'}
+            </button>
+          )}
         </div>
-        <div className="product-specification-groups">
-          {groups.map((group, index) => (
-            <SpecificationGroup
-              key={group.title}
-              group={group}
-              index={index}
-              isOpen={expandedGroups.has(group.title)}
-              onToggle={handleGroupToggle}
-            />
-          ))}
+        {usesSpecificationMatrix ? (
+          <div className="product-specification-matrix">
+            {groups.map((group, index) => (
+              <SpecificationPanel key={group.title} group={group} index={index} />
+            ))}
           </div>
+        ) : (
+          <div className="product-specification-groups">
+            {groups.map((group, index) => (
+              <SpecificationGroup
+                key={group.title}
+                group={group}
+                index={index}
+                isOpen={expandedGroups.has(group.title)}
+                onToggle={handleGroupToggle}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

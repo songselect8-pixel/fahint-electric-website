@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import {
   products,
   productReviewQueue,
@@ -34,6 +34,14 @@ describe('verified GFCI product data', () => {
       const key = product.sku.toLowerCase();
       expect(productGallery(product.sku)).toHaveLength(5);
       expect(productGallery(product.sku).every((path) => path.includes(`/products/${key}-`))).toBe(true);
+      expect(productGallery(product.sku)).toEqual([
+        `assets/images/products/${key}-main.webp`,
+        `assets/images/products/${key}-sides.webp`,
+        `assets/images/products/${key}-back.webp`,
+        `assets/images/products/${key}-standard-plate.png`,
+        `assets/images/products/${key}-plate.webp`
+      ]);
+      productGallery(product.sku).forEach((path) => expect(existsSync(`public/${path}`), path).toBe(true));
       expect(productFinishImage(product.sku, 'black')).toContain(`/products/${key}-black.webp`);
     }
   });
@@ -157,8 +165,15 @@ describe('verified GFCI product data', () => {
       const key = product.sku.toLowerCase();
       expect(product.assets.packaging).toEqual({
         standard: `assets/images/products/${key}-package-standard-white-v1.jpg`,
-        screwless: `assets/images/products/${key}-package-screwless-white-v1.jpg`
+        screwless: `assets/images/products/${key}-package-screwless-white-v1.jpg`,
+        black: `assets/images/products/${key}-package-standard-black-v1.jpg`,
+        grey: `assets/images/products/${key}-package-standard-grey-v1.jpg`,
+        graphite: `assets/images/products/${key}-package-standard-graphite-v1.jpg`,
+        ivory: `assets/images/products/${key}-package-standard-ivory-v1.jpg`,
+        almond: `assets/images/products/${key}-package-standard-almond-v1.jpg`,
+        brown: `assets/images/products/${key}-package-standard-brown-v1.jpg`
       });
+      Object.values(product.assets.packaging).forEach((path) => expect(existsSync(`public/${path}`), path).toBe(true));
     }
   });
 

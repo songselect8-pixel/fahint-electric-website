@@ -43,11 +43,20 @@ export default function ProductsStudio() {
   function reset() { setQuery(''); setFamily('all'); setMode('ranges'); setLimit(12); }
   return <div className="studio-page studio-catalog">
     <section className="studio-catalog-hero" aria-labelledby="studio-catalog-title">
-      <div className="studio-wrap">
+      <StudioImage
+        className="studio-catalog-hero__poster"
+        src="assets/images/editorial-products/product-catalog-hero-v1.jpg"
+        width={1920}
+        height={550}
+        priority
+      />
+      <div className="studio-catalog-hero__shade" aria-hidden="true" />
+      <div className="studio-wrap studio-catalog-hero__content">
         <nav className="studio-breadcrumb" aria-label="Breadcrumb"><Link to="/">Home</Link><span>/</span><span aria-current="page">Products</span></nav>
-        <div className="studio-catalog-hero__layout">
-          <div><h1 id="studio-catalog-title">Find the right<br /><span>connection.</span></h1><p>Outlets, switches and wall plates.<br />Explore the FAHINT collection, down to the details.</p><a className="studio-text-link" href={publicAsset(catalogueDocument)} download>Download the product catalog <Download size={18} aria-hidden="true" /></a></div>
-          <div className="studio-catalog-objects" aria-label="A selection of FAHINT wiring devices">{[studioRanges[0], studioRanges[1], studioRanges[3]].map((range) => <StudioImage key={range.slug} src={range.featured[0].assets.card} alt={range.name} priority />)}<span>Designed for everyday spaces.<br />Backed by manufacturing expertise.</span></div>
+        <div className="studio-catalog-hero__copy">
+          <h1 id="studio-catalog-title">Find the right<br /><span>connection.</span></h1>
+          <p>Outlets, switches and wall plates.<br />Explore the FAHINT collection, down to the details.</p>
+          <a className="studio-text-link" href={publicAsset(catalogueDocument)} download>Download the product catalog <Download size={18} aria-hidden="true" /></a>
         </div>
       </div>
     </section>

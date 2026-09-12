@@ -21,7 +21,10 @@ const REQUEST_TIMEOUT_MS = 12_000;
 
 const clean = (value) => String(value ?? '').trim();
 const normalizeInquiry = (form) =>
-  Object.fromEntries(Object.entries(EMPTY).map(([key]) => [key, clean(form[key])]));
+  Object.fromEntries(Object.keys(EMPTY).map((key) => {
+    const field = key === 'model' && Object.hasOwn(form, 'category') ? 'category' : key;
+    return [field, clean(form[field])];
+  }));
 
 const buildInquiryBody = (form) => {
   const values = normalizeInquiry(form);
@@ -31,7 +34,9 @@ const buildInquiryBody = (form) => {
     `Email: ${values.email}`,
     `Company: ${values.company}`,
     `Country: ${values.country}`,
-    `Model of interest: ${values.model || 'Not specified'}`,
+    Object.hasOwn(values, 'category')
+      ? `Product category: ${values.category || 'Not specified'}`
+      : `Model of interest: ${values.model || 'Not specified'}`,
     `Estimated quantity: ${values.quantity || 'Not specified'}`,
     '',
     'Requirements:',
@@ -79,6 +84,7 @@ export default function InquiryForm({
   defaultModel = '',
   title = 'Send a message',
   modelOptions = products,
+  categoryOptions = null,
   delivery = defaultDelivery,
   endpoint = import.meta.env.VITE_INQUIRY_ENDPOINT || '',
   request = defaultRequest,
@@ -86,6 +92,7 @@ export default function InquiryForm({
 }) {
   const submissionEndpoint = secureEndpoint(endpoint);
   const [form, setForm] = useState({ ...EMPTY, model: defaultModel });
+  const inquiry = categoryOptions ? { ...form, category: form.model } : form;
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('');
   const [copyStatus, setCopyStatus] = useState('');
@@ -161,7 +168,7 @@ export default function InquiryForm({
     setCopyStatus('');
 
     try {
-      await clipboardWriter(buildInquiryText(form));
+      await clipboardWriter(buildInquiryText(inquiry));
       if (mountedRef.current && modelVersionRef.current === modelVersion) setCopyStatus('copied');
     } catch {
       if (mountedRef.current && modelVersionRef.current === modelVersion) setCopyStatus('copy-failure');
@@ -187,7 +194,7 @@ export default function InquiryForm({
       return;
     }
 
-    const mailtoUrl = buildMailtoUrl(form);
+    const mailtoUrl = buildMailtoUrl(inquiry);
     if (!submissionEndpoint && mailtoUrl.length > MAX_MAILTO_URL_LENGTH) {
       setStatus('too-long');
       return;
@@ -207,7 +214,7 @@ export default function InquiryForm({
         const response = await request(submissionEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify(normalizeInquiry(form)),
+          body: JSON.stringify(normalizeInquiry(inquiry)),
           signal: controller.signal,
           credentials: 'omit',
           redirect: 'error'
@@ -365,18 +372,22 @@ export default function InquiryForm({
 
       <div className="field-row">
         <div className="field">
-          <label htmlFor={ids.model}>Model of interest</label>
-          <select id={ids.model} name="model" value={form.model} onChange={update('model')}>
-            <option value="">Select a model</option>
-            {form.model && form.model !== 'Mixed / multiple' && !modelOptions.some((product) => product.sku === form.model) && (
-              <option value={form.model}>{form.model}</option>
-            )}
-            {modelOptions.map((product) => (
-              <option key={product.sku} value={product.sku}>
-                {product.sku} — {product.name}
-              </option>
-            ))}
-            <option value="Mixed / multiple">Mixed / multiple models</option>
+          <label htmlFor={ids.model}>{categoryOptions ? 'Product category' : 'Model of interest'}</label>
+          <select id={ids.model} name={categoryOptions ? 'category' : 'model'} value={form.model} onChange={update('model')}>
+            <option value="">{categoryOptions ? 'Select a product category' : 'Select a model'}</option>
+            {categoryOptions ? categoryOptions.map((category) => (
+              <option key={category.slug} value={category.name}>{category.name}</option>
+            )) : <>
+              {form.model && form.model !== 'Mixed / multiple' && !modelOptions.some((product) => product.sku === form.model) && (
+                <option value={form.model}>{form.model}</option>
+              )}
+              {modelOptions.map((product) => (
+                <option key={product.sku} value={product.sku}>
+                  {product.sku} — {product.name}
+                </option>
+              ))}
+              <option value="Mixed / multiple">Mixed / multiple models</option>
+            </>}
           </select>
         </div>
         <div className="field">

@@ -1,0 +1,95 @@
+{
+  "stage": "Homepage pilot: one background and three installed-product scenes; remaining models not regenerated.",
+  "tool": "Built-in image_gen",
+  "status": "Integrated homepage pilot; awaiting user visual approval before generating remaining models",
+  "assets": [
+    {
+      "id": "background",
+      "output": "home-interior-background-v1.webp",
+      "references": [],
+      "prompt": "Use case: photorealistic-natural. Asset type: a full-bleed background photograph for the FAHINT wiring-device homepage product-introduction section, NOT a website mockup. Generate one clean landscape image, 2560 x 1440, 16:9. Scene: a believable contemporary North American home, looking from a quiet oak-lined hallway into a living and dining area. Walnut/oak joinery, softly textured muted blue-gray walls, pale natural stone, a linen sofa at the far side and a modest warm pendant farther back. Dusk with soft natural ambient light and warm architectural lighting. Architectural editorial photography, tactile realistic materials, subtle natural wear, level camera, coherent perspective, elegant but lived-in rather than a showroom render. The image will sit BEHIND three large foreground product photos and white text: use restrained mid-to-dark values, low contrast, no glaring windows, no luminous hotspot in the top center or bottom half; retain enough actual architecture and material detail to be recognizable through a translucent navy overlay. The outer edges should naturally be shadowed navy-charcoal; the photograph must not be almost black. Keep the central composition calm, depth mainly on the right and left. No people, no product close-up, no giant wall switch, no cutaway house, no collage, no signs, no text, no logos, no watermarks, no frames, no card borders, no baked-in UI. This is an illustrative setting, not a customer project.",
+      "output_path": "public/assets/images/home-installations/home-interior-background-v1.webp",
+      "qa_status": "visually accepted",
+      "generated_source": "C:/Users/XuWanPi/.codex/generated_images/01a04405-36a7-7a42-b27e-2ac0183d79b6/exec-e43832e1-6773-4a42-87af-380d1b58d4a9.png",
+      "width": 1672,
+      "height": 941,
+      "bytes": 106916,
+      "format": "WebP",
+      "quality": 84,
+      "prompt_record": "public/assets/images/home-installations/home-interior-background-v1.webp.json"
+    },
+    {
+      "id": "gf15",
+      "sku": "GF15",
+      "output": "gf15-kitchen-installed-v1.webp",
+      "references": [
+        "public/assets/images/products/gf15-plate.webp"
+      ],
+      "prompt": "Use case: compositing. Asset type: FAHINT homepage installed-product photograph. Image 1 is the exact physical product reference: white GF15 15A self-test GFCI receptacle with its white screwless wallplate. Create ONE photorealistic 1536 x 1024 landscape photograph, aspect ratio 3:2, of this very same device correctly mounted flush into the backsplash wall above a contemporary North American kitchen counter. Preserve the product face geometry and proportions from the reference: two vertically aligned 15A duplex outlets with two straight vertical blade openings each (NO T-slot), the arched ground openings, the central upper RESET and lower TEST rectangular buttons, one tiny green indicator at the right, and the clean screwless outer plate. Preserve original embossed markings where visible; add no new labels or certification symbols. Installation transformation only: all rear housing and terminal hardware is INSIDE the wall and invisible, the plate fits flat with a fine realistic contact shadow, no exposed yoke or floating body. The whole white plate is unobstructed, in sharp focus, nearly front-on with a very slight angle, centered, about 65 percent of image height. Allow surrounding wall and a narrow strip of counter to establish scale. Setting: warm gray finely textured stone backsplash, pale stone countertop, small walnut kitchen detail at the far edge; a softly out-of-focus kettle may be at the very edge but must not compete with the device. Soft side daylight with restrained warm ambient light, natural white product finish, subtle real material texture, high-end editorial product photography. This belongs to a unified warm-oak/stone home series. No people, no hands, no water or wet area, no plug covering the face, no other outlets, no fantasy electrical features, no floating product, no white studio cutout background. No promotional text, no caption, no logo, no UI, no borders or rounded canvas corners, no watermark.",
+      "output_path": "public/assets/images/home-installations/gf15-kitchen-installed-v1.webp",
+      "qa_status": "visually accepted",
+      "generated_source": "C:/Users/XuWanPi/.codex/generated_images/01a04405-36a7-7a42-b27e-2ac0183d79b6/exec-fd44734c-0bf8-4b7a-9247-403a32b2c51f.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 196282,
+      "format": "WebP",
+      "quality": 84,
+      "prompt_record": "public/assets/images/home-installations/gf15-kitchen-installed-v1.webp.json"
+    },
+    {
+      "id": "usb65",
+      "sku": "FTR15QC-DC65W",
+      "output": "ftr15qc-dc65w-desk-installed-v1.webp",
+      "references": [
+        "public/assets/images/catalog/usb-plates/ftr15qc-dc65w-screwless-v1.png"
+      ],
+      "prompt": "Use case: compositing. Asset type: FAHINT homepage installed-product photograph. Image 1 is the exact physical product reference: white FTR15QC-DC65W 15A dual USB-C outlet in its white screwless wallplate; use the device geometry, not the loose display cables around the reference. Create ONE photorealistic 1536 x 1024 landscape photograph, aspect ratio 3:2, showing this exact unit correctly mounted flush in the wall above a walnut writing desk in a contemporary North American home. Preserve its distinctive face exactly: two vertically stacked 15A receptacles with straight vertical blade slots and arched ground openings, NOT a 20A T-slot; TWO vertical USB-C ports between the receptacles with orange/dark interiors and the central USB mark. Retain original physical TR and 65W markings without adding claims or changing wattage. Preserve the white screwless plate silhouette and all button/slot spacing. Hide all rear electronics and wiring INSIDE the wall. Plate nearly front-on, centered, completely within frame, about 65 percent of image height, sharp and detailed with a natural small shadow against the wall. Show one thin white USB-C cable seated naturally in the right USB-C port and running continuously down to a small unbranded smartphone resting on the desk near the lower-right edge; keep the left USB-C port and both AC receptacles visible. No extra cable emerging from behind the plate. The phone is supporting context and must not dominate or need a bright screen. Setting: muted warm blue-gray plaster wall and walnut desk, a little notebook at the far edge. Soft side daylight and restrained warm ambient light, real tactile texture, natural white finish, clean premium editorial photography in the same warm-oak/stone home series as the kitchen. No people or hands, no invented openings, no visible electrical hardware, no floating object, no packaging, no white studio background. No promotional text, no caption, no UI, no frame, no rounded canvas corners, no logos or watermark.",
+      "output_path": "public/assets/images/home-installations/ftr15qc-dc65w-desk-installed-v1.webp",
+      "qa_status": "visually accepted",
+      "generated_source": "C:/Users/XuWanPi/.codex/generated_images/01a04405-36a7-7a42-b27e-2ac0183d79b6/exec-f6ccea20-6085-45fa-ac35-5bce1c789142.png",
+      "revisions": [
+        {
+          "reference": "C:/Users/XuWanPi/.codex/generated_images/01a04405-36a7-7a42-b27e-2ac0183d79b6/exec-854807c6-881d-42d1-b61d-a6acf1aaee54.png",
+          "prompt": "Make one precise edit to this existing 1536x1024 photorealistic FAHINT USB outlet installation scene. Keep the exact outlet, all ports, TR and 65W markings, screwless white plate, blue-gray wall, lighting, walnut desk, plant and camera composition unchanged. Fix ONLY the white charging cable and phone position: there must be exactly ONE continuous cable visibly running from the outlet's occupied right USB-C port down onto the desktop and directly into the phone's charging port. Move/rotate the phone modestly within the lower right if necessary so its charging port faces left toward the wall cable, the entire connector and cable path are visible, and the cable NEVER disappears underneath or behind the phone. Remove the extra cable tail currently leaving the bottom edge. Keep a single natural relaxed curve fully within frame. No cable crossing the foreground frame edge, no branching, no second cable, no extra connectors. Preserve the original product geometry and labels exactly. Do not add text or graphics.",
+          "result": "C:/Users/XuWanPi/.codex/generated_images/01a04405-36a7-7a42-b27e-2ac0183d79b6/exec-f6ccea20-6085-45fa-ac35-5bce1c789142.png",
+          "reason": "Replaced the ambiguous hidden cable loop with a single visibly continuous wall-to-phone connection; kept the product face unchanged."
+        }
+      ],
+      "width": 1536,
+      "height": 1024,
+      "bytes": 134070,
+      "format": "WebP",
+      "quality": 84,
+      "prompt_record": "public/assets/images/home-installations/ftr15qc-dc65w-desk-installed-v1.webp.json"
+    },
+    {
+      "id": "dm2010",
+      "sku": "DM2010",
+      "output": "dm2010-living-installed-v1.webp",
+      "references": [
+        "public/assets/images/catalog/dimmers/dm2010-screwless-plate-v1.png"
+      ],
+      "prompt": "Use case: compositing. Asset type: FAHINT homepage installed-product photograph. Image 1 is the exact physical product reference: the white DM2010 digital slide dimmer assembled in its glossy white screwless wallplate. Generate ONE photorealistic 1536 x 1024 landscape photograph, 3:2, of this exact dimmer installed flush on a softly textured wall beside the entrance to a contemporary North American living room. Lock the reference geometry: one tall rectangular paddle taking most of the device face, a narrow vertical slider channel on its RIGHT with a small physical white slider, no touch icons or extra buttons, no screws on the outer plate. Keep the plate's relative width, height and soft corner shape. No visible mounting bracket, side electronics or wiring: the entire body is concealed correctly inside the wall with just a small contact shadow at the plate edge. Show the entire dimmer sharp and unobstructed, almost front-on, centered, about 65 percent of image height. Surround it with warm muted blue-gray plaster; a slim oak doorway at the far right reveals a softly defocused linen sofa and a warm floor lamp in the living room. The room is context, the installed device is the unmistakable subject. Soft side daylight plus gentle warm lamp illumination; match a unified premium editorial warm-oak/stone home series, natural white plastic, real surface textures and convincing scale. No people or hands, no giant device, no detached floating faceplate, no additional switches, no packaging, no diagrams, no text, no logo, no watermark, no borders, no baked-in UI or rounded canvas corners.",
+      "output_path": "public/assets/images/home-installations/dm2010-living-installed-v1.webp",
+      "qa_status": "visually accepted",
+      "generated_source": "C:/Users/XuWanPi/.codex/generated_images/01a04405-36a7-7a42-b27e-2ac0183d79b6/exec-65456755-a18b-4c03-b646-c9e295c0f02b.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 145618,
+      "format": "WebP",
+      "quality": 84,
+      "prompt_record": "public/assets/images/home-installations/dm2010-living-installed-v1.webp.json"
+    }
+  ],
+  "semantic": [
+    "All headings, model names, specifications, navigation, links and disclaimers remain HTML.",
+    "Navy contrast overlay, card clipping and responsive layout remain CSS."
+  ],
+  "verification": {
+    "source_preservation": "Generated PNG originals and all original product images preserved. Conversion changed format only; no cropping or retouching.",
+    "scope": "Only homepage product-section presentation changed. Existing seven families, exact model facts, model inquiries, hero and second chapter transition preserved.",
+    "contrast": "Conservative pixel-wise contrast over the entire background at the minimum 74% navy overlay: primary 7.15:1, muted 4.78:1, links 4.67:1.",
+    "prompt_scan": "4 rasters, 0 missing prompt records",
+    "browser_review": "Not performed; user will review the page appearance."
+  }
+}
