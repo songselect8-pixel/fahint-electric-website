@@ -171,15 +171,16 @@
   .catalog-presentation__body { gap: 32px; }
 }
 @media (max-width: 760px) {
-  .catalog-series__poster { object-position: 74% center; }
-  .catalog-series__poster-shade { background: linear-gradient(180deg, rgba(7,27,48,.72) 0%, rgba(7,27,48,.72) 12%, rgba(7,27,48,.18) 24%, rgba(7,27,48,.82) 48%, rgba(7,27,48,.97) 78%, rgba(7,27,48,.98) 100%); }
-  .catalog-series .catalog-series__intro--poster > .container { min-height: 640px; padding-block: 16px 28px; }
-  .catalog-series .catalog-series__intro--poster .catalog-section-heading { align-self: end; max-width: 480px; gap: 16px; }
-  .catalog-series .catalog-series__intro--poster .catalog-section-heading > p { font-size: 17px; }
-  .catalog-series .catalog-series__intro--poster .catalog-series__meta { max-width: 480px; font-size: 13px; gap: 8px 20px; }
-  .catalog-series__intro--right .catalog-series__poster { height: 360px; object-position: 30% center; }
-  .catalog-series__intro--right .catalog-series__poster-shade { background: linear-gradient(180deg, rgba(7,27,48,0) 0px, rgba(7,27,48,0) 260px, rgba(7,27,48,.75) 320px, var(--site-navy) 360px); }
-  .catalog-series .catalog-series__intro--right > .container { grid-template-rows: auto auto auto; padding-top: 380px; }
+  /* On phones, the photograph has its own stage; no shade crosses the product. */
+  .catalog-series__poster { position: relative; inset: auto; height: clamp(220px, 64vw, 320px); object-position: 74% center; }
+  .catalog-series__poster-shade { display: none; }
+  .catalog-series .catalog-series__intro--poster > .container { min-height: 0; grid-template-rows: auto auto auto; gap: 20px; padding-block: 16px 28px; }
+  .catalog-series .catalog-series__intro--poster .catalog-section-heading { align-self: start; max-width: none; gap: 16px; }
+  .catalog-series .catalog-series__intro--poster .catalog-section-heading h1 { font-size: clamp(32px, 8vw, 42px); text-shadow: none; }
+  .catalog-series .catalog-series__intro--poster .catalog-section-heading > p { font-size: 16px; }
+  .catalog-series .catalog-series__intro--poster .catalog-series__meta { max-width: none; font-size: 12px; gap: 8px 16px; }
+  .catalog-series__intro--centered .catalog-series__poster { object-position: 50% center; }
+  .catalog-series__intro--right .catalog-series__poster { object-position: 30% center; }
   .smart-product-details__views, .smart-product-references__grid { grid-template-columns: 1fr; gap: 20px; }
   .smart-product-details__image { aspect-ratio: auto; height: 320px; padding: 24px; }
   .smart-product-details figcaption, .smart-product-references figcaption { padding: 22px; }
@@ -214,10 +215,6 @@
   .catalog-documentation__certificate { width: min(100%, 440px); margin-inline: auto; }
 }
 @media (max-width: 420px) {
-  .catalog-product-detail--usb .product-gallery__thumbs,
-  .catalog-product-detail--lighting .product-gallery__thumbs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .catalog-model-grid, .catalog-filters, .catalog-family-links { grid-template-columns: 1fr; }
-  .catalog-model-card__image { aspect-ratio: 4 / 3; }
-  .catalog-model-card__body { padding: 20px; }
+  .catalog-filters, .catalog-family-links { grid-template-columns: 1fr; }
   .catalog-presentation__photos { gap: 10px; }
 }

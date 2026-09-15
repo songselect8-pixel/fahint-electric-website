@@ -28,7 +28,7 @@ export default function StudioProductSelection() {
               <div className="studio-selection-card__image">
                 <StudioImage src={`assets/images/home-installations/${image}`} alt={`${name}, illustrative installation at ${setting}`} width={1536} height={1024} />
               </div>
-              <div className="studio-selection-card__caption"><h3>{name}</h3><ArrowUpRight size={24} aria-hidden="true" /></div>
+              <div className="studio-selection-card__caption"><h3>{name}</h3><span className="studio-selection-card__action" aria-hidden="true"><ArrowUpRight size={22} /></span></div>
             </Link>
           </Reveal>;
         })}

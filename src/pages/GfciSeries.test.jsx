@@ -256,9 +256,31 @@ describe('GfciSeries', () => {
     expect(styles).toMatch(
       /@media \(max-width: 768px\)[\s\S]*?\.gfci-series \.gfci-product-grid\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/
     );
-    expect(styles).toMatch(
+    expect(styles).not.toMatch(
       /@media \(max-width: 520px\)[\s\S]*?\.gfci-series \.gfci-product-grid\s*\{[^}]*grid-template-columns:\s*1fr/
     );
+    const shared = readFileSync('src/styles/site-system.css', 'utf8');
+    const mobile = shared.slice(shared.indexOf('@media (max-width: 760px)'));
+    expect(mobile).toMatch(/\.gfci-series \.gfci-product-grid, \.product-related \.prod-grid\s*\{[^}]*repeat\(2, minmax\(0, 1fr\)\)/);
+  });
+
+  it('keeps the mobile hero video unshaded with the introduction beneath it', () => {
+    const shared = readFileSync('src/styles/site-system.css', 'utf8');
+    const mobile = shared.slice(shared.indexOf('@media (max-width: 760px)'));
+    expect(mobile).toMatch(/\.gfci-series \.gfci-series__hero\s*\{[^}]*display:\s*block[^}]*min-height:\s*0[^}]*padding:\s*0/);
+    expect(mobile).toMatch(/\.gfci-series \.gfci-series__hero-video\s*\{[^}]*position:\s*relative[^}]*height:\s*auto[^}]*object-fit:\s*contain/);
+    expect(mobile).toMatch(/\.gfci-series \.gfci-series__hero-shade\s*\{[^}]*display:\s*none/);
+  });
+
+  it('uses the original wide video ratio on mobile without a 16:9 letterbox', () => {
+    const shared = readFileSync('src/styles/site-system.css', 'utf8');
+    const mobile = shared.slice(shared.indexOf('@media (max-width: 760px)'));
+    const video = mobile.match(/\.gfci-series \.gfci-series__hero-video\s*\{([^}]*)\}/)?.[1] || '';
+    // Both the source video and poster are 1440 × 572, not 16:9.
+    expect(video).toMatch(/aspect-ratio:\s*auto 1440\s*\/\s*572/);
+    expect(video).toMatch(/max-height:\s*none/);
+    expect(video).toMatch(/height:\s*auto/);
+    expect(video).not.toMatch(/aspect-ratio:\s*16\s*\/\s*9/);
   });
 
   it('uses a pure-white square product stage with restrained card chrome', () => {

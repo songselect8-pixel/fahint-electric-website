@@ -3230,15 +3230,6 @@
     justify-content: center;
   }
 
-  .gfci-product-grid,
-  .gfci-series .gfci-product-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .product-related .prod-grid {
-    grid-template-columns: 1fr;
-  }
-
   .product-detail-hero__content {
     padding: 0;
   }

@@ -99,14 +99,17 @@ describe('studio homepage and catalog', () => {
     expect(css).toMatch(/\.studio-application-map__stage::after\s*\{[^}]*background:\s*linear-gradient\(180deg[^}]*var\(--studio-navy\)[^}]*pointer-events:\s*none/);
   });
 
-  it('separates the hero and collection with a solid navigation band and more breathing room', () => {
+  it('integrates a readable chapter index into the collection instead of a separate navigation strip', () => {
     const { container } = show(HomeStudio);
     const collection = container.querySelector('.studio-product-transition');
     const nav = screen.getByRole('navigation', { name: 'Homepage sections' });
-    expect(collection.previousElementSibling).toBe(nav);
-    expect(nav.previousElementSibling).toHaveClass('studio-hero');
+    expect(collection.previousElementSibling).toHaveClass('studio-hero');
+    expect(nav.parentElement).toBe(collection);
+    expect(nav.nextElementSibling).toHaveClass('studio-collection');
     expect(collection.nextElementSibling).toHaveClass('studio-application-map');
-    expect(collection).not.toContainElement(nav);
+    expect(within(nav).getAllByRole('link').map(link => link.getAttribute('href'))).toEqual([
+      '/#studio-collection', '/#studio-brand', '/#studio-oem', '/#studio-making', '/#studio-certificates', '/#studio-inquiry'
+    ]);
     expect(within(collection).queryByRole('tablist')).not.toBeInTheDocument();
     expect(within(collection).getAllByRole('listitem')).toHaveLength(6);
     const backdrop = collection.querySelector('.studio-product-transition__scene');
@@ -117,7 +120,8 @@ describe('studio homepage and catalog', () => {
 
     const css = readFileSync('src/styles/studio.css', 'utf8');
     const surface = css.match(/\.studio-product-transition\s*\{([^}]+)\}/)[1];
-    expect(surface).toMatch(/background:\s*var\(--studio-navy\)/);
+    expect(surface).toMatch(/background:\s*#20272b/);
+    expect(surface).toMatch(/padding-top:\s*clamp\(40px, 5vw, 72px\)/);
     expect(surface).toMatch(/--studio-muted:\s*#bfd0dd/);
     expect(surface).toMatch(/--studio-blue:\s*#a7d2e2/);
     expect(surface).toMatch(/color:\s*#f6f9fb/);
@@ -133,16 +137,17 @@ describe('studio homepage and catalog', () => {
     expect(shade).not.toContain('gradient');
     expect(shade).toMatch(/pointer-events:\s*none/);
     const navigation = css.match(/\.studio-chapter-nav\s*\{([^}]+)\}/)[1];
-    expect(navigation).toMatch(/width:\s*100%/);
-    expect(navigation).toMatch(/min-height:\s*88px/);
-    expect(navigation).toMatch(/background:\s*#20272b/);
+    expect(navigation).toMatch(/width:\s*min\(calc\(100% - var\(--studio-gutter\) \* 2\), 1600px\)/);
+    expect(navigation).toMatch(/margin-inline:\s*auto/);
+    expect(navigation).toMatch(/background:\s*transparent/);
     expect(navigation).toMatch(/--studio-muted:\s*#c5d3db/);
     expect(navigation).not.toContain('gradient');
-    expect(navigation).toMatch(/border-block:\s*1px solid var\(--studio-line\)/);
+    expect(navigation).toMatch(/border-bottom:\s*1px solid var\(--studio-line\)/);
+    expect(css).toMatch(/\.studio-chapter-nav > a\s*\{[^}]*min-height:\s*48px[^}]*font-size:\s*18px/);
+    expect(css).toMatch(/\.studio-chapter-nav > a:last-child\s*\{[^}]*border:\s*1px solid/);
+    expect(css).toMatch(/\.studio-product-transition__scene\s*\{[^}]*opacity:\s*\.55/);
     const spacing = css.match(/\.studio-home \.studio-collection\s*\{([^}]+)\}/)[1];
-    expect(spacing).toMatch(/padding-top:\s*clamp\(96px, 8vw, 128px\)/);
-    expect(css).toMatch(/\.studio-chapter-nav\s*\{[^}]*min-height:\s*72px/);
-    expect(css).toMatch(/\.studio-home \.studio-collection\s*\{[^}]*padding-top:\s*80px/);
+    expect(spacing).toMatch(/padding-top:\s*clamp\(48px, 5vw, 72px\)/);
   });
 
   it('restores the original hero-only bottom shade and unboxed scene controls', () => {
@@ -175,7 +180,7 @@ describe('studio homepage and catalog', () => {
     expect(css).toMatch(/\.studio-inquiry \.form-card\s*\{[^}]*border-radius:\s*16px/);
   });
 
-  it('uses a responsive three-column photographic gallery without selector styles', () => {
+  it('uses a three-per-row editorial mosaic with complete photographs and equal tablet columns', () => {
     const css = readFileSync('src/styles/studio.css', 'utf8');
     expect(css).not.toContain('.studio-family-tabs');
     expect(css).toMatch(/\.studio-product-transition :focus-visible\s*\{[^}]*outline-color:\s*var\(--studio-blue\)/);
@@ -186,13 +191,18 @@ describe('studio homepage and catalog', () => {
     const stage = css.match(/\.studio-selection-card__image\s*\{([^}]+)\}/)[1];
     expect(stage).toMatch(/background:\s*#fff/);
     expect(stage).toMatch(/aspect-ratio:\s*3\s*\/\s*2/);
+    expect(stage).toMatch(/border-radius:\s*12px/);
     const image = css.match(/\.studio-selection-card__image img\s*\{([^}]+)\}/)[1];
     expect(image).toMatch(/height:\s*100%/);
     expect(image).toMatch(/object-fit:\s*contain/);
     expect(image).toMatch(/mix-blend-mode:\s*normal/);
-    expect(css).toMatch(/\.studio-selection-grid\s*\{[^}]*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
-    expect(css).toMatch(/\.studio-collection \.studio-section-head\s*\{[^}]*text-align:\s*center/);
+    expect(css).toMatch(/\.studio-selection-grid\s*\{[^}]*grid-template-columns:\s*repeat\(12, minmax\(0, 1fr\)\)/);
+    expect(css).toMatch(/\.studio-selection-grid > li\s*\{[^}]*grid-column:\s*span 4/);
+    expect(css).toMatch(/\.studio-selection-grid > li:nth-child\(1\), \.studio-selection-grid > li:nth-child\(5\)\s*\{[^}]*grid-column:\s*span 5/);
+    expect(css).toMatch(/\.studio-selection-grid > li:nth-child\(3\), \.studio-selection-grid > li:nth-child\(4\)\s*\{[^}]*grid-column:\s*span 3/);
+    expect(css).toMatch(/\.studio-collection \.studio-section-head\s*\{[^}]*text-align:\s*left/);
     expect(css).toMatch(/@media \(max-width:\s*1150px\)[\s\S]*?\.studio-selection-grid\s*\{[^}]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+    expect(css).toMatch(/@media \(max-width:\s*1150px\)[\s\S]*?\.studio-selection-grid > li:nth-child\(n\)\s*\{[^}]*grid-column:\s*auto/);
     expect(css).toMatch(/@media \(max-width:\s*760px\)[\s\S]*?\.studio-selection-grid\s*\{[^}]*grid-template-columns:\s*1fr/);
     expect(css).not.toMatch(/\.studio-selection-card__image img\s*\{[^}]*height:\s*\d+px/);
   });
@@ -334,8 +344,82 @@ describe('studio homepage and catalog', () => {
     expect(copy).not.toMatch(/transform:|position:\s*absolute|top:/);
     const mobileCopy = css.match(/@media \(max-width:\s*760px\)\s*\{[\s\S]*?\.studio-hero__copy\s*\{([^}]+)\}/)[1];
     expect(mobileCopy).toMatch(/margin-block:\s*0/);
-    expect(mobileCopy).toMatch(/order:\s*0/);
+    expect(mobileCopy).toMatch(/grid-row:\s*2/);
     expect(css).toMatch(/@media \(max-width:\s*760px\)\s*\{[\s\S]*?\.studio-hero__layout\s*\{[^}]*display:\s*contents/);
+  });
+
+  it('keeps all six chapter links visible in a wrapping phone index', () => {
+    const css = readFileSync('src/styles/studio.css', 'utf8');
+    expect(css).toMatch(/@media \(max-width:\s*760px\)[\s\S]*?\.studio-chapter-nav\s*\{[^}]*display:\s*grid[^}]*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
+    expect(css).toMatch(/\.studio-chapter-nav > a\s*\{[^}]*white-space:\s*normal/);
+    expect(css).not.toMatch(/\.studio-chapter-nav\s*\{[^}]*overflow-x:\s*auto/);
+  });
+
+  it('pairs each category name with a decorative action and bounded hover feedback', () => {
+    show(HomeStudio);
+    const list = screen.getByRole('list', { name: 'Product categories' });
+    for (const link of within(list).getAllByRole('link')) {
+      expect(link.querySelector('.studio-selection-card__action')).toHaveAttribute('aria-hidden', 'true');
+      expect(link.querySelector('.studio-selection-card__action svg')).not.toBeNull();
+      expect(link.querySelector('button, a')).toBeNull();
+    }
+    const css = readFileSync('src/styles/studio.css', 'utf8');
+    expect(css).toMatch(/\.studio-selection-card__action\s*\{[^}]*width:\s*44px[^}]*height:\s*44px/);
+    expect(css).toMatch(/@media \(hover:\s*hover\) and \(pointer:\s*fine\)[\s\S]*?\.studio-selection-card:hover \.studio-selection-card__image img\s*\{[^}]*filter:\s*brightness\(1\.05\)/);
+    expect(css).toContain('.studio-selection-card:focus-visible .studio-selection-card__action');
+  });
+
+  it('overlays transparent mobile controls on the complete poster above the introduction', () => {
+    const css = readFileSync('src/styles/studio.css', 'utf8');
+    const mobile = css.match(/@media \(max-width:\s*760px\)\s*\{\s*\.studio-page[\s\S]*?\n\}/)[0];
+    const rule = selector => mobile.match(new RegExp(`${selector}\\s*\\{([^}]+)\\}`))[1];
+    expect(rule('\\.studio-hero')).toMatch(/display:\s*grid/);
+    expect(rule('\\.studio-hero')).toMatch(/grid-template-columns:\s*minmax\(0, 1fr\)/);
+    expect(rule('\\.studio-hero')).toMatch(/padding-top:\s*0/);
+    const photo = rule('\\.studio-hero__photo');
+    expect(photo).toMatch(/grid-area:\s*1\s*\/\s*1/);
+    expect(photo).toMatch(/position:\s*relative/);
+    expect(photo).toMatch(/aspect-ratio:\s*3\s*\/\s*2/);
+    expect(rule('\\.studio-hero__photo img')).toMatch(/object-fit:\s*contain/);
+    const controls = rule('\\.studio-hero__bottom');
+    expect(controls).toMatch(/grid-area:\s*1\s*\/\s*1/);
+    expect(controls).toMatch(/align-self:\s*end/);
+    expect(controls).toMatch(/z-index:\s*1/);
+    expect(controls).toMatch(/background:\s*transparent/);
+    expect(controls).toMatch(/padding:\s*4px var\(--studio-gutter\) 12px/);
+    const copy = rule('\\.studio-hero__copy');
+    expect(copy).toMatch(/grid-row:\s*2/);
+    expect(copy).toMatch(/width:\s*100%/);
+    expect(copy).toMatch(/background:\s*var\(--studio-paper\)/);
+    expect(copy).toMatch(/padding:\s*24px var\(--studio-gutter\) 28px/);
+    expect(copy).not.toContain('--header-h');
+    expect(rule('\\.studio-hero__copy h1')).toMatch(/color:\s*var\(--studio-ink\)/);
+    expect(css).not.toMatch(/\.studio-home \.studio-hero__bottom\s*\{[^}]*padding-bottom:\s*46px/);
+  });
+
+  it('keeps the mobile poster menu and scene labels readable without solid backgrounds', () => {
+    const css = readFileSync('src/styles/studio.css', 'utf8');
+    const mobile = css.match(/@media \(max-width:\s*760px\)\s*\{\s*\.studio-page[\s\S]*?\n\}/)[0];
+    expect(mobile).toMatch(/\.header--home\.header--transparent \.burger\s*\{[^}]*background:\s*transparent[^}]*color:\s*#fff/);
+    expect(mobile).toMatch(/\.studio-scene-switch button\s*\{[^}]*color:\s*#fff[^}]*text-shadow:/);
+    expect(mobile).not.toMatch(/\.header--home\.header--solid[^{}]*\{[^}]*background:\s*transparent/);
+  });
+
+  it('simplifies mobile copy and actions without changing the desktop message or scene labels', () => {
+    const { container } = show(HomeStudio);
+    const summary = container.querySelector('.studio-hero__summary');
+    expect(summary).toHaveTextContent('Explore outlets, switches and wall plates for homes and commercial spaces. Choose FAHINT products, or work with us on your own brand.');
+    expect(summary.querySelector('.studio-hero__program-summary')).toHaveTextContent('Choose FAHINT products, or work with us on your own brand.');
+    expect(container.querySelector('.studio-hero__evidence-detail')).toHaveTextContent('Model-specific documentation');
+    const css = readFileSync('src/styles/studio.css', 'utf8');
+    const mobile = css.match(/@media \(max-width:\s*760px\)\s*\{\s*\.studio-page[\s\S]*?\n\}/)[0];
+    expect(mobile).toMatch(/\.studio-hero__program-summary\s*\{[^}]*display:\s*none/);
+    expect(mobile).toMatch(/\.studio-hero__paths > div > span\s*\{[^}]*display:\s*none/);
+    expect(mobile).toMatch(/\.studio-hero__evidence > \.studio-hero__evidence-detail\s*\{[^}]*display:\s*none/);
+    expect(mobile).toMatch(/\.studio-hero__paths\s*\{[^}]*grid-template-columns:\s*1fr[^}]*border-top:\s*0/);
+    expect(mobile).toMatch(/\.studio-hero__paths \.studio-button\s*\{[^}]*width:\s*100%[^}]*border-radius:\s*8px[^}]*background:\s*var\(--studio-navy\)[^}]*color:\s*#fff/);
+    expect(mobile).toMatch(/\.studio-scene-switch\s*\{[^}]*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
+    expect(mobile).toMatch(/\.studio-scene-switch button\s*\{[^}]*min-height:\s*44px/);
   });
 
   it('maps four verified products to real residential locations', async () => {

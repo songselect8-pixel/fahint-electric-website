@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { MessageSquareText } from 'lucide-react';
 import { findLine } from '../data/lines.js';
 import { getCatalogProducts } from '../data/catalogProducts.js';
 import ProductDetailHero from '../components/products/ProductDetailHero.jsx';
@@ -84,7 +85,9 @@ export default function CatalogProductDetail({ product }) {
           <InquiryForm defaultModel={product.sku} modelOptions={models} title="Send a product brief." />
         </div>
       </section>
-      <Link className="product-mobile-quote" to={{ pathname, search, hash: '#inquiry' }}>Request {product.draft ? 'documents' : 'quote'} for {product.sku}</Link>
+      <Link className="product-mobile-quote" to={{ pathname, search, hash: '#inquiry' }} aria-label={`Request ${product.draft ? 'documents' : 'quote'} for ${product.sku}`}>
+        <MessageSquareText size={24} aria-hidden="true" />
+      </Link>
     </div>
   );
 }

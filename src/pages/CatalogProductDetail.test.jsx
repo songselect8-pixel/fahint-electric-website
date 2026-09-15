@@ -20,6 +20,17 @@ function renderModel(path) {
 }
 
 describe('catalogue product details', () => {
+  it.each(['gfci', 'usb-outlets', 'receptacles', 'dimmers', 'smart-switches', 'lighting-switches', 'wallplates'])('keeps one model-specific inquiry icon on %s detail pages', (line) => {
+    const product = catalogProducts.find((candidate) => candidate.line === line && !candidate.draft);
+    const path = `${productHref(product)}?source=mobile`;
+    renderModel(path);
+    const quote = screen.getByRole('link', { name: `Request quote for ${product.sku}` });
+    expect(quote).toHaveAttribute('href', `${path}#inquiry`);
+    expect(quote).toHaveAttribute('aria-label', `Request quote for ${product.sku}`);
+    expect(quote.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
+    expect(quote.textContent.trim()).toBe('');
+  });
+
   it.each(catalogProducts.filter((product) => !product.draft).map((product) => [product.sku, product]))('renders the correct image, model and inquiry for %s', (_sku, product) => {
     const { container } = renderModel(productHref(product));
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(product.name);

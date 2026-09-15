@@ -110,6 +110,19 @@ describe('ProductGallery', () => {
     expect(onSelectImage).toHaveBeenCalledWith(product.assets.gallery[1]);
   });
 
+  it('uses one compact horizontally scrollable mobile strip for every product family', () => {
+    const css = readFileSync('src/styles/site-system.css', 'utf8');
+    const mobile = css.slice(css.indexOf('@media (max-width: 760px)'));
+    const strip = mobile.match(/\.product-detail-hero \.product-gallery__thumbs\s*\{([^}]*)\}/)?.[1] || '';
+    expect(strip).toMatch(/display:\s*flex/);
+    expect(strip).toMatch(/flex-wrap:\s*nowrap/);
+    expect(strip).toMatch(/overflow-x:\s*auto/);
+    expect(strip).toMatch(/gap:\s*8px/);
+    expect(mobile).toMatch(/\.product-detail-hero \.product-gallery__thumb\s*\{[^}]*flex:\s*0 0 max\(52px, calc\(\(100% - 32px\) \/ 5\)\)/);
+    const catalogue = readFileSync('src/styles/catalog.css', 'utf8');
+    expect(catalogue.slice(catalogue.indexOf('@media (max-width: 420px)'))).not.toMatch(/product-gallery__thumbs/);
+  });
+
   it('opens an accessible native dialog and closes it by button, backdrop, or native cancel', async () => {
     const user = userEvent.setup();
     const product = findProduct('GF15');
