@@ -280,8 +280,9 @@ describe('complete, model-specific catalogue', () => {
     }
     const css = readFileSync('src/styles/catalog.css', 'utf8');
     expect(css).toMatch(/\.catalog-product-detail--lighting \.product-gallery__thumbs\s*\{[^}]*display:\s*grid[^}]*overflow:\s*visible/);
-    expect(css.slice(css.indexOf('@media (max-width: 420px)')))
-      .toMatch(/\.catalog-product-detail--lighting \.product-gallery__thumbs\s*\{[^}]*grid-template-columns:\s*repeat\(3/);
+    const shared = readFileSync('src/styles/site-system.css', 'utf8');
+    expect(shared.slice(shared.indexOf('@media (max-width: 760px)')))
+      .toMatch(/\.product-detail-hero \.product-gallery__thumbs\s*\{[^}]*display:\s*flex[^}]*flex-wrap:\s*nowrap[^}]*overflow-x:\s*auto/);
   });
 
   it('keeps glossy/matte and screw-fixed/screwless plate sizes separate', () => {

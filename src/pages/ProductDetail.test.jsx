@@ -368,7 +368,7 @@ describe('ProductDetail', () => {
     expect(styles).toMatch(/\.product-related \.prod-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(4,/);
     expect(mediaRules(1024)).toMatch(/\.product-related \.prod-grid\s*\{[^}]*grid-template-columns:\s*repeat\(2,/);
     expect(mediaRules(700)).not.toMatch(/\.product-related \.prod-grid/);
-    expect(mediaRules(520)).toMatch(/\.product-related \.prod-grid\s*\{[^}]*grid-template-columns:\s*1fr/);
+    expect(mediaRules(520)).not.toMatch(/\.product-related \.prod-grid\s*\{[^}]*grid-template-columns:\s*1fr/);
     expect(mediaRules(520)).toMatch(/\.product-finish-strip\s*\{[^}]*grid-template-columns:\s*1fr/);
     const reducedMotion = styles.slice(styles.indexOf('@media (prefers-reduced-motion: reduce)'));
     expect(reducedMotion).toContain('.product-gallery img');
@@ -549,6 +549,10 @@ describe('ProductDetail', () => {
       'href',
       '/products/gfci/gf15#inquiry'
     );
+    const quote = screen.getByRole('link', { name: 'Request quote for GF15' });
+    expect(quote).toHaveAttribute('aria-label', 'Request quote for GF15');
+    expect(quote.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
+    expect(quote.textContent.trim()).toBe('');
 
     const styles = readFileSync('src/styles.css', 'utf8');
     expect(styles).toMatch(/@media \(min-width:\s*701px\)[\s\S]*?\.product-mobile-quote\s*\{[\s\S]*?display:\s*none/);
@@ -557,6 +561,16 @@ describe('ProductDetail', () => {
       /@media \(max-width:\s*700px\)[\s\S]*?\.footer--product-detail\s*\{[\s\S]*?padding-bottom:\s*calc\([^}]*env\(safe-area-inset-bottom/
     );
     expect(styles).toMatch(/\.footer--product-detail\s*\{[\s\S]*?padding-bottom:\s*calc\(176px\s*\+/);
+    const shared = readFileSync('src/styles/site-system.css', 'utf8');
+    const mobile = shared.slice(shared.indexOf('@media (max-width: 760px)'));
+    const quoteStyle = mobile.match(/\.product-mobile-quote\s*\{([^}]*)\}/)?.[1] || '';
+    expect(quoteStyle).toMatch(/position:\s*fixed/);
+    expect(quoteStyle).toMatch(/left:\s*max\(16px, env\(safe-area-inset-left/);
+    expect(quoteStyle).toMatch(/right:\s*auto/);
+    expect(quoteStyle).toMatch(/width:\s*46px/);
+    expect(quoteStyle).toMatch(/height:\s*46px/);
+    expect(quoteStyle).toMatch(/border-radius:\s*12px/);
+    expect(quoteStyle).toMatch(/background:\s*var\(--navy\)/);
   });
 
   it('preserves the exact current pathname when navigating to same-page anchors', async () => {

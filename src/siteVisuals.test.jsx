@@ -71,4 +71,34 @@ describe('Shared visual finish and original company imagery', () => {
     expect(styles).toMatch(/\.catalog-presentation__body > \*\s*\{[^}]*min-width:\s*0/);
     expect(styles).toMatch(/\.catalog-presentation__copy \.btn\s*\{[^}]*max-width:\s*100%[^}]*white-space:\s*normal/);
   });
+
+  it('keeps model cards in two readable columns on phones and three on wider mobile screens', () => {
+    const catalogue = readFileSync('src/styles/catalog.css', 'utf8');
+    const smallPhone = catalogue.slice(catalogue.indexOf('@media (max-width: 420px)'));
+    expect(smallPhone).not.toMatch(/\.catalog-model-grid[^{}]*\{[^}]*grid-template-columns:\s*1fr\s*;/);
+    const styles = readFileSync('src/styles/site-system.css', 'utf8');
+    const mobile = styles.slice(styles.indexOf('@media (max-width: 760px)'));
+    expect(mobile).toMatch(/\.catalog-model-grid\s*\{[^}]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+    expect(mobile).toMatch(/\.catalog-model-card h3\s*\{[^}]*font-size:\s*clamp\(14px, 3\.4vw, 18px\)[^}]*overflow-wrap:\s*anywhere/);
+    expect(mobile).toMatch(/\.catalog-model-card__image\s*\{[^}]*padding:\s*12px[^}]*aspect-ratio:\s*1/);
+    expect(mobile).toMatch(/@media \(min-width: 600px\) and \(max-width: 760px\)[\s\S]*?\.catalog-model-grid\s*\{[^}]*repeat\(3, minmax\(0, 1fr\)\)/);
+    const product = readFileSync('src/styles/product-experience.css', 'utf8');
+    const gfciMobile = product.slice(product.indexOf('@media (max-width: 700px)'));
+    expect(gfciMobile).not.toMatch(/\.gfci-series \.gfci-product-grid\s*\{[^}]*grid-template-columns:\s*1fr\s*;/);
+    expect(gfciMobile).not.toMatch(/\.product-related \.prod-grid\s*\{[^}]*grid-template-columns:\s*1fr\s*;/);
+  });
+
+  it('keeps mobile contact actions visible and reuses the desktop navy square icons', () => {
+    const styles = readFileSync('src/styles/site-system.css', 'utf8');
+    const mobile = styles.slice(styles.indexOf('@media (max-width: 760px)'));
+    const rail = mobile.match(/\.rail\s*\{([^}]*)\}/)?.[1] || '';
+    expect(rail).toMatch(/display:\s*flex/);
+    expect(rail).toMatch(/top:\s*auto/);
+    expect(rail).toMatch(/right:\s*max\(16px, env\(safe-area-inset-right/);
+    expect(rail).toMatch(/bottom:\s*calc\(16px \+ env\(safe-area-inset-bottom/);
+    const base = readFileSync('src/styles.css', 'utf8');
+    expect(base).toMatch(/\.rail__icon\s*\{[^}]*width:\s*46px[^}]*height:\s*46px[^}]*border-radius:\s*12px[^}]*background:\s*var\(--navy\)/);
+    expect(mobile).not.toMatch(/\.rail[^{}]*\{[^}]*(?:border-radius|background|box-shadow|order):/);
+    expect(mobile).toMatch(/\.rail__panel\s*\{[^}]*display:\s*none/);
+  });
 });

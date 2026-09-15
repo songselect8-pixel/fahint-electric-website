@@ -96,7 +96,7 @@ function RoomHero() {
       <div className="studio-hero__copy">
         <p className="studio-hero__identity">FAHINT <span aria-hidden="true">/</span> North American wiring devices</p>
         <h1 id="studio-hero-title"><span className="studio-hero__opening">Wiring devices.</span>{' '}<span className="studio-hero__continuation">Built for your market.</span></h1>
-        <p className="studio-hero__summary">Explore outlets, switches and wall plates for homes and commercial spaces. Choose FAHINT products, or work with us on your own brand.</p>
+        <p className="studio-hero__summary">Explore outlets, switches and wall plates for homes and commercial spaces.<span className="studio-hero__program-summary"> Choose FAHINT products, or work with us on your own brand.</span></p>
         <div className="studio-hero__paths">
           <div role="group" aria-labelledby="studio-project-path">
             <span id="studio-project-path">For your projects</span>
@@ -109,7 +109,7 @@ function RoomHero() {
         </div>
         <ul className="studio-hero__evidence" aria-label="Product and program support">
           <li><Check size={16} aria-hidden="true" />{studioRanges.length} product families</li>
-          <li><Check size={16} aria-hidden="true" />Model-specific documentation</li>
+          <li className="studio-hero__evidence-detail"><Check size={16} aria-hidden="true" />Model-specific documentation</li>
           <li><Check size={16} aria-hidden="true" />OEM / ODM support</li>
         </ul>
       </div>
@@ -205,16 +205,16 @@ export default function HomeStudio() {
   useStudioPageMeta('Wiring Devices & OEM/ODM Manufacturing', 'FAHINT develops and manufactures North American wiring devices, with seven product families and OEM/ODM support for brands, distributors and project buyers.');
   return <div className="studio-page studio-home" data-home-version="studio">
     <RoomHero />
-    <nav className="studio-chapter-nav" aria-label="Homepage sections">
-      <Link to="/#studio-collection">The collection</Link>
-      <Link to="/#studio-brand">About FAHINT</Link>
-      <Link to="/#studio-oem">OEM / ODM</Link>
-      <Link to="/#studio-making">Inside FAHINT</Link>
-      <Link to="/#studio-certificates">Certificates</Link>
-      <Link to="/#studio-inquiry">Let’s talk <ArrowUpRight size={17} aria-hidden="true" /></Link>
-    </nav>
     <div className="studio-product-transition">
       <StudioImage className="studio-product-transition__scene" src="assets/images/home-installations/home-interior-background-v1.webp" alt="" aria-hidden="true" width={1672} height={941} />
+      <nav className="studio-chapter-nav" aria-label="Homepage sections">
+        <Link to="/#studio-collection">The collection</Link>
+        <Link to="/#studio-brand">About FAHINT</Link>
+        <Link to="/#studio-oem">OEM / ODM</Link>
+        <Link to="/#studio-making">Inside FAHINT</Link>
+        <Link to="/#studio-certificates">Certificates</Link>
+        <Link to="/#studio-inquiry">Let’s talk <ArrowUpRight size={17} aria-hidden="true" /></Link>
+      </nav>
       <StudioProductSelection />
     </div>
     <StudioApplicationMap />

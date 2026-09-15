@@ -54,6 +54,19 @@ describe('Header', () => {
     expect(header).not.toHaveClass('header--home');
   });
 
+  it('restores the transparent homepage header after closing its readable mobile menu', () => {
+    const { container } = renderHeader('/');
+    const header = container.querySelector('.header');
+    const toggle = screen.getByRole('button', { name: 'Toggle menu' });
+    expect(header).toHaveClass('header--transparent');
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(header).toHaveClass('header--solid');
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(header).toHaveClass('header--transparent');
+  });
+
   it('keeps Home navigation within the independent homepage preview', () => {
     renderHeader('/home-next');
 

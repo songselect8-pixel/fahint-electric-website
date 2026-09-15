@@ -3,13 +3,13 @@ import { Mail, Phone, MapPin, Clock, MessageCircle } from 'lucide-react';
 import { company, faqs } from '../data/company.js';
 import InquiryForm from '../components/InquiryForm.jsx';
 import Faq from '../components/Faq.jsx';
-import { findProduct, products } from '../data/products.js';
+import { findProduct } from '../data/products.js';
 import { catalogProducts, modelKey } from '../data/catalogProducts.js';
+import { productLines } from '../data/lines.js';
 import { CompanyBreadcrumb, CompanyLink, usePageMeta } from '../components/company/CompanyShared.jsx';
 
-const inquiryModels = [...products, ...catalogProducts.filter(product => !product.draft)];
 const topics = [
-  { id: 'products', label: 'Product inquiry', hint: 'Tell us the models, quantities, finishes and delivery market you have in mind.' },
+  { id: 'products', label: 'Product inquiry', hint: 'Tell us the product categories, quantities, finishes and delivery market you have in mind.' },
   { id: 'oem', label: 'OEM / ODM inquiry', hint: 'Share your product range, authorized branding, packaging requirements and target quantities.' },
   { id: 'technical', label: 'Technical question', hint: 'Include the model number and the specification or document you would like to review.' }
 ];
@@ -18,8 +18,11 @@ export default function Contact() {
   usePageMeta('Contact FAHINT', 'Talk to FAHINT about product orders, OEM / ODM projects and model-specific documentation. Contact our team in Wenzhou, China.');
   const [searchParams] = useSearchParams();
   const requestedModel = searchParams.get('model');
-  const requestedProduct = findProduct(requestedModel) || inquiryModels.find(product => modelKey(product.sku) === modelKey(requestedModel));
+  const requestedProduct = findProduct(requestedModel) || catalogProducts.find(product => !product.draft && modelKey(product.sku) === modelKey(requestedModel));
   const defaultModel = requestedProduct?.sku || '';
+  const defaultCategory = requestedProduct
+    ? productLines.find(line => line.slug === (requestedProduct.line || 'gfci'))?.name || ''
+    : '';
   const topic = topics.find(item => item.id === searchParams.get('topic')) || topics[0];
   const topicHref = (id) => {
     const params = new URLSearchParams({ topic: id });
@@ -44,7 +47,7 @@ export default function Contact() {
       <div className="company-contact-form">
         <nav className="company-contact-topics" aria-label="Inquiry type">{topics.map(item => <Link key={item.id} to={topicHref(item.id)} aria-current={item.id === topic.id ? 'page' : undefined}>{item.label}</Link>)}</nav>
         <p className="company-contact-context">{topic.hint}</p>
-        <InquiryForm defaultModel={defaultModel} modelOptions={inquiryModels} title="Tell us what you need" />
+        <InquiryForm defaultModel={defaultCategory} categoryOptions={productLines} title="Tell us what you need" />
       </div>
     </div></section>
     <section className="company-section company-section--paper"><div className="company-wrap company-faq-layout"><div><h2>Before you<br /><span>send your brief.</span></h2><p>Answers to common ordering and product questions. Exact terms are confirmed for your selected models.</p></div><Faq items={faqs} /></div></section>

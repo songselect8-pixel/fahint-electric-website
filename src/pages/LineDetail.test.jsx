@@ -47,8 +47,10 @@ describe('model catalogue', () => {
     expect(css).toMatch(/\.catalog-series__poster\s*\{[^}]*position:\s*absolute[^}]*object-fit:\s*cover/);
     expect(css).toMatch(/\.catalog-series__intro--poster \.catalog-section-heading h1\s*\{[^}]*color:\s*#fff/);
     const mobile = css.slice(css.indexOf('@media (max-width: 760px)'));
-    expect(mobile).toMatch(/\.catalog-series__poster\s*\{[^}]*object-position:\s*74%/);
-    expect(mobile).toMatch(/\.catalog-series__poster-shade\s*\{[^}]*linear-gradient\(180deg/);
+    expect(mobile).toMatch(/\.catalog-series__poster\s*\{[^}]*position:\s*relative[^}]*height:\s*clamp\(220px, 64vw, 320px\)[^}]*object-position:\s*74%/);
+    expect(mobile).toMatch(/\.catalog-series__poster-shade\s*\{[^}]*display:\s*none/);
+    expect(mobile).toMatch(/\.catalog-series__intro--poster > \.container\s*\{[^}]*min-height:\s*0/);
+    expect(mobile).not.toMatch(/min-height:\s*640px/);
   });
 
   it.each([
@@ -83,9 +85,10 @@ describe('model catalogue', () => {
     expect(desktop).toMatch(/\.catalog-series__intro--right > \.container > \*\s*\{[^}]*width:\s*min\(520px, 44%\)[^}]*justify-self:\s*end/);
     expect(desktop).toMatch(/\.catalog-series__intro--right \.catalog-series__poster-shade\s*\{[^}]*linear-gradient\(90deg[^}]*rgba\(7,27,48,0\) 40%[^}]*rgba\(7,27,48,\.96\) 100%/);
     const mobile = css.slice(css.indexOf('@media (max-width: 760px)'));
-    expect(mobile).toMatch(/\.catalog-series__intro--right \.catalog-series__poster\s*\{[^}]*height:\s*360px[^}]*object-position:\s*30% center/);
-    expect(mobile).toMatch(/\.catalog-series__intro--right > \.container\s*\{[^}]*padding-top:\s*380px/);
-    expect(mobile).toMatch(/\.catalog-series__intro--right \.catalog-series__poster-shade\s*\{[^}]*rgba\(7,27,48,0\) 260px[^}]*var\(--site-navy\) 360px/);
+    expect(mobile).toMatch(/\.catalog-series__intro--right \.catalog-series__poster\s*\{[^}]*object-position:\s*30% center/);
+    expect(mobile).toMatch(/\.catalog-series__intro--centered \.catalog-series__poster\s*\{[^}]*object-position:\s*50% center/);
+    expect(mobile).not.toMatch(/padding-top:\s*380px/);
+    expect(mobile).toMatch(/\.catalog-series__poster-shade\s*\{[^}]*display:\s*none/);
     await user.selectOptions(screen.getByRole('combobox', { name: 'Configuration' }), 'Toggle switches');
     expect(screen.getByText('2 of 6 models')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'View T15 details' })).toBeInTheDocument();

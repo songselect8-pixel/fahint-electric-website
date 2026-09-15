@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
+import { MessageSquareText } from 'lucide-react';
 import { findProduct, products } from '../data/products.js';
 import { findCatalogProduct } from '../data/catalogProducts.js';
 import { findLine } from '../data/lines.js';
@@ -118,8 +119,9 @@ export default function ProductDetail() {
       <Link
         className="product-mobile-quote"
         to={{ pathname, search, hash: '#inquiry' }}
+        aria-label={`Request quote for ${product.sku}`}
       >
-        Request quote for {product.sku}
+        <MessageSquareText size={24} aria-hidden="true" />
       </Link>
     </>
   );
