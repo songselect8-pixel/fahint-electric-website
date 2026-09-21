@@ -22,7 +22,7 @@ import '../styles/studio.css';
 const scenes = [
   { label: 'Kitchen essentials', line: 'gfci', name: 'GFCI Outlets', image: 'home-hero-kitchen-scene-v2.webp', alt: 'White FAHINT GFCI outlet installed beside a warmly lit kitchen' },
   { label: 'Bedside charging', line: 'usb-outlets', name: 'USB Outlets', image: 'home-hero-bedside-scene-v2.webp', alt: 'White FAHINT USB charging outlet installed beside a bed' },
-  { label: 'Lighting control', line: 'dimmers', name: 'Dimmers', image: 'home-hero-lighting-scene-v2.webp', alt: 'White FAHINT slide dimmer installed in a softly lit living room' }
+  { label: 'Lighting control', line: 'dimmers', name: 'Dimmers', image: 'home-hero-lighting-scene-v3.webp', alt: 'White FAHINT slide dimmer installed in a softly lit living room' }
 ];
 const HERO_ROTATION_MS = 5000;
 const programSteps = [
