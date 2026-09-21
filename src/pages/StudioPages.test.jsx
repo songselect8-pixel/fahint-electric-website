@@ -77,7 +77,7 @@ describe('studio homepage and catalog', () => {
     expect(sources).toEqual([
       publicAsset('assets/images/editorial-products/home-hero-kitchen-scene-v2.webp'),
       publicAsset('assets/images/editorial-products/home-hero-bedside-scene-v2.webp'),
-      publicAsset('assets/images/editorial-products/home-hero-lighting-scene-v2.webp')
+      publicAsset('assets/images/editorial-products/home-hero-lighting-scene-v3.webp')
     ]);
   });
 
