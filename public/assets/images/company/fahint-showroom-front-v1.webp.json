@@ -1,0 +1,21 @@
+{
+  "source": "工厂视频+照片/照片/样品间/微信图片_20260818095803_171_49.jpg",
+  "method": "Built-in image_gen edit; original JPEG converted to RGB PNG after the service rejected its encoding.",
+  "prompt": "Use case: precise-object-edit.\nAsset type: photographic background for the FAHINT company introduction on its website.\nInput image 1 is the ONLY edit target: the real FAHINT sample showroom photograph. This is perspective correction of an existing photograph, not a new showroom design.\nPrimary request: correct camera roll, oblique angle and keystone distortion so this SAME real display wall looks photographed straight-on at normal eye level, with the camera sensor parallel to the display wall. The LED frame must be a clean level rectangle; top and bottom perfectly horizontal, side edges and panel dividers vertical. Keep believable natural depth, not an illustration.\nComposition: create a 2560 x 1440 landscape photograph. Keep the complete display installation and luminous rectangular frame in the frame with modest wall margins. Reduce excessive empty ceiling and floor compared with the input. Center the display wall; retain a little of the original ceiling and pale wooden floor and the existing plants at the two edges.\nAbsolute preservation requirements: retain the same real room, same original six printed panel sections in their exact left-to-right arrangement, same FAHINT logo, original photographs, printed worker portrait, mounted product samples, proportions and counts, wall material and LED border. ALL text/labels are existing printed photographic content: preserve rather than retype, rewrite, translate or correct them, including existing misspellings. Do not invent or simplify sample products or add switches. The worker remains a printed portrait inside the display, not a person standing in the room. Keep the natural showroom lighting; only gently normalize exposure and the original greenish cast to clean neutral white.\nChange only perspective/level/crop and subtle photographic color balance. No redesign, new objects, added text, altered branding, badges, website UI, artificial navy overlay, watermark, dramatic relighting or glossy 3D rendering. High-fidelity documentary photograph.",
+  "generatedFile": "exec-09a8e504-b0c1-4c4f-8a81-6efa4456be59.png",
+  "generatedDimensions": [
+    1672,
+    941
+  ],
+  "webExport": {
+    "file": "fahint-showroom-front-v1.webp",
+    "width": 1920,
+    "height": 1080,
+    "quality": 90,
+    "bytes": 143046,
+    "process": "Proportional Lanczos resizing and a minimal center crop to 16:9; WebP conversion."
+  },
+  "scope": "Homepage brand introduction only. Original supplied photograph and existing laboratory image retained. Existing section layout, overlays and mobile image behavior unchanged.",
+  "notes": "AI-assisted perspective/level and color correction. Small printed text is retouched image content, not a source for product specifications or certification claims.",
+  "date": "2026-09-21"
+}

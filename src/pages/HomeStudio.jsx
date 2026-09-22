@@ -123,11 +123,11 @@ function RoomHero() {
 }
 
 function BrandIntroduction() {
-  // Original company photo: FAHINT PRODUCT CATALOG -Louis 13MB.pdf, page 3, image X17.
+  // Perspective-corrected version of the supplied FAHINT sample-room photograph.
   return <section className="studio-brand" id="studio-brand" aria-labelledby="studio-brand-title">
     <figure className="studio-brand-visual">
-      <StudioImage src="assets/images/company/fahint-laboratory-catalog.webp" alt="Product testing equipment in the FAHINT laboratory, from the company catalog" width={1417} height={422} />
-      <figcaption><strong>Inside FAHINT</strong><span>Laboratory · Wenzhou, China</span></figcaption>
+      <StudioImage src="assets/images/company/fahint-showroom-front-v1.webp" alt="FAHINT product display wall in the sample showroom, with corrected perspective" width={1920} height={1080} />
+      <figcaption><strong>Inside FAHINT</strong><span>Sample showroom · Wenzhou, China</span></figcaption>
     </figure>
     <div className="studio-wrap studio-brand-layout">
       <Reveal className="studio-brand-panel" delay={120}>
