@@ -575,10 +575,11 @@ describe('studio homepage and catalog', () => {
     expect(within(section).getByText(/Based in Wenzhou, China/)).toHaveTextContent('North American market');
     expect(within(section).getByText('FAHINT products')).toBeInTheDocument();
     expect(within(section).getByText('Your brand, our manufacturing')).toBeInTheDocument();
-    const companyPhoto = within(section).getByRole('img', { name: 'Product testing equipment in the FAHINT laboratory, from the company catalog' });
-    expect(companyPhoto).toHaveAttribute('src', publicAsset('assets/images/company/fahint-laboratory-catalog.webp'));
-    expect(companyPhoto).toHaveAttribute('width', '1417');
-    expect(companyPhoto).toHaveAttribute('height', '422');
+    const companyPhoto = within(section).getByRole('img', { name: 'FAHINT product display wall in the sample showroom, with corrected perspective' });
+    expect(companyPhoto).toHaveAttribute('src', publicAsset('assets/images/company/fahint-showroom-front-v1.webp'));
+    expect(companyPhoto).toHaveAttribute('width', '1920');
+    expect(companyPhoto).toHaveAttribute('height', '1080');
+    expect(section.querySelector('figcaption')).toHaveTextContent('Sample showroom · Wenzhou, China');
     expect(within(section).queryByRole('img', { name: /FAHINT collection of/ })).not.toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'The finish is personal.' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Preview White' })).not.toBeInTheDocument();
