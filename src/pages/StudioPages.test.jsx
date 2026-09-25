@@ -580,6 +580,7 @@ describe('studio homepage and catalog', () => {
     expect(companyPhoto).toHaveAttribute('width', '1920');
     expect(companyPhoto).toHaveAttribute('height', '1080');
     expect(section.querySelector('figcaption')).toHaveTextContent('Sample showroom · Wenzhou, China');
+    expect(readFileSync('src/styles/studio.css', 'utf8')).toMatch(/\.studio-brand-panel\s*\{[^}]*margin-inline-start:\s*auto\s*;/);
     expect(within(section).queryByRole('img', { name: /FAHINT collection of/ })).not.toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'The finish is personal.' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Preview White' })).not.toBeInTheDocument();
