@@ -2,6 +2,7 @@
 export const certificates = [
   {
     slug: 'ul-gfci',
+    family: 'gfci',
     name: 'UL — GFCI Receptacles',
     file: 'E504391',
     detail: 'UL 943 5th Ed. · Class A ground-fault circuit interrupters',
@@ -12,6 +13,7 @@ export const certificates = [
   },
   {
     slug: 'ul-receptacle',
+    family: 'receptacles',
     name: 'UL — Standard Receptacles',
     file: 'E498095',
     detail: 'UL 498 · Attachment plugs and receptacles',
@@ -22,6 +24,7 @@ export const certificates = [
   },
   {
     slug: 'ul-usb',
+    family: 'usb-outlets',
     name: 'UL — USB Outlets',
     file: 'E498095',
     detail: 'USB charger receptacles · See the model-specific addendum',
@@ -32,6 +35,7 @@ export const certificates = [
   },
   {
     slug: 'ul-wallplate',
+    family: 'wallplates',
     name: 'UL — Wallplates',
     file: 'E501377',
     detail: 'UL 514D · Nonmetallic flush device cover plates',
@@ -42,6 +46,7 @@ export const certificates = [
   },
   {
     slug: 'ul-switch',
+    family: 'lighting-switches',
     name: 'UL — Flush Switches',
     file: 'E528137',
     detail: 'UL 20 · Flush switches',

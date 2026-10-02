@@ -22,6 +22,7 @@ const ProductDetail = lazy(() => import('./pages/ProductDetail.jsx'));
 const ProductsOverview = import.meta.env.DEV ? lazy(() => import('./pages/ProductsOverview.jsx')) : null;
 const GfciSeries = lazy(() => import('./pages/GfciSeries.jsx'));
 const Contact = lazy(() => import('./pages/Contact.jsx'));
+const Resources = lazy(() => import('./pages/Resources.jsx'));
 const HomeNext = import.meta.env.DEV ? lazy(() => import('./pages/HomeNext.jsx')) : null;
 const HomeLegacy = import.meta.env.DEV ? lazy(() => import('./pages/Home.jsx')) : null;
 const HomeStudio = lazy(() => import('./pages/HomeStudio.jsx'));
@@ -35,7 +36,7 @@ function App() {
     >
       <Header />
       <main id="main-content" tabIndex={-1}>
-        <Suspense fallback={<div className="catalog-loading" role="status">Loading product details…</div>}>
+        <Suspense fallback={<div className="catalog-loading" role="status">Loading page…</div>}>
           <RouteFocusManager />
           <Routes>
           <Route path="/" element={<HomeStudio />} />
@@ -54,6 +55,7 @@ function App() {
           <Route path="/capabilities" element={<Capabilities />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/resources" element={<Resources />} />
           <Route path="*" element={<NotFound />} />
         </Routes></Suspense>
       </main>

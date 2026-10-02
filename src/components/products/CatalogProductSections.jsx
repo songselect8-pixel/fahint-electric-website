@@ -2,6 +2,7 @@ import { ArrowRight, ExternalLink, FileCheck2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SafeImage from '../SafeImage.jsx';
 import { publicAsset } from '../../utils/publicAsset.js';
+import { resourcesHref } from '../../data/documents.js';
 import { usbDimensionReference } from '../../data/usbDimensions.js';
 import UsbDimensions from './UsbDimensions.jsx';
 import ReceptacleOutline from './ReceptacleOutline.jsx';
@@ -126,6 +127,7 @@ export function CatalogDocumentation({ product, contactHref = `/contact?model=${
           <p className="catalog-documentation__reference"><FileCheck2 size={20} aria-hidden="true" />{product.certificationLabel}</p>
           <p>Specifications are recorded for {product.sku}. A series certificate is supporting documentation; confirm that the exact model is covered before final specification or purchase.</p>
           <div className="catalog-documentation__links">
+            <Link to={resourcesHref(product)}>Browse product resources <ArrowRight size={15} aria-hidden="true" /></Link>
             {product.sources.map((source) => <a key={source.href} href={source.kind === 'website' ? source.href : publicAsset(source.href)} target="_blank" rel="noreferrer">
               {source.kind === 'website' ? 'View original model specifications' : source.label} <ExternalLink size={15} aria-hidden="true" />
             </a>)}

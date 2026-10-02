@@ -16,6 +16,16 @@ describe('published homepage and product overview', () => {
     expect(source).not.toContain('path="/" element={<Home />}');
   });
 
+  it('publishes a lazy-loaded resource center with its own metadata', async () => {
+    const source = readFileSync('src/main.jsx', 'utf8');
+    const { PUBLIC_ROUTES } = await import('../scripts/prepare-pages.mjs');
+    const { routeMetadata } = await import('../scripts/page-metadata.mjs');
+    expect(source).toContain("const Resources = lazy(() => import('./pages/Resources.jsx'))");
+    expect(source).toContain('path="/resources" element={<Resources />}');
+    expect(PUBLIC_ROUTES).toContain('resources');
+    expect(routeMetadata.get('/resources')?.label).toBe('Resources');
+  });
+
   it('makes the published homepage indexable with production metadata', () => {
     show(HomeStudio, '/');
     expect(document.querySelector('meta[name="robots"]')).toHaveAttribute('content', 'index, follow');

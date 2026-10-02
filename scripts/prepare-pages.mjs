@@ -19,6 +19,7 @@ const STATIC_ROUTES = [
   'blog',
   'capabilities',
   'about',
+  'resources',
   'contact'
 ];
 
