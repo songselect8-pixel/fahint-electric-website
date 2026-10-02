@@ -52,7 +52,7 @@ function RearBody({ quickWire }) {
   </g>;
 }
 
-export default function ReceptacleOutline({ product }) {
+export default function ReceptacleOutline({ product, contactHref = `/contact?model=${encodeURIComponent(product.sku)}` }) {
   const id = useId();
   const quickWire = product.sku === 'R15Q';
   const wiring = quickWire ? 'Side wire / push-in quick wire' : 'Side wire / back wire';
@@ -79,7 +79,7 @@ export default function ReceptacleOutline({ product }) {
         </div>
         <footer className="usb-dimensions__footer">
           <p>Illustrative outlines only, not a dimensioned installation drawing. Confirm measurements against the approved model drawing before specifying.</p>
-          <Link to={`/contact?model=${encodeURIComponent(product.sku)}`}>Request dimensioned drawing <ArrowRight size={16} aria-hidden="true" /></Link>
+          <Link to={contactHref}>Request dimensioned drawing <ArrowRight size={16} aria-hidden="true" /></Link>
         </footer>
       </div>
     </div>

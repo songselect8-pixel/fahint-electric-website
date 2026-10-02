@@ -2,6 +2,8 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { Send } from 'lucide-react';
 import { company } from '../data/company.js';
 import { products } from '../data/products.js';
+import { resolveInquiryContext } from '../utils/inquiryContext.js';
+import './inquiry-context.css';
 
 const EMPTY = {
   name: '',
@@ -9,6 +11,7 @@ const EMPTY = {
   company: '',
   country: '',
   model: '',
+  category: '',
   quantity: '',
   message: ''
 };
@@ -20,11 +23,14 @@ const MAX_MAILTO_URL_LENGTH = 1_800;
 const REQUEST_TIMEOUT_MS = 12_000;
 
 const clean = (value) => String(value ?? '').trim();
-const normalizeInquiry = (form) =>
-  Object.fromEntries(Object.keys(EMPTY).map((key) => {
-    const field = key === 'model' && Object.hasOwn(form, 'category') ? 'category' : key;
-    return [field, clean(form[field])];
-  }));
+const normalizeInquiry = (form) => {
+  const fields = Object.keys(EMPTY).filter(key => key !== 'category'
+    && !(key === 'model' && Object.hasOwn(form, 'category') && !clean(form.model)));
+  for (const key of ['category', 'finish', 'topic', 'source']) {
+    if (Object.hasOwn(form, key)) fields.push(key);
+  }
+  return Object.fromEntries(fields.map(key => [key, clean(form[key])]));
+};
 
 const buildInquiryBody = (form) => {
   const values = normalizeInquiry(form);
@@ -34,9 +40,11 @@ const buildInquiryBody = (form) => {
     `Email: ${values.email}`,
     `Company: ${values.company}`,
     `Country: ${values.country}`,
-    Object.hasOwn(values, 'category')
-      ? `Product category: ${values.category || 'Not specified'}`
-      : `Model of interest: ${values.model || 'Not specified'}`,
+    ...(Object.hasOwn(values, 'category') ? [`Product category: ${values.category || 'Not specified'}`] : []),
+    ...(Object.hasOwn(values, 'model') ? [`Model of interest: ${values.model || 'Not specified'}`] : []),
+    ...(Object.hasOwn(values, 'finish') ? [`Finish: ${values.finish || 'Not specified'}`] : []),
+    ...(values.topic ? [`Inquiry type: ${values.topic}`] : []),
+    ...(values.source ? [`Product page: ${values.source}`] : []),
     `Estimated quantity: ${values.quantity || 'Not specified'}`,
     '',
     'Requirements:',
@@ -82,6 +90,11 @@ const defaultClipboardWriter = (text) => {
 
 export default function InquiryForm({
   defaultModel = '',
+  defaultCategory = '',
+  productContext = null,
+  topic = 'Product inquiry',
+  onClearProduct,
+  onModelChange,
   title = 'Send a message',
   modelOptions = products,
   categoryOptions = null,
@@ -91,8 +104,12 @@ export default function InquiryForm({
   clipboardWriter = defaultClipboardWriter
 }) {
   const submissionEndpoint = secureEndpoint(endpoint);
-  const [form, setForm] = useState({ ...EMPTY, model: defaultModel });
-  const inquiry = categoryOptions ? { ...form, category: form.model } : form;
+  const [form, setForm] = useState({ ...EMPTY, model: defaultModel, category: defaultCategory });
+  const context = categoryOptions
+    ? (productContext?.category === form.category ? productContext : null)
+    : resolveInquiryContext(form.model, productContext?.model === form.model ? productContext.finishSlug : '');
+  const { model, category, ...details } = form;
+  const inquiry = { ...details, ...(categoryOptions ? { category } : { model }), ...context, topic };
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('');
   const [copyStatus, setCopyStatus] = useState('');
@@ -128,6 +145,16 @@ export default function InquiryForm({
   }, [defaultModel]);
 
   useEffect(() => {
+    if (defaultCategory) setForm(current => ({ ...current, category: defaultCategory }));
+  }, [defaultCategory]);
+
+  useEffect(() => {
+    modelVersionRef.current += 1;
+    setStatus('');
+    setCopyStatus('');
+  }, [context?.model, context?.finishSlug, topic]);
+
+  useEffect(() => {
     mountedRef.current = true;
 
     return () => {
@@ -148,6 +175,8 @@ export default function InquiryForm({
     const nextErrors = validateInquiry({ ...form, [key]: nextValue });
 
     setForm((current) => ({ ...current, [key]: nextValue }));
+    if (key === 'model') onModelChange?.(nextValue);
+    if (key === 'category' && productContext && nextValue !== productContext.category) onClearProduct?.();
     setErrors((currentErrors) => {
       if (!currentErrors[key]) return currentErrors;
       if (nextErrors[key]) return { ...currentErrors, [key]: nextErrors[key] };
@@ -373,7 +402,7 @@ export default function InquiryForm({
       <div className="field-row">
         <div className="field">
           <label htmlFor={ids.model}>{categoryOptions ? 'Product category' : 'Model of interest'}</label>
-          <select id={ids.model} name={categoryOptions ? 'category' : 'model'} value={form.model} onChange={update('model')}>
+          <select id={ids.model} name={categoryOptions ? 'category' : 'model'} value={categoryOptions ? form.category : form.model} onChange={update(categoryOptions ? 'category' : 'model')}>
             <option value="">{categoryOptions ? 'Select a product category' : 'Select a model'}</option>
             {categoryOptions ? categoryOptions.map((category) => (
               <option key={category.slug} value={category.name}>{category.name}</option>
@@ -401,6 +430,17 @@ export default function InquiryForm({
           />
         </div>
       </div>
+
+      {context && <div className="inquiry-product-context" role="group" aria-label="Selected product">
+        <div aria-live="polite" aria-atomic="true">
+          <span className="inquiry-product-context__label">Selected product</span>
+          <p><strong>{context.model}</strong><span> · Finish: {context.finish}</span></p>
+        </div>
+        {onClearProduct && <button type="button" onClick={() => {
+          onClearProduct();
+          formRef.current?.querySelector('select')?.focus({ preventScroll: true });
+        }} aria-label="Clear selected product">Clear</button>}
+      </div>}
 
       <div className="field">
         <label htmlFor={ids.message}>Requirements *</label>

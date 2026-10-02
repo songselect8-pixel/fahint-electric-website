@@ -344,7 +344,7 @@ function ProductDownloads({ documents }) {
   );
 }
 
-export function ProductCertification({ product }) {
+export function ProductCertification({ product, contactHref = `/contact?model=${encodeURIComponent(product.sku)}` }) {
   const verified = isVerifiedListing(product);
   if (!verified) {
     return (
@@ -355,7 +355,7 @@ export function ProductCertification({ product }) {
             <p className="product-section-label">Model documentation</p>
             <h2>Documentation review for {product.sku}.</h2>
             <p>Certification status requires model-specific documentation review before specification or purchase.</p>
-            <Link className="textlink" to={`/contact?model=${encodeURIComponent(product.sku)}`}>
+            <Link className="textlink" to={contactHref}>
               Request a documentation review <ArrowRight size={15} aria-hidden="true" />
             </Link>
           </div>
