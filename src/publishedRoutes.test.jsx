@@ -9,6 +9,14 @@ import Header from './components/Header.jsx';
 const show = (Component, path) => render(<MemoryRouter initialEntries={[path]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><Component /></MemoryRouter>);
 
 describe('published homepage and product overview', () => {
+  it('loads company and editorial pages only with their route', () => {
+    const source = readFileSync('src/App.jsx', 'utf8');
+    for (const name of ['Blog', 'BlogPost', 'Capabilities', 'About']) {
+      expect(source).toContain(`const ${name} = lazy(() => import('./pages/${name}.jsx'))`);
+      expect(source).not.toContain(`import ${name} from`);
+    }
+  });
+
   it('serves the completed pages at the canonical entry routes', () => {
     const source = readFileSync('src/App.jsx', 'utf8');
     expect(source).toContain('path="/" element={<HomeStudio />}');

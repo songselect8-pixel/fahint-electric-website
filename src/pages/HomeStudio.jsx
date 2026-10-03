@@ -88,7 +88,7 @@ function RoomHero() {
     }}
   >
     <div className="studio-hero__photo" id="studio-room-scene">
-      {scenes.map((item, index) => <StudioImage key={item.line} src={`assets/images/editorial-products/${item.image}`} alt={item.alt} width={1536} height={1024} priority={index === 0} className={index === active ? 'is-current' : ''} aria-hidden={index !== active} />)}
+      {scenes.map((item, index) => <StudioImage key={item.line} src={`assets/images/editorial-products/${item.image}`} alt={item.alt} width={1536} height={1024} priority={index === active} className={index === active ? 'is-current' : ''} aria-hidden={index !== active} />)}
     </div>
     <div className="studio-wrap studio-hero__layout">
       <div className="studio-hero__copy">

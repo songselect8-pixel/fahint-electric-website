@@ -7,6 +7,7 @@ export async function buildPageRenderer(base) {
     base,
     build: {
       ssr: 'src/entry-server.jsx',
+      manifest: false,
       outDir: 'output/prerender',
       copyPublicDir: false,
       rollupOptions: { output: { entryFileNames: 'entry-server.mjs' } },

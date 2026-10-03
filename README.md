@@ -19,6 +19,12 @@ npm run preview
 
 The build generates static HTML for every published page, with the same React components used by the browser. The build-only server bundle stays in ignored `output/prerender/`; deploy only `dist/`. No runtime Node server or extra dependency is required. A missing page heading or rendering failure stops artifact preparation.
 
+## Loading strategy
+
+Published content pages use route-level lazy imports. During the build, `scripts/prepare-pages.mjs` reads Vite's client manifest and adds one low-priority module preload for the current page entry. It does not preload other pages or the full dependency tree: the latter competed with the main image in cold mobile measurements. Missing entries or unsafe asset paths stop preparation before route files are written. The 404 page receives no extra page preload, and root and project-path builds use the same rules.
+
+The active homepage poster is eager/high priority; inactive scenes and other `StudioImage` images are lazy/low priority. This changes scheduling, not image size or quality. The shared stylesheet and prerendered content remain available without JavaScript. See `docs/superpowers/plans/2026-10-03-mobile-performance.md` for the local test conditions, measured results and limitations; these are not field Core Web Vitals or a search-ranking guarantee.
+
 ## Deployment
 
 Every push to the `main` branch is built and deployed automatically by the GitHub Pages workflow in `.github/workflows/deploy.yml`.

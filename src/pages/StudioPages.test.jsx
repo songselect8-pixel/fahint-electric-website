@@ -81,6 +81,20 @@ describe('studio homepage and catalog', () => {
     ]);
   });
 
+  it('prioritizes the active poster without competing category and inactive scene downloads', () => {
+    const { container } = show(HomeStudio);
+    const images = [...container.querySelectorAll('.studio-hero__photo img')];
+    expect(images.map(image => image.getAttribute('fetchpriority'))).toEqual(['high', 'low', 'low']);
+    expect(images.map(image => image.getAttribute('loading'))).toEqual(['eager', 'lazy', 'lazy']);
+    for (const image of container.querySelectorAll('.studio-selection-card img')) {
+      expect(image).toHaveAttribute('loading', 'lazy');
+      expect(image).toHaveAttribute('fetchpriority', 'low');
+    }
+    fireEvent.click(screen.getByRole('button', { name: 'Bedside charging' }));
+    expect(images.map(image => image.getAttribute('fetchpriority'))).toEqual(['low', 'high', 'low']);
+    expect(images[1]).toHaveAttribute('loading', 'eager');
+  });
+
   it('separates the application scene and company story with a navy chapter band only', () => {
     const { container } = show(HomeStudio);
     const map = container.querySelector('.studio-application-map');

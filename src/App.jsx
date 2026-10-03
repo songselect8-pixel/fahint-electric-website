@@ -5,12 +5,12 @@ import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import FloatingRail from './components/FloatingRail.jsx';
 import RouteFocusManager from './components/RouteFocusManager.jsx';
-import Blog from './pages/Blog.jsx';
-import BlogPost from './pages/BlogPost.jsx';
-import Capabilities from './pages/Capabilities.jsx';
-import About from './pages/About.jsx';
 import NotFound from './pages/NotFound.jsx';
 
+const Blog = lazy(() => import('./pages/Blog.jsx'));
+const BlogPost = lazy(() => import('./pages/BlogPost.jsx'));
+const Capabilities = lazy(() => import('./pages/Capabilities.jsx'));
+const About = lazy(() => import('./pages/About.jsx'));
 const LineDetail = lazy(() => import('./pages/LineDetail.jsx'));
 const ProductDetail = lazy(() => import('./pages/ProductDetail.jsx'));
 const ProductsOverview = import.meta.env.DEV ? lazy(() => import('./pages/ProductsOverview.jsx')) : null;

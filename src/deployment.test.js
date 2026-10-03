@@ -22,11 +22,55 @@ const createDist = async (html) => {
   return distDir;
 };
 
+const createClientManifest = () => ({
+  'index.html': { file: 'assets/main.js', imports: ['_vendor.js'], dynamicImports: ['src/pages/About.jsx'] },
+  '_vendor.js': { file: 'assets/vendor.js' },
+  '_shared.js': { file: 'assets/shared.js', imports: ['_vendor.js'] },
+  '_not-needed.js': { file: 'assets/not-needed.js' },
+  ...Object.fromEntries(['HomeStudio', 'ProductsStudio', 'GfciSeries', 'LineDetail', 'ProductDetail', 'Blog', 'BlogPost', 'About', 'Capabilities', 'Resources', 'Contact']
+    .map(name => [`src/pages/${name}.jsx`, { file: `assets/${name}.js`, imports: ['_shared.js', '_vendor.js'], dynamicImports: ['_not-needed.js'] }])),
+});
+
 afterEach(async () => {
   await Promise.all(temporaryRoots.splice(0).map((root) => rm(root, { recursive: true, force: true })));
 });
 
 describe('GitHub Pages deployment', () => {
+  it.each(['/', '/fahint-electric-website/'])('preloads only the current page entry without competing shared or other route modules under %s', async expectedBase => {
+    const { preparePages } = await loadPreparePages();
+    const distDir = await createDist(`<!doctype html><html><head><base href="${expectedBase}"><link rel="modulepreload" crossorigin href="${expectedBase}assets/vendor.js"></head><body><div id="root"></div></body></html>`);
+    await preparePages({ distDir, expectedBase, clientManifest: createClientManifest() });
+    for (const [route, page] of [['', 'HomeStudio'], ['products', 'ProductsStudio'], ['products/gfci', 'GfciSeries'],
+      ['products/usb-outlets', 'LineDetail'], ['products/usb-outlets/ftr15-3100', 'ProductDetail'], ['products/gfci/gf15', 'ProductDetail'],
+      ['blog', 'Blog'], ['blog/gfci-vs-afci-whats-the-difference', 'BlogPost'], ['about', 'About'], ['capabilities', 'Capabilities'],
+      ['resources', 'Resources'], ['contact', 'Contact']]) {
+      const html = await readFile(join(distDir, route, 'index.html'), 'utf8');
+      const document = new DOMParser().parseFromString(html, 'text/html');
+      const links = [...document.head.querySelectorAll('link[rel="modulepreload"]')];
+      expect(links.map(link => link.getAttribute('href')).sort(), route)
+        .toEqual(['vendor', page].map(name => `${expectedBase}assets/${name}.js`).sort());
+      expect(links.every(link => link.hasAttribute('crossorigin')), route).toBe(true);
+      expect(links.filter(link => !link.href.endsWith('/vendor.js')).every(link => link.getAttribute('fetchpriority') === 'low'), route).toBe(true);
+    }
+    const fallback = await readFile(join(distDir, '404.html'), 'utf8');
+    expect(fallback).not.toContain('assets/HomeStudio.js');
+    expect(fallback).not.toContain('assets/shared.js');
+  });
+
+  it.each(['missing-page', 'missing-file', 'unsafe-path', 'missing-head'])('rejects a %s preload before writing route artifacts', async failure => {
+    const { preparePages } = await loadPreparePages();
+    const manifest = createClientManifest();
+    if (failure === 'missing-page') delete manifest['src/pages/About.jsx'];
+    if (failure === 'missing-file') delete manifest['src/pages/HomeStudio.jsx'].file;
+    if (failure === 'unsafe-path') manifest['src/pages/HomeStudio.jsx'].file = 'assets/../server.js';
+    const distDir = await createDist(failure === 'missing-head' ? '<base href="/">' : '<head><base href="/"></head>');
+    const initial = await readFile(join(distDir, 'index.html'), 'utf8');
+    await expect(preparePages({ distDir, expectedBase: '/', clientManifest: manifest })).rejects.toThrow(/module|manifest|head/i);
+    expect(await readFile(join(distDir, 'index.html'), 'utf8')).toBe(initial);
+    expect(fs.existsSync(join(distDir, '404.html'))).toBe(false);
+    expect(fs.existsSync(join(distDir, 'products/index.html'))).toBe(false);
+  });
+
   it('covers all published pages with unique metadata and real share images', async () => {
     const { PUBLIC_ROUTES } = await loadPreparePages();
     const { routeMetadata } = await import('../scripts/page-metadata.mjs');
