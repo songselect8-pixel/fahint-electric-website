@@ -4,7 +4,9 @@ import { ArrowRight, Search } from 'lucide-react';
 import { findLine, productLines } from '../data/lines.js';
 import { filterCatalogProducts, getCatalogProducts } from '../data/catalogProducts.js';
 import { filterUsbProducts, usbFilters } from '../data/usbFilters.js';
+import { resolveUsbComparison } from '../data/usbComparison.js';
 import CatalogModelCard from '../components/products/CatalogModelCard.jsx';
+import UsbComparison from '../components/products/UsbComparison.jsx';
 import SafeImage from '../components/SafeImage.jsx';
 import { familyMetadata } from '../seo/metadata.js';
 import { usePageMetadata } from '../seo/usePageMetadata.js';
@@ -24,13 +26,20 @@ function ModelCatalogue({ line }) {
   const groups = [...new Set(models.map((product) => product.group))];
   const searched = filterCatalogProducts(models, { query, group });
   const filtered = isUsb ? filterUsbProducts(searched, selected) : searched;
-  const updateUsbFilter = (name, value) => {
-    const values = { q: query, ...selected, [name]: value };
-    const next = new URLSearchParams(Object.entries(values).filter(([, item]) => item));
+  const compared = isUsb ? resolveUsbComparison(params.get('compare') || '') : [];
+  const updateUsbState = (filters, comparison) => {
+    const next = new URLSearchParams(Object.entries(filters).filter(([, item]) => item));
+    if (comparison.length) next.set('compare', comparison.map(product => product.sku).join(','));
     setParams(next, { replace: true, preventScrollReset: true, state: { preserveScroll: true } });
   };
+  const updateUsbFilter = (name, value) => updateUsbState({ q: query, ...selected, [name]: value }, compared);
+  const updateComparison = products => updateUsbState({ q: query, ...selected }, products);
+  const toggleCompare = product => {
+    if (compared.some(item => item.sku === product.sku)) updateComparison(compared.filter(item => item.sku !== product.sku));
+    else if (compared.length < 3) updateComparison([...compared, product]);
+  };
   const clear = () => {
-    if (isUsb) setParams({}, { replace: true, preventScrollReset: true, state: { preserveScroll: true } });
+    if (isUsb) updateUsbState({}, compared);
     else { setLocalQuery(''); setGroup(''); }
   };
   const isCenteredPoster = ['receptacles', 'smart-switches'].includes(line.slug);
@@ -84,7 +93,14 @@ function ModelCatalogue({ line }) {
             {isUsb && <button type="button" className="catalog-filters__clear" onClick={clear} disabled={!query && !Object.values(selected).some(Boolean)}>Clear filters</button>}
             <Link className="textlink" to={`/products/${line.slug}${isUsb && params.size ? `?${params}` : ''}#buying-guide`}>Need help choosing?</Link></div>
         </div>
-        {filtered.length ? <div className="catalog-model-grid">{filtered.map((product) => <CatalogModelCard key={product.slug} product={product} />)}</div>
+        {isUsb && <UsbComparison products={compared} onChange={updateComparison} />}
+        {filtered.length ? <div className="catalog-model-grid">{filtered.map((product) => <CatalogModelCard key={product.slug} product={product}>
+          {isUsb && <label className="usb-compare-choice">
+            <input type="checkbox" aria-label={`Compare ${product.sku}`} checked={compared.some(item => item.sku === product.sku)}
+              disabled={compared.length === 3 && !compared.some(item => item.sku === product.sku)} onChange={() => toggleCompare(product)} />
+            <span>Compare</span>
+          </label>}
+        </CatalogModelCard>)}</div>
           : <div className="catalog-empty"><p role="status">No models match your selection.</p>{isUsb ? <p>Try another combination or clear the filters above.</p> : <button className="btn btn--outline" onClick={clear}>Clear filters</button>}</div>}
       </div>
     </section>
