@@ -127,7 +127,7 @@ export function headEntries(meta, { path = '/', siteUrl = '', publicUrl = '' } =
   return entries;
 }
 
-const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+export const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
 export function renderHeadEntries(entries) {
   return entries.filter(entry => !entry.remove).map(({ tag, attributes = {}, text = '' }) => {
     const attrs = Object.entries(attributes).map(([key, value]) => ` ${key}="${escapeHtml(value)}"`).join('');

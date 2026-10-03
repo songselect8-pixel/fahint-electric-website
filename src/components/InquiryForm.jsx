@@ -131,6 +131,7 @@ export default function InquiryForm({
   const [status, setStatus] = useState('');
   const [copyStatus, setCopyStatus] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [interactive, setInteractive] = useState(false);
   const [isCopying, setIsCopying] = useState(false);
   const formRef = useRef(null);
   const removedItemRef = useRef(false);
@@ -182,6 +183,7 @@ export default function InquiryForm({
 
   useEffect(() => {
     mountedRef.current = true;
+    setInteractive(true);
 
     return () => {
       mountedRef.current = false;
@@ -501,10 +503,12 @@ export default function InquiryForm({
         type="submit"
         className="btn btn--primary"
         style={{ width: '100%', justifyContent: 'center' }}
-        disabled={isSubmitting}
+        disabled={!interactive || isSubmitting}
       >
         {isSubmitting ? (submissionEndpoint ? 'Sending inquiry…' : 'Opening email app…') : (submissionEndpoint ? 'Send inquiry' : 'Open email app')} <Send size={16} aria-hidden="true" />
       </button>
+
+      <noscript className="form-note">Enable JavaScript to use this form, or contact us using the email and WhatsApp links below.</noscript>
 
       {items.length > 0 && <button type="button" className="btn btn--ghost inquiry-list__copy" onClick={copyInquiryDetails} disabled={isCopying}>
         {isCopying ? 'Copying…' : 'Copy inquiry details'}

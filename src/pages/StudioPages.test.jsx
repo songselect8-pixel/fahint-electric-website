@@ -31,7 +31,7 @@ function show(Component, path = '/home-studio') {
 
 describe('studio homepage and catalog', () => {
   it('publishes the completed homepage and catalog while preserving local review routes', () => {
-    const source = readFileSync('src/main.jsx', 'utf8');
+    const source = readFileSync('src/App.jsx', 'utf8');
     for (const route of ['path="/" element={<HomeStudio />}', 'path="/products" element={<ProductsStudio />}']) expect(source).toContain(route);
     expect(source).toContain('{import.meta.env.DEV && <Route path="/home-next"');
     expect(source).toContain('{import.meta.env.DEV && <Route path="/home-legacy"');

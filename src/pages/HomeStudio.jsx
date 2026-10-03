@@ -39,12 +39,8 @@ function RoomHero() {
   const [hovered, setHovered] = useState(false);
   const [focusWithin, setFocusWithin] = useState(false);
   const [heroVisible, setHeroVisible] = useState(true);
-  const [pageVisible, setPageVisible] = useState(() => typeof document === 'undefined' || !document.hidden);
-  const [reducedMotion, setReducedMotion] = useState(() => (
-    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
-      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      : false
-  ));
+  const [pageVisible, setPageVisible] = useState(true);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const paused = hovered || focusWithin || !heroVisible || !pageVisible || reducedMotion;
 
   useEffect(() => {
@@ -67,6 +63,7 @@ function RoomHero() {
 
   useEffect(() => {
     const updatePageVisibility = () => setPageVisible(!document.hidden);
+    updatePageVisibility();
     document.addEventListener('visibilitychange', updatePageVisibility);
     return () => document.removeEventListener('visibilitychange', updatePageVisibility);
   }, []);

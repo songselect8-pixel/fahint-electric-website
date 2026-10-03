@@ -57,13 +57,64 @@ describe('GitHub Pages deployment', () => {
   it('runs tests before the build and prepares the artifact after the build', () => {
     const testStep = workflow.indexOf('- run: npm test');
     const buildStep = workflow.indexOf('- name: Build');
-    const prepareStep = workflow.indexOf('node scripts/prepare-pages.mjs');
+    const { scripts } = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
     expect(testStep).toBeGreaterThan(-1);
     expect(buildStep).toBeGreaterThan(testStep);
-    expect(prepareStep).toBeGreaterThan(buildStep);
+    expect(scripts.build).toBe('vite build && node scripts/prepare-pages.mjs');
+    expect(workflow).not.toContain('run: node scripts/prepare-pages.mjs');
     expect(workflow).toContain('CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN }}');
     expect(workflow).not.toMatch(/run:\s*(?:echo|printf)[^\n]*CUSTOM_DOMAIN/i);
+  });
+
+  it('writes each rendered body with its own metadata and hydration path', async () => {
+    const { preparePages, PUBLIC_ROUTES } = await loadPreparePages();
+    const distDir = await createDist('<!doctype html><base href="/catalog/"><div id="root"></div><script type="module" src="/catalog/app.js"></script>');
+    const rendered = [];
+    await preparePages({ distDir, expectedBase: '/catalog/', renderPage: async (path, base) => {
+      rendered.push([path, base]);
+      return `<main id="main-content"><h1>${path}</h1><a href="${base}products">Products</a></main>`;
+    } });
+    expect(rendered.map(([path]) => path).sort()).toEqual(['/', ...PUBLIC_ROUTES.map(route => `/${route}`), '/404'].sort());
+    expect(rendered.every(([, base]) => base === '/catalog/')).toBe(true);
+    const html = await readFile(join(distDir, 'products/gfci/gf15/index.html'), 'utf8');
+    expect(html).toContain('data-prerender-path="/catalog/products/gfci/gf15"');
+    expect(html).toContain('<h1>/products/gfci/gf15</h1>');
+    expect(html).toContain('<title>GF15');
+    expect(html).toContain('src="/catalog/app.js"');
+    const fallback = await readFile(join(distDir, '404.html'), 'utf8');
+    expect(fallback).toContain('<h1>/404</h1>');
+    expect(fallback).toContain('noindex');
+  });
+
+  it.each(['throw', 'empty', 'loading'])('stops before writing routes when rendering is %s', async (failure) => {
+    const { preparePages } = await loadPreparePages();
+    const distDir = await createDist('<!doctype html><base href="/"><div id="root"></div>');
+    const initial = await readFile(join(distDir, 'index.html'), 'utf8');
+    await expect(preparePages({ distDir, expectedBase: '/', renderPage: async path => {
+      if (path === '/products/usb-outlets') {
+        if (failure === 'throw') throw new Error('Render failed');
+        return failure === 'empty' ? '' : '<main>Loading page…</main>';
+      }
+      return '<main><h1>Page</h1></main>';
+    } })).rejects.toThrow(/render/i);
+    expect(await readFile(join(distDir, 'index.html'), 'utf8')).toBe(initial);
+    expect(fs.existsSync(join(distDir, 'products/index.html'))).toBe(false);
+    expect(fs.existsSync(join(distDir, '404.html'))).toBe(false);
+  });
+
+  it('rejects a missing or already populated root rather than replacing unrelated markup', async () => {
+    const { preparePages } = await loadPreparePages();
+    const distDir = await createDist('<!doctype html><base href="/"><div id="root"><main>Previous build</main></div>');
+    await expect(preparePages({ distDir, expectedBase: '/', renderPage: async () => '<main><h1>Page</h1></main>' }))
+      .rejects.toThrow(/root/i);
+  });
+
+  it('does not clone a previously prerendered homepage over model pages on a second preparation', async () => {
+    const { preparePages } = await loadPreparePages();
+    const distDir = await createDist('<!doctype html><base href="/"><div id="root" data-prerender-path="/"><main><h1>Home</h1></main></div>');
+    await expect(preparePages({ distDir, expectedBase: '/' })).rejects.toThrow(/fresh|already/i);
+    expect(fs.existsSync(join(distDir, 'products/index.html'))).toBe(false);
   });
 
   it('gives the fallback noindex metadata and creates .nojekyll', async () => {

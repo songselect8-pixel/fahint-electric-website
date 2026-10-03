@@ -10,14 +10,14 @@ const show = (Component, path) => render(<MemoryRouter initialEntries={[path]} f
 
 describe('published homepage and product overview', () => {
   it('serves the completed pages at the canonical entry routes', () => {
-    const source = readFileSync('src/main.jsx', 'utf8');
+    const source = readFileSync('src/App.jsx', 'utf8');
     expect(source).toContain('path="/" element={<HomeStudio />}');
     expect(source).toContain('path="/products" element={<ProductsStudio />}');
     expect(source).not.toContain('path="/" element={<Home />}');
   });
 
   it('publishes a lazy-loaded resource center with its own metadata', async () => {
-    const source = readFileSync('src/main.jsx', 'utf8');
+    const source = readFileSync('src/App.jsx', 'utf8');
     const { PUBLIC_ROUTES } = await import('../scripts/prepare-pages.mjs');
     const { routeMetadata } = await import('../scripts/page-metadata.mjs');
     expect(source).toContain("const Resources = lazy(() => import('./pages/Resources.jsx'))");

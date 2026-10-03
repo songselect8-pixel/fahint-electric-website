@@ -68,7 +68,7 @@ export default function ReceptacleOutline({ product, contactHref = `/contact?mod
           {['front', 'rear'].map((view, index) => <figure key={view} className="usb-dimensions__view">
             <figcaption><span>{String(index + 1).padStart(2, '0')}</span><h3>{view === 'front' ? 'Front view' : 'Rear view'}</h3></figcaption>
             <svg viewBox="0 0 320 360" width="320" height="360" role="img" aria-labelledby={`${id}-${view}`}>
-              <title id={`${id}-${view}`}>{product.sku} {view} view line drawing</title>
+              <title id={`${id}-${view}`}>{`${product.sku} ${view} view line drawing`}</title>
               <g className="usb-dimension-outline" transform="translate(160 176) scale(2.65)">
                 <MountingTabs />
                 {view === 'front' ? <FrontFace twentyAmp={product.sku === 'R20'} /> : <RearBody quickWire={quickWire} />}
