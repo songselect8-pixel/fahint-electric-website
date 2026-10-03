@@ -43,6 +43,9 @@ body:has(.usb-comparison__dialog[open]) { overflow: hidden; }
 .usb-comparison__table small { display: block; font-size: 11px; color: var(--site-blue); font-weight: 400; margin-top: 4px; }
 .usb-comparison__table tr:last-child > * { border-bottom: 0; }
 .usb-comparison__note { margin: 0; padding: 16px 28px; color: var(--site-muted); font-size: 12px; line-height: 1.6; flex-shrink: 0; }
+.usb-comparison__inquiry { display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; padding: 16px 28px 0; flex-shrink: 0; }
+.usb-comparison__inquiry p { margin: 0; color: var(--site-muted); font-size: 13px; }
+.usb-comparison__inquiry a { flex-shrink: 0; text-decoration: none; }
 .usb-comparison :focus-visible, .usb-comparison__dialog :focus-visible, .usb-compare-choice input:focus-visible { outline: 2px solid var(--site-blue); outline-offset: 3px; }
 .usb-comparison__scroll:focus-visible { outline-offset: -3px; }
 @media (max-width: 760px) {
@@ -67,4 +70,7 @@ body:has(.usb-comparison__dialog[open]) { overflow: hidden; }
   .usb-comparison__table thead img { height: 88px; }
   .usb-comparison__links { flex-direction: column; gap: 0; }
   .usb-comparison__note { padding: 12px 16px; font-size: 11px; }
+  .usb-comparison__inquiry { padding: 12px 16px 0; }
+  .usb-comparison__inquiry p { display: none; }
+  .usb-comparison__inquiry a { width: 100%; }
 }

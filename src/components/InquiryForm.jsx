@@ -3,6 +3,8 @@ import { Send } from 'lucide-react';
 import { company } from '../data/company.js';
 import { products } from '../data/products.js';
 import { resolveInquiryContext } from '../utils/inquiryContext.js';
+import { resolveUsbInquiryItems, serializeUsbInquiryItems, validInquiryQuantity } from '../utils/inquiryList.js';
+import InquiryList from './InquiryList.jsx';
 import './inquiry-context.css';
 
 const EMPTY = {
@@ -29,7 +31,14 @@ const normalizeInquiry = (form) => {
   for (const key of ['category', 'finish', 'topic', 'source']) {
     if (Object.hasOwn(form, key)) fields.push(key);
   }
-  return Object.fromEntries(fields.map(key => [key, clean(form[key])]));
+  const values = Object.fromEntries(fields.map(key => [key, clean(form[key])]));
+  const items = resolveUsbInquiryItems(form.items);
+  if (items.length) {
+    values.items = items;
+    values.category = 'USB Outlets';
+    for (const key of ['model', 'finish', 'source', 'quantity']) delete values[key];
+  }
+  return values;
 };
 
 const buildInquiryBody = (form) => {
@@ -45,7 +54,10 @@ const buildInquiryBody = (form) => {
     ...(Object.hasOwn(values, 'finish') ? [`Finish: ${values.finish || 'Not specified'}`] : []),
     ...(values.topic ? [`Inquiry type: ${values.topic}`] : []),
     ...(values.source ? [`Product page: ${values.source}`] : []),
-    `Estimated quantity: ${values.quantity || 'Not specified'}`,
+    ...(values.items ? [
+      '', `Inquiry list (${values.items.length} ${values.items.length === 1 ? 'model' : 'models'}):`,
+      ...values.items.map((item, index) => `${index + 1}. ${item.model}\nQuantity: ${item.quantity ? `${item.quantity} pcs` : 'Not specified'}\nFinish: ${item.finish}\nProduct page: ${item.source}`)
+    ] : [`Estimated quantity: ${values.quantity || 'Not specified'}`]),
     '',
     'Requirements:',
     values.message
@@ -58,6 +70,7 @@ export function validateInquiry(form) {
   if (!clean(form.name)) errors.name = 'Enter your name.';
   if (!EMAIL_PATTERN.test(clean(form.email))) errors.email = 'Enter a valid business email.';
   if (!clean(form.message)) errors.message = 'Describe the product or project you need.';
+  if (resolveUsbInquiryItems(form.items).some(item => !validInquiryQuantity(item.quantity))) errors.items = 'Check each model quantity.';
 
   return errors;
 }
@@ -92,6 +105,8 @@ export default function InquiryForm({
   defaultModel = '',
   defaultCategory = '',
   productContext = null,
+  inquiryItems = [],
+  onItemsChange,
   topic = 'Product inquiry',
   onClearProduct,
   onModelChange,
@@ -105,17 +120,20 @@ export default function InquiryForm({
 }) {
   const submissionEndpoint = secureEndpoint(endpoint);
   const [form, setForm] = useState({ ...EMPTY, model: defaultModel, category: defaultCategory });
-  const context = categoryOptions
+  const items = form.category === 'USB Outlets' ? resolveUsbInquiryItems(inquiryItems) : [];
+  const itemsKey = serializeUsbInquiryItems(items);
+  const context = items.length ? null : categoryOptions
     ? (productContext?.category === form.category ? productContext : null)
     : resolveInquiryContext(form.model, productContext?.model === form.model ? productContext.finishSlug : '');
   const { model, category, ...details } = form;
-  const inquiry = { ...details, ...(categoryOptions ? { category } : { model }), ...context, topic };
+  const inquiry = { ...details, ...(categoryOptions ? { category } : { model }), ...context, topic, ...(items.length ? { items } : {}) };
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('');
   const [copyStatus, setCopyStatus] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCopying, setIsCopying] = useState(false);
   const formRef = useRef(null);
+  const removedItemRef = useRef(false);
   const inFlightRef = useRef(false);
   const copyInFlightRef = useRef(false);
   const cooldownRef = useRef(null);
@@ -152,7 +170,15 @@ export default function InquiryForm({
     modelVersionRef.current += 1;
     setStatus('');
     setCopyStatus('');
-  }, [context?.model, context?.finishSlug, topic]);
+    if (removedItemRef.current) {
+      removedItemRef.current = false;
+      (formRef.current?.querySelector('[data-inquiry-quantity]') || formRef.current?.querySelector('select'))?.focus({ preventScroll: true });
+    }
+    setErrors(current => {
+      const { items: _itemError, ...remaining } = current;
+      return remaining;
+    });
+  }, [context?.model, context?.finishSlug, topic, itemsKey]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -177,6 +203,7 @@ export default function InquiryForm({
     setForm((current) => ({ ...current, [key]: nextValue }));
     if (key === 'model') onModelChange?.(nextValue);
     if (key === 'category' && productContext && nextValue !== productContext.category) onClearProduct?.();
+    if (key === 'category' && items.length && nextValue !== 'USB Outlets') onItemsChange?.([]);
     setErrors((currentErrors) => {
       if (!currentErrors[key]) return currentErrors;
       if (nextErrors[key]) return { ...currentErrors, [key]: nextErrors[key] };
@@ -190,6 +217,11 @@ export default function InquiryForm({
 
   const copyInquiryDetails = async () => {
     if (copyInFlightRef.current) return;
+    if (items.some(item => !validInquiryQuantity(item.quantity))) {
+      setErrors(current => ({ ...current, items: 'Check each model quantity.' }));
+      formRef.current?.querySelector('[data-inquiry-quantity][aria-invalid="true"]')?.focus();
+      return;
+    }
 
     const modelVersion = modelVersionRef.current;
     copyInFlightRef.current = true;
@@ -211,7 +243,7 @@ export default function InquiryForm({
     event.preventDefault();
     if (inFlightRef.current) return;
 
-    const nextErrors = validateInquiry(form);
+    const nextErrors = validateInquiry(inquiry);
     setErrors(nextErrors);
     setStatus('');
     setCopyStatus('');
@@ -312,7 +344,7 @@ export default function InquiryForm({
           This inquiry is too long to open reliably in an email app. Copy the inquiry details instead.
         </div>
       )}
-      {['success', 'failure', 'too-long', 'delivery-failure'].includes(status) && (
+      {!items.length && ['success', 'failure', 'too-long', 'delivery-failure'].includes(status) && (
         <div className="form-card__recovery">
           <p>
             {status === 'delivery-failure' ? 'You can copy the inquiry details and send them to ' : 'If it did not open, copy the inquiry details and send them to '}<strong>{company.email}</strong>.
@@ -419,7 +451,7 @@ export default function InquiryForm({
             </>}
           </select>
         </div>
-        <div className="field">
+        {!items.length && <div className="field">
           <label htmlFor={ids.quantity}>Estimated quantity</label>
           <input
             id={ids.quantity}
@@ -428,8 +460,13 @@ export default function InquiryForm({
             onChange={update('quantity')}
             placeholder="e.g. 5,000 pcs"
           />
-        </div>
+        </div>}
       </div>
+
+      {items.length > 0 && <InquiryList items={items} onChange={next => {
+        removedItemRef.current = next.length < items.length;
+        onItemsChange?.(next);
+      }} />}
 
       {context && <div className="inquiry-product-context" role="group" aria-label="Selected product">
         <div aria-live="polite" aria-atomic="true">
@@ -468,6 +505,10 @@ export default function InquiryForm({
       >
         {isSubmitting ? (submissionEndpoint ? 'Sending inquiry…' : 'Opening email app…') : (submissionEndpoint ? 'Send inquiry' : 'Open email app')} <Send size={16} aria-hidden="true" />
       </button>
+
+      {items.length > 0 && <button type="button" className="btn btn--ghost inquiry-list__copy" onClick={copyInquiryDetails} disabled={isCopying}>
+        {isCopying ? 'Copying…' : 'Copy inquiry details'}
+      </button>}
 
       <p className="form-note">
         {submissionEndpoint

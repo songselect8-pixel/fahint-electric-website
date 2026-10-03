@@ -4,6 +4,7 @@ import { ArrowRight, Columns3, X } from 'lucide-react';
 import { productHref } from '../../data/catalogProducts.js';
 import { usbComparisonRows } from '../../data/usbComparison.js';
 import { inquiryContactHref, resolveInquiryContext } from '../../utils/inquiryContext.js';
+import { usbInquiryHref } from '../../utils/inquiryList.js';
 import SafeImage from '../SafeImage.jsx';
 import './usb-comparison.css';
 
@@ -64,6 +65,12 @@ export default function UsbComparison({ products, onChange }) {
             {row.values.map((value, index) => <td key={products[index].sku}>{value}</td>)}
           </tr>)}{!rows.length && <tr><td colSpan={products.length + 1}>No differences in these published specifications. Turn off “Show differences only” to see all rows.</td></tr>}</tbody>
         </table>
+      </div>
+      <div className="usb-comparison__inquiry">
+        <p>Shortlist ready? Set quantities and finishes on the contact page.</p>
+        <Link className="usb-comparison__open" to={`${usbInquiryHref(products.map(product => ({ model: product.sku })))}#inquiry`}>
+          Add selected to inquiry <ArrowRight size={16} aria-hidden="true" />
+        </Link>
       </div>
       <p className="usb-comparison__note">5V output is shared across USB ports. PD values are single-port maximums, not simultaneous dual-port output. Confirm missing specifications, power sharing and model documentation before ordering.</p>
     </dialog>

@@ -88,6 +88,11 @@ describe('USB comparison flow', () => {
     expect(within(table).getByRole('rowheader', { name: /USB ports/ })).toHaveAttribute('scope', 'row');
     expect(within(dialog).getByRole('link', { name: 'View FTR15-3100 details' })).toHaveAttribute('href', '/products/usb-outlets/ftr15-3100');
     expect(within(dialog).getByRole('link', { name: 'Request quote for FTR20QC-DC65W' })).toHaveAttribute('href', '/contact?topic=products&model=FTR20QC-DC65W');
+    const inquiryLink = within(dialog).getByRole('link', { name: 'Add selected to inquiry' });
+    const inquiryParams = new URL(inquiryLink.href).searchParams;
+    expect(inquiryParams.get('topic')).toBe('products');
+    expect(JSON.parse(inquiryParams.get('items'))).toEqual([['FTR15-3100', '', ''], ['FTR20QC-DC65W', '', '']]);
+    expect(new URL(inquiryLink.href).hash).toBe('#inquiry');
     expect(within(table).getByText('Up to 65W per USB-C port')).toBeVisible();
     expect(within(table).getByText('Confirm dual-port power sharing')).toBeVisible();
     expect(within(dialog).getByText(/not simultaneous/)).toBeVisible();
