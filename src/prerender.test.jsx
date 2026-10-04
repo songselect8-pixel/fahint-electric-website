@@ -5,6 +5,17 @@ import { canHydratePage } from './utils/prerender.js';
 import { PUBLIC_ROUTES } from '../scripts/prepare-pages.mjs';
 
 describe('published page prerendering', () => {
+  it('prerenders the USB guide and preserves base-safe model and filter links', async () => {
+    const html = await renderPage('/blog/usb-wall-outlet-buying-guide', '/fahint-electric-website/');
+    expect(html).toContain('FAHINT USB outlet shortlist');
+    expect(html).toContain('<table>');
+    expect(html).toContain('FTR15QC-DC65W');
+    expect(html).toContain('href="/fahint-electric-website/products/usb-outlets?ports=a-c"');
+    expect(html).toContain('href="/fahint-electric-website/products/usb-outlets/f4p"');
+    expect(html).toContain('USB outlet quotation checklist');
+    expect(html).not.toContain('Loading page…');
+  });
+
   it('waits for the actual lazy homepage, including product and company links', async () => {
     const html = await renderPage('/');
     expect(html).toContain('Wiring devices.');

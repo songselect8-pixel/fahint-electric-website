@@ -1,5 +1,8 @@
 // Buyer guides reviewed against the linked primary references; existing article URLs are retained.
+import { usbBuyingGuide } from './usbBuyingGuide.js';
+
 export const posts = [
+  usbBuyingGuide,
   {
     "slug": "gfci-vs-afci-whats-the-difference",
     "title": "GFCI vs AFCI: Two Different Kinds of Protection",

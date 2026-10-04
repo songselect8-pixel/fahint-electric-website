@@ -75,6 +75,10 @@ export default function Resources() {
             </a>
           </div>
         </section>
+        <p className="resources-scope-note">
+          Choosing USB charging outlets?{' '}
+          <Link className="company-text-link" to="/blog/usb-wall-outlet-buying-guide">Read the USB outlet buying guide <ArrowUpRight size={16} aria-hidden="true" /></Link>
+        </p>
       </div>
     </header>
 

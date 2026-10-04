@@ -17,7 +17,7 @@ export const buyingGuides = {
       { q: 'How should I compare total output and power sharing?', a: 'Check combined USB output, single-port limits and the behaviour with multiple ports in use. Do not add individual maximum ratings together. Charging output depends on the connected device, cable and negotiated profile; confirm simultaneous-port power sharing for the selected model.' },
       { q: 'What belongs in a USB outlet quotation request?', a: 'Send the complete model, input rating, any AC receptacle rating, required port mix, target charging profile and quantity. Include finish, wallplate, destination and packaging requirements. Review the model documentation and approve the requested configuration with a sample.' },
     ],
-    resource: { label: 'Review product-family certificates', to: '/about#certifications' },
+    resource: { label: 'Read the USB outlet buying guide', to: '/blog/usb-wall-outlet-buying-guide' },
     modelCheck: 'Confirm port mix, charging profiles, simultaneous-port power sharing and input rating; where applicable, confirm the AC receptacle rating.',
   },
   receptacles: {

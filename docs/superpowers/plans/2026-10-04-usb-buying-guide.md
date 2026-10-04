@@ -1,6 +1,6 @@
 # USB Buying Guide Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. The approved scope requires the main agent; do not delegate.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking. The approved scope requires the main agent; do not delegate.
 
 **Goal:** Publish one researched English USB buying guide locally, with seven verified model examples and existing buying-tool entry points.
 
@@ -27,7 +27,7 @@ Continue in the existing `codex/prelaunch-buyer-tools` checkout as agreed for th
 ## Task 1: Lock the new behavior with failing tests
 
 - [x] Check the current branch and clean tracked baseline. Existing Blog/Resources/deployment tests: 66 passed.
-- [ ] Create `src/pages/UsbBuyingGuide.test.jsx`:
+- [x] Create `src/pages/UsbBuyingGuide.test.jsx`:
 
 ```jsx
 import { render, screen, within } from '@testing-library/react';
@@ -106,8 +106,8 @@ describe('Researched USB buying guide', () => {
 });
 ```
 
-- [ ] Run `npm test -- src/pages/UsbBuyingGuide.test.jsx`. Expect failures for missing guide, table and entry links, not import or syntax errors.
-- [ ] In `src/prerender.test.jsx`, add this case inside the published-page describe:
+- [x] Run `npm test -- src/pages/UsbBuyingGuide.test.jsx`. Expect failures for missing guide, table and entry links, not import or syntax errors.
+- [x] In `src/prerender.test.jsx`, add this case inside the published-page describe:
 
 ```jsx
 it('prerenders the USB guide and preserves base-safe model and filter links', async () => {
@@ -122,11 +122,11 @@ it('prerenders the USB guide and preserves base-safe model and filter links', as
 });
 ```
 
-- [ ] Run that targeted prerender case with `npm test -- src/prerender.test.jsx -t "prerenders the USB guide"`; expect the missing-content assertion to fail.
+- [x] Run that targeted prerender case with `npm test -- src/prerender.test.jsx -t "prerenders the USB guide"`; expect the missing-content assertion to fail.
 
 ## Task 2: Write the guide and add the minimum article rendering
 
-- [ ] Create the guide data with the following contract. Populate the approved seven sections as original English prose, using the primary research already reviewed. Include the exact seven approved models, quote checklist, four external references and own USB resource reference. The strings below define the real public title, route and required links:
+- [x] Create the guide data with the following contract. Populate the approved seven sections as original English prose, using the primary research already reviewed. Include the exact seven approved models, quote checklist, four external references and own USB resource reference. The strings below define the real public title, route and required links:
 
 ```js
 // Buyer guide based on the primary references and verified FAHINT model data.
@@ -407,8 +407,8 @@ export const usbBuyingGuide = {
 };
 ```
 
-- [ ] Register the post with `import { usbBuyingGuide } from './usbBuyingGuide.js';` and put `usbBuyingGuide,` first in the existing posts array.
-- [ ] Replace only the body map in BlogPost; keep old h2/p/source behavior. The implementation shape is:
+- [x] Register the post with `import { usbBuyingGuide } from './usbBuyingGuide.js';` and put `usbBuyingGuide,` first in the existing posts array.
+- [x] Replace only the body map in BlogPost; keep old h2/p/source behavior. The implementation shape is:
 
 ```jsx
 {post.body.map((block, index) => {
@@ -430,7 +430,7 @@ export const usbBuyingGuide = {
 })}
 ```
 
-- [ ] Add only these article-scoped styles, refining if browser measurements show overflow:
+- [x] Add only these article-scoped styles, refining if browser measurements show overflow:
 
 ```css
 .reading-article { min-width:0; }
@@ -447,40 +447,53 @@ export const usbBuyingGuide = {
 .reading-table-scroll td { color:#344f63; }
 ```
 
-- [ ] Update old Blog tests: count 7 posts/covers; compare the GFCI article's title by slug, not array index; include `product-usb` in illustration detection (5 illustrations).
-- [ ] Run the article and existing Blog tests. The content tests should pass; the two unimplemented entry-link tests remain red until Task 3.
-- [ ] Review the finished English text for structure, clarity, evidence, line editing and headline/SEO; use the copy-editing checklist without adding unsupported urgency, guarantees or certifications.
+- [x] Update old Blog tests: count 7 posts/covers; compare the GFCI article's title by slug, not array index; include `product-usb` in illustration detection (5 illustrations).
+- [x] Run the article and existing Blog tests together with Task 3 entry-link tests. The combined targeted run passed after implementing the entry links; the initial six missing-guide/SSR/entry checks were confirmed red first.
+- [x] Review the finished English text for structure, clarity, evidence, line editing and headline/SEO; use the copy-editing checklist without adding unsupported urgency, guarantees or certifications.
 
 ## Task 3: Make the guide discoverable
 
-- [ ] Replace the USB-only buying-guide resource:
+- [x] Replace the USB-only buying-guide resource:
 ```js
 resource: { label: 'Read the USB outlet buying guide', to: '/blog/usb-wall-outlet-buying-guide' },
 ```
-- [ ] After the catalog block in Resources, add this paragraph using existing link styling; do not alter the document list:
+- [x] After the catalog block in Resources, add this paragraph using existing link styling; do not alter the document list:
 ```jsx
 <p className="resources-scope-note">
   Choosing USB charging outlets?{' '}
   <Link className="company-text-link" to="/blog/usb-wall-outlet-buying-guide">Read the USB outlet buying guide <ArrowUpRight size={16} aria-hidden="true" /></Link>
 </p>
 ```
-- [ ] Add before `</urlset>`:
+- [x] Add before `</urlset>`:
 ```xml
   <url><loc>https://www.fahint.com/blog/usb-wall-outlet-buying-guide</loc></url>
 ```
-- [ ] Run `npm test -- src/pages/UsbBuyingGuide.test.jsx src/pages/Blog.test.jsx src/pages/Resources.test.jsx src/prerender.test.jsx src/deployment.test.js`; expect all green.
-- [ ] Commit only planned files after inspection; retain all unrelated files.
+- [x] Run `npm test -- src/pages/UsbBuyingGuide.test.jsx src/pages/Blog.test.jsx src/pages/Resources.test.jsx src/prerender.test.jsx src/deployment.test.js`; expect all green.
+- [x] Commit only planned files after inspection; retain all unrelated files.
 
 ## Task 4: Verify locally and hand off
 
-- [ ] Run the complete existing `npm test` suite and `npm run build`.
-- [ ] Inspect new root HTML: complete article, one H1, table/list, Article metadata, original source links, no loading placeholder.
-- [ ] Use the existing preview at `http://127.0.0.1:4176/blog/usb-wall-outlet-buying-guide`; start it only if absent.
-- [ ] Browser check at desktop and 390px mobile: readable table, keyboard-focusable local scrolling, no body overflow, correct article entry points, A+C filter link restores filters. Preserve existing compare/inquiry state; do not submit anything.
-- [ ] Existing prerender test verifies the GitHub Pages subpath; do not change domain configuration or re-run slow-network benchmarks for this content-only change.
-- [ ] Run `git diff --check`, inspect scoped diff, record tests and preview URL in this plan, commit finished local changes. No remote mutation.
-- [ ] Open the article preview for the user and give a concise result and local-only status.
+- [x] Run the complete existing `npm test` suite and `npm run build`.
+- [x] Inspect new root HTML: complete article, one H1, table/list, Article metadata, original source links, no loading placeholder.
+- [x] Use the existing preview at `http://127.0.0.1:4176/blog/usb-wall-outlet-buying-guide`; start it only if absent.
+- [x] Browser check at desktop and 390px mobile: readable table, keyboard-focusable local scrolling, no body overflow, correct article entry points, A+C filter link restores filters. Preserve existing compare/inquiry state; do not submit anything.
+- [x] Existing prerender test verifies the GitHub Pages subpath; do not change domain configuration or re-run slow-network benchmarks for this content-only change.
+- [x] Run `git diff --check`, inspect scoped diff, record tests and preview URL in this plan, commit finished local changes. No remote mutation.
+- [x] Request opening the article preview in Codex (queued by the app); provide the preview URL and local-only status in the handoff.
 
 ## Self-review
 
 All seven content sections, seven model references, four external references, three entry points, native table/list accessibility, metadata/prerender and sitemap checks are mapped above. Local editing is authorized by the approved design. No new product claims, tool state changes, dependencies or deployment are included.
+
+## Execution results — 2026-10-04
+
+- Implemented one researched guide, seven linked FAHINT model examples, a quotation checklist, three discovery entry points and sitemap coverage. Existing website colors and rounded styling are retained; no new dependencies or comparison/inquiry state behavior.
+- Baseline: 66 tests passed. Red phase: six new missing-guide/entry/SSR checks failed as expected. Targeted green phase: 91 tests passed.
+- Final full suite: **896 tests passed in 45 files**. Production build succeeded with **177 public pages and a 404 page**.
+- Built HTML contains one H1, all seven model rows, all seven checklist items and Article metadata. The prerender test also confirms GitHub Pages subpath-safe model and filter links.
+- Browser QA: desktop 1440 × 1000 and mobile 390 × 844. No page-level horizontal overflow (mobile document width 390px). The model table scrolls locally (340px container / 640px content); keyboard ArrowRight moved it by 40px while focused. Desktop/mobile screenshots were inspected.
+- Blog → guide, USB buying-guide entry → guide, Resources → guide all passed. The A+C action opens the correct USB filter with “USB-A + USB-C” selected and 14 of 37 models. Browser console: zero errors or warnings.
+- Five editing passes covered structure, clarity, evidence, line editing and headline/SEO. Competitor references explain selection concepts only; FAHINT ratings come from the local model records. Unpublished dual-port sharing, compatibility, MOQ and lead times are not invented.
+- `git diff --check` passed. Only the planned files are included in the local implementation commit; unrelated untracked files are preserved.
+- Preview: http://127.0.0.1:4176/blog/usb-wall-outlet-buying-guide
+- The app queued the preview-open request. Keep the existing preview server running. No remote push, merge, deployment, domain change, email setup or real inquiry submission.
