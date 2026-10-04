@@ -79,6 +79,10 @@ export default function Resources() {
           Choosing USB charging outlets?{' '}
           <Link className="company-text-link" to="/blog/usb-wall-outlet-buying-guide">Read the USB outlet buying guide <ArrowUpRight size={16} aria-hidden="true" /></Link>
         </p>
+        <p className="resources-scope-note">
+          Choosing lighting controls?{' '}
+          <Link className="company-text-link" to="/blog/dimmer-buying-guide-led-0-10v">Read the dimmer buying guide <ArrowUpRight size={16} aria-hidden="true" /></Link>
+        </p>
       </div>
     </header>
 

@@ -37,7 +37,7 @@ export const buyingGuides = {
       { q: 'Are DM2010 and DM2010S interchangeable?', a: 'They represent different control choices: DM2010 is the digital slide dimmer and DM2010S is the 0-10V model. Review the model-specific control method, wiring and lighting-system requirements before selecting either one.' },
       { q: 'What should the approved sample establish?', a: 'Agree on the exact dimmer, finish, plate and intended lamp or driver combination. Specify what compatibility checks and documentation are needed before the order. Sample arrangements, quantities and timing are confirmed for the project.' },
     ],
-    resource: { label: 'Explore OEM / ODM support', to: '/capabilities#oem' },
+    resource: { label: 'Read the dimmer buying guide', to: '/blog/dimmer-buying-guide-led-0-10v' },
     modelCheck: 'Provide lamp or driver model, load type and total load; confirm compatibility with the selected control method.',
   },
   'smart-switches': {

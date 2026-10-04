@@ -34,7 +34,7 @@ Do not change `BlogPost.jsx`, styles, product records, dependencies, inquiry sto
 
 - [x] Confirm current branch and untracked files; dependencies are already installed.
 - [x] Run `npm test -- src/pages/Blog.test.jsx src/pages/UsbBuyingGuide.test.jsx src/pages/Resources.test.jsx src/prerender.test.jsx`. Baseline: 53 tests passed in four files.
-- [ ] Create `src/pages/DimmerBuyingGuide.test.jsx` with:
+- [x] Create `src/pages/DimmerBuyingGuide.test.jsx` with:
 
 ```jsx
 import { render, screen, within } from '@testing-library/react';
@@ -125,7 +125,7 @@ describe('Researched dimmer buying guide', () => {
 });
 ```
 
-- [ ] Add this test at the start of the published-page describe in `src/prerender.test.jsx`:
+- [x] Add this test at the start of the published-page describe in `src/prerender.test.jsx`:
 
 ```jsx
   it('prerenders the dimmer guide with base-safe model and document links', async () => {
@@ -141,11 +141,11 @@ describe('Researched dimmer buying guide', () => {
   });
 ```
 
-- [ ] Run `npm test -- src/pages/DimmerBuyingGuide.test.jsx src/prerender.test.jsx`. Expect six new failures caused by the missing article/model table/discovery links, with all existing SSR tests passing. Do not accept syntax/import errors as the red phase.
+- [x] Run `npm test -- src/pages/DimmerBuyingGuide.test.jsx src/prerender.test.jsx`. Expect six new failures caused by the missing article/model table/discovery links, with all existing SSR tests passing. Do not accept syntax/import errors as the red phase.
 
 ## Task 2: Add the guide through existing rendering
 
-- [ ] Create `src/data/dimmerBuyingGuide.js` with this complete content:
+- [x] Create `src/data/dimmerBuyingGuide.js` with this complete content:
 
 ```js
 // Buyer guide based on primary references and the published FAHINT dimmer records.
@@ -362,7 +362,7 @@ export const dimmerBuyingGuide = {
 };
 ```
 
-- [ ] In `src/data/posts.js`, import and register:
+- [x] In `src/data/posts.js`, import and register:
 
 ```js
 import { usbBuyingGuide } from './usbBuyingGuide.js';
@@ -375,20 +375,20 @@ export const posts = [
 
 Keep every other post unchanged.
 
-- [ ] In `src/pages/Blog.test.jsx`, set `expect(posts).toHaveLength(8)`; set the distinct-cover `size` expectation to `8`; extend illustration detection to `/application|product-gfci|product-usb|home-installations/` and expect `6` illustrations.
-- [ ] In the existing USB guide Blog test, change only `'7 articles'` to `'8 articles'`.
-- [ ] Review the article against the approved source matrix. Keep model-specific and industry statements separate. Verify both load ranges, VA units, unsupported phase type, missing driver-count data and sample-test boundaries.
-- [ ] Apply copy-editing passes for structure, clarity, evidence, line editing and headline/SEO. Keep the restrained B2B voice; do not add urgency, testimonials, guarantees, legal claims or customer-project claims.
+- [x] In `src/pages/Blog.test.jsx`, set `expect(posts).toHaveLength(8)`; set the distinct-cover `size` expectation to `8`; extend illustration detection to `/application|product-gfci|product-usb|home-installations/` and expect `6` illustrations.
+- [x] In the existing USB guide Blog test, change only `'7 articles'` to `'8 articles'`.
+- [x] Review the article against the approved source matrix. Keep model-specific and industry statements separate. Verify both load ranges, VA units, unsupported phase type, missing driver-count data and sample-test boundaries.
+- [x] Apply copy-editing passes for structure, clarity, evidence, line editing and headline/SEO. Keep the restrained B2B voice; do not add urgency, testimonials, guarantees, legal claims or customer-project claims.
 
 ## Task 3: Connect the three entry points
 
-- [ ] Replace only `buyingGuides.dimmers.resource` with:
+- [x] Replace only `buyingGuides.dimmers.resource` with:
 
 ```js
 resource: { label: 'Read the dimmer buying guide', to: '/blog/dimmer-buying-guide-led-0-10v' },
 ```
 
-- [ ] In Resources, immediately after the existing USB guide paragraph add:
+- [x] In Resources, immediately after the existing USB guide paragraph add:
 
 ```jsx
         <p className="resources-scope-note">
@@ -399,27 +399,39 @@ resource: { label: 'Read the dimmer buying guide', to: '/blog/dimmer-buying-guid
 
 Preserve the USB guide, all document downloads and filter behavior.
 
-- [ ] Before `</urlset>` in the public sitemap add:
+- [x] Before `</urlset>` in the public sitemap add:
 
 ```xml
   <url><loc>https://www.fahint.com/blog/dimmer-buying-guide-led-0-10v</loc></url>
 ```
 
-- [ ] Run `npm test -- src/pages/DimmerBuyingGuide.test.jsx src/pages/Blog.test.jsx src/pages/UsbBuyingGuide.test.jsx src/pages/Resources.test.jsx src/prerender.test.jsx src/deployment.test.js`. All tests must pass.
-- [ ] Inspect the scoped diff; no extra rendering/style/parameter changes.
+- [x] Run `npm test -- src/pages/DimmerBuyingGuide.test.jsx src/pages/Blog.test.jsx src/pages/UsbBuyingGuide.test.jsx src/pages/Resources.test.jsx src/prerender.test.jsx src/deployment.test.js`. All tests must pass.
+- [x] Inspect the scoped diff; no extra rendering/style/parameter changes.
 
 ## Task 4: Verify the local production output
 
-- [ ] Run `npm test` and `npm run build`. Require a passing complete suite and successful public-page generation.
-- [ ] Inspect the generated article HTML: one H1; seven content headings; a two-model/four-column table; seven quotation checklist items; proper title, description and Article metadata; complete text before hydration.
-- [ ] Confirm asset exists and cover caption visibly says illustration. Existing model documents are linked rather than copied.
-- [ ] Reuse the running preview at `http://127.0.0.1:4176/blog/dimmer-buying-guide-led-0-10v` if available. Do not terminate another preview.
-- [ ] Use the Playwright skill and cached CLI for desktop 1440 × 1000 and mobile 390 × 844. Inspect opening and table screenshots; verify no page-level overflow and keyboard-focusable local table scrolling.
-- [ ] Click Blog, dimmer-family and Resources entries to the guide. Click both model links and the dimmer document link. Do not submit inquiries or change saved selections.
-- [ ] Check browser console errors. Preserve running preview; close only the browser session created for this check.
-- [ ] Record verification results here. Run staged diff checks and commit only listed source/test/docs files.
-- [ ] Request the Codex preview tab and provide the direct URL. Keep the branch and local commit; no push, merge, deployment, domain or email changes.
+- [x] Run `npm test` and `npm run build`. Require a passing complete suite and successful public-page generation.
+- [x] Inspect the generated article HTML: one H1; seven content headings; a two-model/four-column table; seven quotation checklist items; proper title, description and Article metadata; complete text before hydration.
+- [x] Confirm asset exists and cover caption visibly says illustration. Existing model documents are linked rather than copied.
+- [x] Reuse the running preview at `http://127.0.0.1:4176/blog/dimmer-buying-guide-led-0-10v` if available. Do not terminate another preview.
+- [x] Use the Playwright skill and cached CLI for desktop 1440 × 1000 and mobile 390 × 844. Inspect opening and table screenshots; verify no page-level overflow and keyboard-focusable local table scrolling.
+- [x] Click Blog, dimmer-family and Resources entries to the guide. Click both model links and the dimmer document link. Do not submit inquiries or change saved selections.
+- [x] Check browser console errors. Preserve running preview; close only the browser session created for this check.
+- [x] Record verification results here. Run staged diff checks and commit only listed source/test/docs files.
+- [x] Request the Codex preview tab and provide the direct URL. Keep the branch and local commit; no push, merge, deployment, domain or email changes.
 
 ## Plan self-review
 
 The seven approved sections, four external references, two model links and three discovery entries are fully defined. Existing renderer supports all required block shapes and metadata uses the registered post. Table assertions check actual catalog fields, not invented expected units. Screenshot provenance is explicit. No scope expansion or unresolved implementation choices.
+
+## Verification results — 2026-10-04
+
+- Red phase: the six new guide/entry/SSR checks failed for missing content; the 20 existing SSR checks passed.
+- Focused green phase: 97 tests passed across six files.
+- Full regression suite: 902 tests passed across 46 files. Production build generated 178 public pages and the 404 fallback.
+- Generated HTML contains one H1, seven article sections, the two-model/four-column table and seven quotation checklist items, plus the existing source and inquiry sections. Title, description and Article headline/date metadata match the new post; the full content is present before hydration. The local build intentionally uses the existing unset-site-URL behavior; no domain settings were changed.
+- Desktop 1440 × 1000 and mobile 390 × 844 screenshots inspected. Page widths equal their viewports; the mobile table has a 340px viewport over 640px content and keyboard ArrowRight moves its scroll position from 0 to 40 while retaining focus.
+- Clicked all three discovery entries, both model table links, the dimmer-family link and the family-filtered document link. Resources correctly keeps Dimmers selected and shows its existing document-request state (no fabricated dimmer PDF). No inquiry was submitted and no saved selection was changed.
+- Browser console: zero errors and warnings. Closed only the `dimmer-guide` browser session. The previous preview was no longer listening, so a hidden local preview was started on the same port 4176 and left running.
+- QA screenshots: `output/playwright/dimmer-guide/desktop-opening.png`, `desktop-table.png`, `mobile-opening.png`, `mobile-table.png` (ignored local output).
+- The new article reuses existing rendering, styles and illustration; no dependency, parameter, domain, email or deployment changes. Preserve the current branch and keep this implementation local.

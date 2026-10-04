@@ -5,6 +5,18 @@ import { canHydratePage } from './utils/prerender.js';
 import { PUBLIC_ROUTES } from '../scripts/prepare-pages.mjs';
 
 describe('published page prerendering', () => {
+  it('prerenders the dimmer guide with base-safe model and document links', async () => {
+    const html = await renderPage('/blog/dimmer-buying-guide-led-0-10v', '/fahint-electric-website/');
+    expect(html).toContain('FAHINT dimmer model comparison');
+    expect(html).toContain('<table>');
+    expect(html).toContain('600VA');
+    expect(html).toContain('Dimmer quotation checklist');
+    expect(html).toContain('href="/fahint-electric-website/products/dimmers/dm2010"');
+    expect(html).toContain('href="/fahint-electric-website/products/dimmers/dm2010s"');
+    expect(html).toContain('href="/fahint-electric-website/resources?family=dimmers"');
+    expect(html).not.toContain('Loading page…');
+  });
+
   it('prerenders the USB guide and preserves base-safe model and filter links', async () => {
     const html = await renderPage('/blog/usb-wall-outlet-buying-guide', '/fahint-electric-website/');
     expect(html).toContain('FAHINT USB outlet shortlist');

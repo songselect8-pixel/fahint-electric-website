@@ -1,7 +1,9 @@
 // Buyer guides reviewed against the linked primary references; existing article URLs are retained.
 import { usbBuyingGuide } from './usbBuyingGuide.js';
+import { dimmerBuyingGuide } from './dimmerBuyingGuide.js';
 
 export const posts = [
+  dimmerBuyingGuide,
   usbBuyingGuide,
   {
     "slug": "gfci-vs-afci-whats-the-difference",
