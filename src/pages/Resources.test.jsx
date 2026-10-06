@@ -34,17 +34,17 @@ afterEach(() => vi.unstubAllEnvs());
 
 describe('Resources', () => {
   it('assigns product families without classifying ISO as a product listing', () => {
-    expect(certificates.map(file => file.family)).toEqual(['gfci', 'receptacles', 'usb-outlets', 'wallplates', 'lighting-switches', undefined]);
+    expect(certificates.map(file => file.family)).toEqual(['gfci', 'receptacles', 'usb-outlets', 'wallplates', 'wallplates', 'lighting-switches', undefined]);
     expect(documents.resourcesHref(findProduct('GF15'))).toBe('/resources?family=gfci&model=GF15');
   });
 
-  it('offers the seven real PDFs with base-safe native open and download links', async () => {
+  it('offers the eight real PDFs with base-safe native open and download links', async () => {
     vi.stubEnv('BASE_URL', '/fahint-electric-website/');
     await show();
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Product resources.');
     const paths = [documents.catalogueDocument, ...certificates.map(file => file.document)];
     const downloads = screen.getAllByRole('link', { name: /^Download .* PDF$/ });
-    expect(downloads).toHaveLength(7);
+    expect(downloads).toHaveLength(8);
     for (const path of paths) {
       expect(readFileSync(`public/${path}`).subarray(0, 5).toString()).toBe('%PDF-');
       const download = downloads.find(link => link.getAttribute('href') === publicAsset(path));
@@ -64,6 +64,29 @@ describe('Resources', () => {
     expect(screen.queryByRole('link', { name: 'Download UL — GFCI Receptacles PDF' })).not.toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: /^Download .* PDF$/ })).toHaveLength(3);
     expect(screen.getByTestId('route')).toHaveTextContent('/resources?family=usb-outlets');
+  });
+
+  it('keeps the two wallplate addenda separate with their exact base-model scopes', async () => {
+    await show('/resources?family=wallplates&model=BS1805');
+    expect(screen.getByRole('status')).toHaveTextContent('2 product-family documents');
+    const files = certificates.filter(file => file.family === 'wallplates');
+    expect(files.map(file => file.models)).toEqual([
+      ['BS1806', 'BS1807', 'BS18012', 'BS18013', 'BS18014', 'BS18032', 'BS18033', 'BS18034'],
+      ['BS1801', 'BS1802', 'BS1803', 'BS1804'],
+    ]);
+    expect(new Set(files.map(file => file.document)).size).toBe(2);
+    for (const file of files) {
+      const card = screen.getByRole('article', { name: file.name });
+      fireEvent.click(within(card).getByText('Scope & document date'));
+      expect(card).toHaveTextContent(file.issued);
+      expect(card).toHaveTextContent(/finish.*current/i);
+      expect(card).not.toHaveTextContent('BS1805');
+    }
+    expect(screen.getByText(/E501377-20181016/)).toBeVisible();
+    expect(screen.getByText(/E501377-20230919/)).toBeVisible();
+    expect(screen.getAllByRole('link', { name: /^Download .* PDF$/ })).toHaveLength(4);
+    expect(screen.getByRole('link', { name: 'Return to BS1805' })).toHaveAttribute('href', '/products/wallplates/bs1805');
+    expect(screen.getByText(/Selecting a model does not confirm its certification coverage/)).toBeVisible();
   });
 
   it.each(['dimmers', 'smart-switches'])('explains missing standalone files for %s without a fake download', async family => {
@@ -100,7 +123,7 @@ describe('Resources', () => {
     expect(screen.queryByRole('link', { name: 'Return to GF15' })).not.toBeInTheDocument();
     expect(screen.getByTestId('route')).toHaveTextContent('/resources?family=usb-outlets');
     fireEvent.change(screen.getByLabelText('Product family'), { target: { value: '' } });
-    expect(screen.getByRole('status')).toHaveTextContent('5 product-family documents');
+    expect(screen.getByRole('status')).toHaveTextContent('6 product-family documents');
     expect(screen.getByTestId('route')).toHaveTextContent(/^\/resources$/);
   });
 

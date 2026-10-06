@@ -2,7 +2,7 @@
 export const usbBuyingGuide = {
   "slug": "usb-wall-outlet-buying-guide",
   "title": "USB Wall Outlet Buying Guide: Ports, PD and Power",
-  "excerpt": "Compare USB ports, PD output, shared power and AC ratings. Use FAHINT model examples and a purchasing checklist to prepare your USB wall outlet inquiry.",
+  "excerpt": "Choose USB wall outlets by port type, PD profile and shared output. Compare seven FAHINT models and the details to include in a quotation request.",
   "date": "2026-10-04",
   "updated": "2026-10-04",
   "readMinutes": 6,
@@ -38,36 +38,36 @@ export const usbBuyingGuide = {
   "body": [
     {
       "type": "p",
-      "text": "To choose a USB wall outlet, start with the devices and cables it needs to serve. Then compare the port arrangement, published USB output and simultaneous-port limits. Check the AC receptacle rating separately, followed by physical fit, model documentation and sample requirements."
+      "text": "Two USB-C wall outlets can look alike and offer different charging options. Before choosing one, check the devices it needs to charge, the output from each port and the power available when both ports are in use. The AC receptacle has a separate rating."
     },
     {
       "type": "p",
-      "text": "This guide is for distributors, private-label buyers and project purchasers selecting wiring devices for North American markets. The examples use FAHINT’s published model data. Industry references explain the selection questions; they do not establish FAHINT performance or certification."
+      "text": "The FAHINT examples here cover configurations for North American distribution, private-label orders and projects. They use our published model specifications. The linked industry sources explain selection principles; FAHINT performance and certification must be checked against the documents for the exact model."
     },
     {
       "type": "h2",
-      "text": "Start with the devices and cables"
+      "text": "Which devices will use the outlet?"
     },
     {
       "type": "p",
-      "text": "Write a short charging brief before choosing a wattage. Will users bring USB-A cables, USB-C cables or both? Is the requirement one device at a time, or two devices charging together? A bedside charging point and a desk used with a laptop can have different requirements, even when the wall outlets look similar."
+      "text": "A bedside outlet used for a phone may need a different specification from a desk outlet used for a laptop. List the devices you want to support and the cables people will bring. Include whether they need to charge one device at a time or two together."
     },
     {
       "type": "p",
-      "text": "Record the intended device models and their charging requirements from the device documentation. For a laptop, include its required USB-C Power Delivery profile rather than assuming any USB-C outlet will replace its charger. Ask for the proposed outlet to be checked with the intended devices and suitably rated cables during sample review."
+      "text": "Take the charging requirements from each device’s documentation. For a laptop, that includes its required USB-C Power Delivery profile: a USB-C port alone does not tell you whether the outlet can replace the laptop’s charger. Use the intended devices and suitably rated cables when reviewing a sample."
     },
     {
       "type": "h2",
-      "text": "USB-A, USB-C and PD are different choices"
+      "text": "USB-C does not always mean Power Delivery"
     },
     {
       "type": "p",
-      "text": "USB-C describes the connector; USB Power Delivery, or PD, describes a power capability that must be supported separately. A USB-C connector does not by itself establish PD support. Check the stated charging profiles instead of choosing by the shape of the port.",
+      "text": "USB-C tells you the connector type. USB Power Delivery (PD) is a separate capability, so a USB-C connector does not by itself establish PD support. Look for the charging profiles in the specification.",
       "source": 0
     },
     {
       "type": "p",
-      "text": "For example, FTR15C-3100 combines USB-A and USB-C with a published combined output of 3.1A at 5V DC. It is a conventional 5V model, not one of the PD models in the FAHINT range. FTR15-3100 offers dual USB-A with the same published combined output.",
+      "text": "FAHINT FTR15C-3100 is one example: it has USB-A and USB-C ports with a combined output of 3.1A at 5V DC, but it is a conventional 5V model without PD. FTR15-3100 has the same combined output through two USB-A ports.",
       "links": [
         {
           "label": "Compare A + C configurations",
@@ -77,28 +77,28 @@ export const usbBuyingGuide = {
     },
     {
       "type": "p",
-      "text": "The dual USB-C FTR15QC-DC20W, FTR15QC-DC36W and FTR15QC-DC65W publish different PD output profiles. These are alternatives to investigate against the charging brief, not fixed categories for phones, tablets and laptops. Match the required voltage and current, not only the largest wattage printed in the name."
+      "text": "For PD charging, compare the profiles of FTR15QC-DC20W, FTR15QC-DC36W and FTR15QC-DC65W. All three have dual USB-C ports. Match the voltage and current your device requires; the wattage in a model name does not automatically make it a phone, tablet or laptop charger."
     },
     {
       "type": "h2",
-      "text": "Separate single-port and shared output"
+      "text": "What happens when both ports are in use?"
     },
     {
       "type": "p",
-      "text": "Read three figures separately: the maximum for one port, the combined output for the device, and the allocation when multiple ports are occupied. Leviton’s ordering table separates single-port and combined power, which is a useful way to structure any USB outlet comparison.",
+      "text": "A port’s maximum output and the outlet’s combined output are different figures. You also need to know how that power is allocated with several devices connected. Leviton’s USB comparison table lists single-port and combined power separately, a distinction worth keeping in your own specification.",
       "source": 1
     },
     {
       "type": "p",
-      "text": "On FTR15C-3100, the published individual limits are 5V DC / 2.4A for USB-A and 5V DC / 3.0A for USB-C. The published combined limit is 3.1A at 5V DC. Those individual limits do not mean both ports can deliver their respective maximum currents together."
+      "text": "On FTR15C-3100, USB-A is rated at 5V DC / 2.4A and USB-C at 5V DC / 3.0A. Together, they have a combined limit of 3.1A at 5V DC. Both ports therefore cannot supply their individual maximum currents at the same time."
     },
     {
       "type": "p",
-      "text": "For the FAHINT PD examples below, simultaneous-port power sharing is not published in the current model references. Each USB-C port has an advertised maximum, but that does not establish what both ports deliver together. Ask for the shared-output specification and a sample check if two-device charging is part of the brief."
+      "text": "For the FAHINT PD models in this guide, simultaneous-port power sharing is not published in the current model references. Each port has an advertised maximum; the output with both ports occupied still needs to be confirmed. If two-device charging matters to your order, request that specification and include it in the sample check."
     },
     {
       "type": "p",
-      "text": "A higher advertised maximum is not a promise that every connected device charges faster. Use the device’s required profiles, the cable specification and the proposed charging combination as the basis for approval.",
+      "text": "A 65W label alone does not tell you how fast a particular device will charge. Review the device’s required profiles, the cable rating and the combination you plan to use before approving the outlet.",
       "links": [
         {
           "label": "View 65W PD models",
@@ -108,27 +108,23 @@ export const usbBuyingGuide = {
     },
     {
       "type": "h2",
-      "text": "Choose the AC rating separately"
+      "text": "Compare seven FAHINT configurations"
     },
     {
       "type": "p",
-      "text": "The 15A or 20A designation describes the AC receptacle, not the speed of USB charging. FTR15QC-DC65W has a 15A, 125V NEMA 5-15R receptacle; FTR20QC-DC65W has a 20A, 125V NEMA 5-20R receptacle. Both publish USB-C output up to 65W, so the higher AC rating alone does not mean higher USB output."
+      "text": "Keep the AC receptacle rating in its own column when comparing models. FTR15QC-DC65W is a 15A, 125V NEMA 5-15R receptacle; FTR20QC-DC65W is a 20A, 125V NEMA 5-20R receptacle. Both specify USB-C output up to 65W. Choosing the 20A version does not increase the USB output."
     },
     {
       "type": "p",
-      "text": "F4P is a four-port USB charger without AC receptacle openings. Its published input is 125V / 60Hz and its combined USB output is 5V DC / 4.2A / 21W. Keep USB-only chargers separate from combination receptacles when preparing an assortment."
+      "text": "F4P is a four-port USB charger without AC receptacle openings. It has a 125V / 60Hz input and a combined USB output of 5V DC / 4.2A / 21W. It belongs in the USB-only part of an assortment, separate from combination receptacles."
     },
     {
       "type": "p",
       "text": "Have a qualified professional confirm the circuit, location and installation requirements. Selecting a USB charging function does not by itself establish any required ground-fault protection, weather resistance or suitability for a particular location."
     },
     {
-      "type": "h2",
-      "text": "A practical FAHINT shortlist"
-    },
-    {
       "type": "p",
-      "text": "Use these seven examples to narrow the configuration, then open the model page for its specifications and available documents. They are reference choices, not a ranking or a tested compatibility list."
+      "text": "These examples compare port arrangements and ratings, not tested compatibility with particular devices. Each model links to its full specifications and available documents."
     },
     {
       "type": "table",
@@ -207,11 +203,11 @@ export const usbBuyingGuide = {
     },
     {
       "type": "p",
-      "text": "*PD figures are individual-port maxima from the published model references. Do not add the two port ratings together. Confirm the available output when both ports are used before specifying a multi-device charging requirement."
+      "text": "*Each PD figure is the published maximum for one port. Do not add the two port ratings together. Ask for the output available with both ports in use before specifying two-device charging."
     },
     {
       "type": "p",
-      "text": "On the USB models page, filter by ports, AC rating and charging output. Select two or three models for comparison, then add suitable models to your inquiry list. Record quantities and finishes there so the quotation request reflects the actual shortlist.",
+      "text": "You can filter the USB range by ports, AC rating and charging output, then compare two or three models side by side. Add your choices to the inquiry list with quantities and finishes.",
       "links": [
         {
           "label": "Browse USB outlet models",
@@ -221,25 +217,25 @@ export const usbBuyingGuide = {
     },
     {
       "type": "h2",
-      "text": "Check fit, finish and documentation"
+      "text": "Check the box depth, wallplate and documents"
     },
     {
       "type": "p",
-      "text": "Physical fit deserves its own check. Eaton highlights device depth in its USB range information. Include depth and wiring space in the review rather than treating the face dimensions as the whole device.",
+      "text": "The front dimensions tell only part of the fit. Eaton includes device depth in its USB range information; your review should also cover depth and the space needed for wiring.",
       "source": 3
     },
     {
       "type": "p",
-      "text": "Legrand’s 65W product page lists dimensions and wallplate requirements alongside electrical specifications. Apply that same separation when preparing your shortlist: the charging specification and the installation fit each need to be checked.",
+      "text": "Wallplate requirements need a separate check too. Legrand’s 65W outlet page lists them alongside the device dimensions and electrical specifications.",
       "source": 2
     },
     {
       "type": "p",
-      "text": "Use the drawing for the exact FAHINT model, not a similar-looking device. Some models do not yet have a published original dimension drawing. Request the missing information rather than inferring it from another model, and confirm whether the intended wallplate is included or ordered separately."
+      "text": "For a FAHINT model, use its own dimension drawing. If an original drawing has not yet been published, request it before approving the fit. A similar-looking outlet may differ. Also ask whether the intended wallplate comes with the device or needs a separate order."
     },
     {
       "type": "p",
-      "text": "Approve the device finish and matching plate together. For branded packaging, confirm the authorized markings, artwork and pack format against the sample. Check the exact model designation and conditions in the relevant certificate, and confirm current status before ordering. ISO 9001 concerns the quality management system; it is not a product listing.",
+      "text": "Review the device finish and plate together on the sample. For branded packs, include the authorized markings, artwork and pack format in that approval. Check the exact model and conditions in the relevant certificate, including its current status. ISO 9001 covers the quality management system; it is not a product listing.",
       "links": [
         {
           "label": "Review USB product documents",
@@ -249,28 +245,28 @@ export const usbBuyingGuide = {
     },
     {
       "type": "h2",
-      "text": "Prepare a useful quotation request"
+      "text": "What to send with your inquiry"
     },
     {
       "type": "p",
-      "text": "A clear brief gives the supplier enough information to resolve open questions before you approve an order. Include:"
+      "text": "Send the model numbers you are considering along with the charging requirements. If a detail is still undecided, flag it so we can address it in the quotation:"
     },
     {
       "type": "list",
       "label": "USB outlet quotation checklist",
       "items": [
-        "Full model numbers and quantities for each configuration, rather than a request for “USB outlets” alone.",
-        "Intended devices and cables, required output profiles, and whether two or more devices must charge at the same time.",
-        "AC receptacle rating and configuration, or a clear statement that a USB-only charger is required.",
-        "Device finish, wallplate style, physical-fit requirements and any missing drawings you need reviewed.",
-        "Destination market and the model-specific documents or sample checks required by your project.",
-        "Packaging, authorized brand markings and quantities by finish or pack format.",
-        "Requested samples and delivery timing, with unresolved power-sharing or compatibility questions called out."
+        "Full model numbers and quantities for each configuration.",
+        "Device models, cables and required output profiles, including which devices must charge together.",
+        "The AC receptacle rating and configuration, or a USB-only requirement.",
+        "Finish, wallplate style, available installation space and any drawings still needed.",
+        "Destination market, required model documents and project-specific sample checks.",
+        "Packaging and authorized brand markings, with quantities split by finish or pack format.",
+        "Samples and requested delivery date, plus any unanswered power-sharing or compatibility questions."
       ]
     },
     {
       "type": "p",
-      "text": "Sample arrangements, minimum quantities, customization options and lead times are confirmed in the quotation. The guide helps prepare the request; the agreed model documents and approved sample remain the basis for the order."
+      "text": "We confirm sample arrangements, minimum quantities, customization options and lead times in the quotation. Keep the agreed model documents and approved sample with the order so the charging requirements, finish and pack details remain clear."
     }
   ]
 };

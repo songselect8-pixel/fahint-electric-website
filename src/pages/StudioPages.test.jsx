@@ -617,6 +617,15 @@ describe('studio homepage and catalog', () => {
     expect(screen.getByText(/Certification coverage is model-specific/)).toBeInTheDocument();
   });
 
+  it('shares desktop certificate space without a fixed document count and keeps smaller-screen paging', () => {
+    const css = readFileSync('src/styles/studio.css', 'utf8');
+    const desktopCard = css.match(/\.studio-certificates \.certcard\s*\{([^}]+)\}/)[1];
+    expect(desktopCard).toMatch(/flex:\s*1 0 0\s*;/);
+    expect(desktopCard).toMatch(/min-width:\s*0\s*;/);
+    expect(css).toMatch(/@media \(max-width:\s*1100px\)[\s\S]*?\.studio-certificates \.certcard\s*\{[^}]*flex-basis:\s*226px/);
+    expect(css).toMatch(/@media \(max-width:\s*1100px\)[\s\S]*?\.studio-certificates \.certcar__nav\s*\{[^}]*display:\s*grid/);
+  });
+
   it('restores the complete original certificate library, without blanket certification claims', () => {
     show(HomeStudio);
     const section = screen.getByRole('region', { name: 'Confidence, documented.' });

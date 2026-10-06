@@ -38,11 +38,26 @@ export const certificates = [
     family: 'wallplates',
     name: 'UL — Wallplates',
     file: 'E501377',
-    detail: 'UL 514D · Nonmetallic flush device cover plates',
+    report: 'E501377-20230919',
+    detail: 'UL 514D · Report E501377-20230919',
     image: 'assets/images/certs/ul-wallplate.webp',
     document: 'assets/documents/certificates/ul-wallplate.pdf',
     issued: 'September 25, 2023',
-    scope: 'BS1806, BS1807, BS18012, BS18013, BS18014, BS18032, BS18033 and BS18034. Other wall plate models require their corresponding documentation.'
+    models: ['BS1806', 'BS1807', 'BS18012', 'BS18013', 'BS18014', 'BS18032', 'BS18033', 'BS18034'],
+    scope: 'Base models BS1806, BS1807, BS18012, BS18013, BS18014, BS18032, BS18033 and BS18034. Confirm finish designations and current coverage for the ordered configuration; other models require their corresponding documentation.'
+  },
+  {
+    slug: 'ul-wallplate-2018',
+    family: 'wallplates',
+    name: 'UL — Wallplates (BS1801–BS1804)',
+    file: 'E501377',
+    report: 'E501377-20181016',
+    detail: 'UL 514D · Report E501377-20181016',
+    image: 'assets/images/certs/ul-wallplate-2018.jpg',
+    document: 'assets/documents/certificates/ul-wallplate-2018.pdf',
+    issued: 'August 16, 2022',
+    models: ['BS1801', 'BS1802', 'BS1803', 'BS1804'],
+    scope: 'Base models BS1801, BS1802, BS1803 and BS1804. Confirm finish designations and current coverage for the ordered configuration; other models require their corresponding documentation.'
   },
   {
     slug: 'ul-switch',
@@ -66,6 +81,12 @@ export const certificates = [
     scope: 'Design and production of export low-voltage wall sockets, GFCI outlets and USB outlets. Stated validity ends April 11, 2028, subject to surveillance audit acceptance.'
   }
 ];
+
+// Match a supplied base-model reference, not current listing status or finish coverage.
+export function findWallplateCertificate(model) {
+  const baseModel = String(model).replace(/[ -][GM]$/i, '');
+  return certificates.find(certificate => certificate.family === 'wallplates' && certificate.models?.includes(baseModel));
+}
 
 // Real photographs sliced from the supplied company detail sheets.
 export const facilityShots = [

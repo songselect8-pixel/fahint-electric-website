@@ -69,7 +69,7 @@ describe('Researched dimmer buying guide', () => {
     render(wrap(<Blog />));
     expect(screen.getByRole('link', { name: 'Dimmer Buying Guide: LED Loads and 0–10V Compatibility' })).toHaveAttribute('href', path);
     expect(screen.getByRole('link', { name: 'USB Wall Outlet Buying Guide: Ports, PD and Power' })).toHaveAttribute('href', '/blog/usb-wall-outlet-buying-guide');
-    expect(screen.getByRole('status')).toHaveTextContent('8 articles');
+    expect(screen.getByRole('status')).toHaveTextContent('10 articles');
   });
 
   it('is linked from the dimmer family buying guide', () => {
@@ -81,6 +81,6 @@ describe('Researched dimmer buying guide', () => {
     render(wrap(<Resources />));
     expect(screen.getByRole('link', { name: 'Read the dimmer buying guide' })).toHaveAttribute('href', path);
     expect(screen.getByRole('link', { name: 'Read the USB outlet buying guide' })).toHaveAttribute('href', '/blog/usb-wall-outlet-buying-guide');
-    expect(screen.getAllByRole('link', { name: /^Download .* PDF$/ })).toHaveLength(7);
+    expect(screen.getAllByRole('link', { name: /^Download .* PDF$/ })).toHaveLength(8);
   });
 });

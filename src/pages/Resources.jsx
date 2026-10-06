@@ -83,6 +83,14 @@ export default function Resources() {
           Choosing lighting controls?{' '}
           <Link className="company-text-link" to="/blog/dimmer-buying-guide-led-0-10v">Read the dimmer buying guide <ArrowUpRight size={16} aria-hidden="true" /></Link>
         </p>
+        <p className="resources-scope-note">
+          Matching devices and wallplates?{' '}
+          <Link className="company-text-link" to="/blog/wallplate-buying-guide">Read the wallplate buying guide <ArrowUpRight size={16} aria-hidden="true" /></Link>
+        </p>
+        <p className="resources-scope-note">
+          Comparing on/off switches?{' '}
+          <Link className="company-text-link" to="/blog/light-switch-buying-guide">Read the light switch buying guide <ArrowUpRight size={16} aria-hidden="true" /></Link>
+        </p>
       </div>
     </header>
 
